@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/09 20:29:05 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/09 22:47:32 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
-#include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
+#include <termios.h>
+#include "libft/libft.h"    // Contains 'tcsetattr()' and 'tcgetattr()'
 
 typedef enum 
 {
@@ -27,7 +28,10 @@ typedef enum
     TOKEN_PIPE,
     TOKEN_REDIRECT_IN,
     TOKEN_REDIRECT_OUT,
-    // ... add any other token types you need
+    TOKEN_HERE_DOC,
+    TOKEN_APPEND_REDIRECTION,
+    TOKEN_BACKGROUND_EXEC,
+    TOKEN_EXPAND_TO_EXIT,
 }             tokentype;
 
 typedef struct token token;  // Forward declaration
