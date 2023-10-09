@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/08 14:13:47 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/10 00:21:09 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
-#include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
+#include <termios.h>
+#include "libft/libft.h"    // Contains 'tcsetattr()' and 'tcgetattr()'
 
 typedef enum 
 {
@@ -27,14 +28,20 @@ typedef enum
     TOKEN_PIPE,
     TOKEN_REDIRECT_IN,
     TOKEN_REDIRECT_OUT,
-    // ... add any other token types you need
-}             TokenType;
+    TOKEN_HERE_DOC,
+    TOKEN_APPEND_REDIRECTION,
+    TOKEN_BACKGROUND_EXEC,
+    TOKEN_EXPAND_TO_EXIT,
+}             tokentype;
 
-typedef struct 
+typedef struct token token;  // Forward declaration
+
+struct token
 {
-    char        *content;
-    TokenType   type;
-}                 Token;
+    char       *content;
+    tokentype   type;
+    token      *next;
+};
 
 void        init_signals(void);
 void        rl_replace_line (const char *text, int clear_undo);
