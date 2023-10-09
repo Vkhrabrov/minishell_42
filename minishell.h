@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vadimhrabrov <vadimhrabrov@student.42.f    +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/08 20:51:37 by vadimhrabro      ###   ########.fr       */
+/*   Updated: 2023/10/09 20:29:05 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
-#include "libft/libft.h"
+#include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
 
 typedef enum 
 {
@@ -41,5 +41,7 @@ struct token
 
 void        init_signals(void);
 void        rl_replace_line (const char *text, int clear_undo);
+void        disable_control_chars_echo();
+void        restore_terminal_settings();
 
-#endif
+#endif 

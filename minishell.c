@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vadimhrabrov <vadimhrabrov@student.42.f    +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/08 21:00:55 by vadimhrabro      ###   ########.fr       */
+/*   Updated: 2023/10/09 20:31:44 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,21 +150,33 @@ void tokenization(char *input)
         i++;
     }
 }
-
+*/
 
 int main(int argc, char **argv, char **envp)
 {
     (void)argc;
     (void)argv;
     (void)envp;
-    // init_signals();
+
+    disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
+    init_signals();
     while (1) 
     {
         char *input = readline("minishell> ");
         if (!input) break; 
-        tokenization(input);
+        // tokenization(input);
         add_history(input);
         free(input);
+
+        // Check if the next character is EOF
+        int next_char = getchar();
+        if (next_char == EOF)
+        {
+          // Print the "exit" message and close the program
+          printf("exit\n");
+          break;
+        }
     }
+    restore_terminal_settings();    //  Restore terminal settings before exiting
     return (0);
 }
