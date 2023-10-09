@@ -6,14 +6,14 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/10 00:21:09 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/10 00:23:06 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
+#include <stdio.h>gi
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
