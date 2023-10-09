@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/07 02:02:48 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/08 23:40:27 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 void create_empty_list(void)
 {
     token.value = NULL;
@@ -107,13 +107,13 @@ void tokenization(char *input)
                 i++;
 
             char* command_or_arg = substring(input_string, start, i - 1);
-            add_to_list(tokens, create_token(command_or_arg, /* decide if it's a command or argument */));
+            add_to_list(tokens, create_token(command_or_arg, // decide if it's a command or argument ));
             i--; // Because the outer for-loop will increment i again
         }
         i++;
     }
 }
-
+*/
 
 int main(int argc, char **argv, char **envp)
 {
@@ -123,14 +123,26 @@ int main(int argc, char **argv, char **envp)
     (void)argc;
     (void)argv;
     (void)envp;
+
+    disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
     init_signals();
     while (1) 
     {
         char *input = readline("minishell> ");
         if (!input) break; 
-        tokenization(input);
+        // tokenization(input);
         add_history(input);
         free(input);
+
+        // Check if the next character is EOF
+        int next_char = getchar();
+        if (next_char == EOF)
+        {
+          // Print the "exit" message and close the program
+          printf("exit\n");
+          break;
+        }
     }
+    restore_terminal_settings();    //  Restore terminal settings before exiting
     return (0);
 }
