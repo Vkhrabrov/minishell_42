@@ -25,6 +25,7 @@ const char* token_type_to_string(tokentype type)
         case TOKEN_APPEND_REDIRECTION: return "APPEND_REDIRECTION";
         case TOKEN_BACKGROUND_EXEC: return "BACKGROUND_EXEC";
         case TOKEN_EXPAND_TO_EXIT: return "EXPAND_TO_EXIT";
+        case TOKEN_HERE_DOC_EOF: return "TOKEN_HERE_DOC_EOF";
         default: return "UNKNOWN";
     }
 }
@@ -83,77 +84,80 @@ char *substring(char *input_string, int start, int end)
     return (substring);
 }
 
-void tokenization(char *input)
+int if_redirection(char c)
 {
+    if (c == '>' || c == '<')
+        return (1);
+    else
+        return (0); 
+}
+
+char *lex_quoted_string(char *input_string, int *i, char end_char) {
+    int start = (*i) + 1;
+    (*i)++;
+    while (input_string[*i] != end_char && *i < (int)ft_strlen(input_string)) 
+        (*i)++;
+    return substring(input_string, start, *i - 1);
+}
+
+void tokenization(char *input) {
     char    *input_string;
     int     i;
     token   *tokens;
-    char    *quoted_string;
-    char    *command_or_arg;
-
+    char    *lexed_str;
     input_string = input;
     tokens = NULL;
     i = 0;
-    while (i < (int)ft_strlen(input_string)) 
-    {
+
+    while (i < (int)ft_strlen(input_string)) {
         char c = input_string[i];
-        if (c == ' ')
-        {
+        
+        if (c == ' ') {
             i++;
             continue;
         }
-        if (c == '"') 
-        {
-            int start = i + 1;
-            i++;
-            while (input_string[i] != '"' && i < (int)ft_strlen(input_string)) 
-                i++;
-            quoted_string = substring(input_string, start, i - 1);
-            add_to_list(&tokens, create_token(quoted_string, TOKEN_ARGUMENT));
-        }
-        else if (c == '\'') 
-        {
-            int start = i + 1;
-            i++;
-            while (input_string[i] != '\'' && i < (int)ft_strlen(input_string)) 
-                i++;
-            quoted_string = substring(input_string, start, i - 1);
-            add_to_list(&tokens, create_token(quoted_string, TOKEN_ARGUMENT));
-        }
-        else if (c == '|')
+
+        if (c == '"') {
+            lexed_str = lex_quoted_string(input_string, &i, '"');
+            add_to_list(&tokens, create_token(lexed_str, TOKEN_ARGUMENT));
+        } 
+        else if (c == '\'') {
+            lexed_str = lex_quoted_string(input_string, &i, '\'');
+            add_to_list(&tokens, create_token(lexed_str, TOKEN_ARGUMENT));
+        } 
+        else if (c == '|') {
             add_to_list(&tokens, create_token("|", TOKEN_PIPE));
-        else if ((c == '>') && input_string[i + 1] == '>')
-        {
+        } 
+        else if (c == '>' && input_string[i + 1] == '>') {
             add_to_list(&tokens, create_token(">>", TOKEN_APPEND_REDIRECTION));
             i++;
-        }
-        else if ((c == '<') && input_string[i + 1] == '<')
-        {
+        } 
+        else if (c == '<' && input_string[i + 1] == '<') {
             add_to_list(&tokens, create_token("<<", TOKEN_HERE_DOC));
             i++;
-        }
-        else if ((c == '>') && input_string[i + 1] != '>')
+        } 
+        else if (c == '>') {
             add_to_list(&tokens, create_token(">", TOKEN_REDIRECT_OUT));
-        else if (c == '<' && input_string[i + 1] != '<')
+        } 
+        else if (c == '<') {
             add_to_list(&tokens, create_token("<", TOKEN_REDIRECT_IN));
-        else if ((c == '>') && input_string[i + 1] == '>')
-            add_to_list(&tokens, create_token(">>", TOKEN_APPEND_REDIRECTION));
-        else if ((c == '$') && input_string[i + 1] != '?')
+        }
+        // You might want to review the logic around $ and $? tokens
+        else if (c == '$' && input_string[i + 1] != '?') {
             add_to_list(&tokens, create_token("$", TOKEN_BACKGROUND_EXEC));
-        else if ((c == '$') && input_string[i + 1] == '?')
-        {
+        } 
+        else if (c == '$' && input_string[i + 1] == '?') {
             add_to_list(&tokens, create_token("$?", TOKEN_EXPAND_TO_EXIT));
             i++;
-        }
-        else 
-        {
+        } 
+        else {
             int start = i;
-            while (input_string[i] != ' ' && input_string[i] != '|' && i < (int)ft_strlen(input_string))
+            while (input_string[i] != ' ' && input_string[i] != '|' && i < (int)ft_strlen(input_string) && if_redirection(input_string[i]) == 0)
                 i++;
 
-            command_or_arg = substring(input_string, start, i - 1);
+            char *command_or_arg = substring(input_string, start, i - 1);
             add_to_list(&tokens, create_token(command_or_arg, TOKEN_COMMAND));
-            i--; 
+            i--;
         }
         i++;
     }

@@ -32,6 +32,7 @@ typedef enum
     TOKEN_APPEND_REDIRECTION,
     TOKEN_BACKGROUND_EXEC,
     TOKEN_EXPAND_TO_EXIT,
+    TOKEN_HERE_DOC_EOF,
 }             tokentype;
 
 typedef struct token token;  // Forward declaration
