@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 21:49:58 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/09 21:32:09 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/11 19:16:26 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,29 +19,14 @@
     received signal at all.
 */
 static struct termios original_termios;
-
-static void new_prompt_line()
-{   
-    printf("\n");
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-}
-
-// static void eof_exit() {
-//     printf("\nexit\n");
-//     fflush(stdout); // Flush the output buffer to ensure immediate display
-//     rl_on_new_line(); // Move to a new line
-//     rl_replace_line("exit", 0); // Replace the line with "exit"
-//     rl_redisplay(); // Redisplay the line
-//     exit(0); // Exit the program
-// }
+static void new_prompt_line();
+void disable_control_chars_echo();
+void disable_control_chars_echo();
 
 void init_signals(void)
 {
     struct sigaction    sigint_action;  // Replaces default 'ctrl + c'
     struct sigaction    sigquit_action; // Replaces default 'ctrl + \'
-    // struct sigaction    eof_action;     // Replaces default 'ctrl + d'
 
     // Setup the SIGINT ('ctrl + c') handler
     sigint_action.sa_handler = new_prompt_line;
@@ -54,12 +39,14 @@ void init_signals(void)
     sigemptyset(&sigquit_action.sa_mask);
     sigquit_action.sa_flags = 0;
     sigaction(SIGQUIT, &sigquit_action, NULL);
-    
-    // Setup the EOF (ctrl + 'd') handler
-    // eof_action.sa_handler = eof_exit;
-    // sigemptyset(&eof_action.sa_mask);
-    // eof_action.sa_flags = 0;
-    // sigaction(SIGQUIT, &eof_action, NULL);
+}
+
+static void new_prompt_line()
+{   
+    printf("\n");
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
 }
 
 /*

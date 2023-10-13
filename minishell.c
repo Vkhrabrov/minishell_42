@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/10 00:20:13 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/10 23:26:13 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,16 +165,21 @@ int main(int argc, char **argv, char **envp)
     (void)argv;
     (void)envp;
 
-    disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
+    disable_control_chars_echo();   // Disable echoing of control characters (^C, ^\)
     init_signals();
     while (1) 
     {
         char *input = readline("minishell> ");
-        if (!input) break; 
+        if (!input)
+        {
+            if (rl_eof_found == 1)  // Check if EOF (ctrl+D) was received through a 'readline' lib flag
+                printf("exit\n");
+            break;
+        }
         tokenization(input);
         add_history(input);
         free(input);
     }
-    // restore_terminal_settings();    //  Restore terminal settings before exiting
+    restore_terminal_settings();    // Restore terminal settings before exiting
     return (0);
 }
