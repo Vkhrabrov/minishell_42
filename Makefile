@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
+#    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/10/08 11:00:52 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/10/13 19:02:21 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ HEADER = minishell.h
 LIBFT = libft/
 READLINE = readline/
 
-SRC_F:= minishell signals
+SRC_F:= minishell signals parser
 
 FLAGS = -Wall -Wextra -Werror -g -MMD -I$(READLINE)/include 
 RM = rm -f

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/09 22:47:32 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/13 19:43:51 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <readline/history.h>
 #include <signal.h>
 #include <termios.h>
-#include "libft/libft.h"    // Contains 'tcsetattr()' and 'tcgetattr()'
+#include "libft/libft.h" 
 
 typedef enum 
 {
@@ -35,7 +35,7 @@ typedef enum
     TOKEN_HERE_DOC_EOF,
 }             tokentype;
 
-typedef struct token token;  // Forward declaration
+typedef struct token token;
 
 struct token
 {
@@ -44,9 +44,20 @@ struct token
     token      *next;
 };
 
-void        init_signals(void);
-void        rl_replace_line (const char *text, int clear_undo);
-void        disable_control_chars_echo();
-void        restore_terminal_settings();
+typedef struct command_node command_node;
+
+struct command_node {
+    token *command;
+    token *args;
+    token *redirects;
+    command_node *next;
+};
+
+void            init_signals(void);
+void            rl_replace_line (const char *text, int clear_undo);
+void            disable_control_chars_echo();
+void            restore_terminal_settings();
+command_node*   parse_line(token *tokens);
+void            print_command_nodes(command_node* head);
 
 #endif 

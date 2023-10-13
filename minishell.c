@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vadimhrabrov <vadimhrabrov@student.42.f    +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/12 17:45:56 by vadimhrabro      ###   ########.fr       */
+/*   Updated: 2023/10/13 19:45:55 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ void tokenization(char *input) {
     int     i;
     token   *tokens;
     char    *lexed_str;
+    command_node *head = NULL;
+    
     input_string = input;
     tokens = NULL;
     i = 0;
@@ -152,16 +154,19 @@ void tokenization(char *input) {
         } 
         else {
             int start = i;
+            tokentype current_type = (!tokens || tokens->type == TOKEN_PIPE) ? TOKEN_COMMAND : TOKEN_ARGUMENT;
+
             while (input_string[i] != ' ' && input_string[i] != '|' && i < (int)ft_strlen(input_string) && if_redirection(input_string[i]) == 0)
                 i++;
 
             char *command_or_arg = substring(input_string, start, i - 1);
-            add_to_list(&tokens, create_token(command_or_arg, TOKEN_COMMAND));
+            add_to_list(&tokens, create_token(command_or_arg, current_type));
             i--;
         }
         i++;
     }
-    parse_line(tokens);
+    head = parse_line(tokens);
+    print_command_nodes(head);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -177,6 +182,7 @@ int main(int argc, char **argv, char **envp)
         char *input = readline("minishell> ");
         if (!input) break; 
         tokenization(input);
+        
         add_history(input);
         free(input);
     }
