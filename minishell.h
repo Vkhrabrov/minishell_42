@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/13 20:25:09 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/15 00:22:08 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef enum
     TOKEN_APPEND_REDIRECTION,
     TOKEN_BACKGROUND_EXEC,
     TOKEN_EXPAND_TO_EXIT,
-    TOKEN_HERE_DOC_EOF,
+    TOKEN_HEREDOC_DELIM,
 }             tokentype;
 
 typedef struct token token;
@@ -48,10 +48,11 @@ struct token
 typedef struct command_node command_node;
 
 struct command_node {
-    token *command;
-    token *args;
-    token *redirects;
-    command_node *next;
+    token           *command;
+    token           *args;
+    token           *redirects;
+    char            *here_doc_content;
+    command_node    *next;
 };
 
 void            init_signals(void);

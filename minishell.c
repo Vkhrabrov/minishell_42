@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/13 23:47:58 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/15 01:37:20 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@ const char* token_type_to_string(tokentype type)
         case TOKEN_APPEND_REDIRECTION: return "APPEND_REDIRECTION";
         case TOKEN_BACKGROUND_EXEC: return "BACKGROUND_EXEC";
         case TOKEN_EXPAND_TO_EXIT: return "EXPAND_TO_EXIT";
-        case TOKEN_HERE_DOC_EOF: return "TOKEN_HERE_DOC_EOF";
+        case TOKEN_HEREDOC_DELIM: return "TOKEN_HEREDOC_DELIM";
         default: return "UNKNOWN";
     }
 }
 
-token *get_last_token(token *head) {
+token *get_last_token(token *head) 
+{
     if (!head) return NULL;
     while (head->next) {
         head = head->next;
@@ -100,7 +101,8 @@ int if_redirection(char c)
         return (0); 
 }
 
-char *lex_quoted_string(char *input_string, int *i, char end_char) {
+char *lex_quoted_string(char *input_string, int *i, char end_char) 
+{
     int start = (*i) + 1;
     (*i)++;
     while (input_string[*i] != end_char && *i < (int)ft_strlen(input_string)) 
@@ -113,6 +115,8 @@ void tokenization(char *input) {
     int     i;
     token   *tokens;
     char    *lexed_str;
+    int     start;
+    tokentype current_type;
     command_node *head = NULL;
     tokentype prev_type = TOKEN_NONE;
     
@@ -120,66 +124,68 @@ void tokenization(char *input) {
     tokens = NULL;
     i = 0;
 
-    while (i < (int)ft_strlen(input_string)) {
+    while (i < (int)ft_strlen(input_string)) 
+    {
         char c = input_string[i];
         
-        if (c == ' ') {
+        if (c == ' ') 
+        {
             i++;
             continue;
         }
 
-        if (c == '"') {
+        if (c == '"') 
+        {
             lexed_str = lex_quoted_string(input_string, &i, '"');
             add_to_list(&tokens, create_token(lexed_str, TOKEN_ARGUMENT));
         } 
-        else if (c == '\'') {
+        else if (c == '\'') 
+        {
             lexed_str = lex_quoted_string(input_string, &i, '\'');
             add_to_list(&tokens, create_token(lexed_str, TOKEN_ARGUMENT));
         } 
-        else if (c == '|') {
+        else if (c == '|')
             add_to_list(&tokens, create_token("|", TOKEN_PIPE));
-        } 
-        else if (c == '>' && input_string[i + 1] == '>') {
+        else if (c == '>' && input_string[i + 1] == '>')
+        {
             add_to_list(&tokens, create_token(">>", TOKEN_APPEND_REDIRECTION));
             i++;
         } 
-        else if (c == '<' && input_string[i + 1] == '<') {
+        else if (c == '<' && input_string[i + 1] == '<')
+        {
             add_to_list(&tokens, create_token("<<", TOKEN_HERE_DOC));
             i++;
-        } 
-        else if (c == '>') {
-            add_to_list(&tokens, create_token(">", TOKEN_REDIRECT_OUT));
-        } 
-        else if (c == '<') {
-            add_to_list(&tokens, create_token("<", TOKEN_REDIRECT_IN));
         }
-        // You might want to review the logic around $ and $? tokens
-        else if (c == '$' && input_string[i + 1] != '?') {
-            add_to_list(&tokens, create_token("$", TOKEN_BACKGROUND_EXEC));
-        } 
-        else if (c == '$' && input_string[i + 1] == '?') {
+        else if (c == '>')
+            add_to_list(&tokens, create_token(">", TOKEN_REDIRECT_OUT));
+        else if (c == '<')
+            add_to_list(&tokens, create_token("<", TOKEN_REDIRECT_IN));
+        else if (c == '$' && input_string[i + 1] != '?') 
+            add_to_list(&tokens, create_token("$", TOKEN_BACKGROUND_EXEC)); 
+        else if (c == '$' && input_string[i + 1] == '?') 
+        {
             add_to_list(&tokens, create_token("$?", TOKEN_EXPAND_TO_EXIT));
             i++;
         } 
-        else {
-            int start = i;
-            tokentype current_type = TOKEN_COMMAND;
+        else 
+        {
+            start = i;
+            current_type = TOKEN_COMMAND;
 
-            if ((prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE) && prev_type != TOKEN_REDIRECT_OUT && prev_type != TOKEN_REDIRECT_IN) {
+            if (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_HERE_DOC) 
+                current_type = TOKEN_HEREDOC_DELIM;
+            else if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE) 
                 current_type = TOKEN_COMMAND;
-            } else if ((get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_COMMAND)
+            else if ((get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_COMMAND)
                 || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_OUT)
-                    || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_IN)) 
-            {
+                || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_IN)) 
                 current_type = TOKEN_ARGUMENT;
-            }
-            
-            while (input_string[i] != ' ' && input_string[i] != '|' && i < (int)ft_strlen(input_string) && if_redirection(input_string[i]) == 0)
+            while (input_string[i] != ' ' && input_string[i] != '|'
+                && i < (int)ft_strlen(input_string) && if_redirection(input_string[i]) == 0)
                 i++;
-
             char *command_or_arg = substring(input_string, start, i - 1);
             add_to_list(&tokens, create_token(command_or_arg, current_type));
-            prev_type = current_type;  // Update the previous token type
+            prev_type = current_type;
             i--;
         }
         i++;
