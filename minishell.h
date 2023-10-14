@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/13 19:43:51 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/13 20:25:09 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef enum
     TOKEN_COMMAND,
     TOKEN_ARGUMENT,
     TOKEN_PIPE,
+    TOKEN_NONE,
     TOKEN_REDIRECT_IN,
     TOKEN_REDIRECT_OUT,
     TOKEN_HERE_DOC,
@@ -58,6 +59,6 @@ void            rl_replace_line (const char *text, int clear_undo);
 void            disable_control_chars_echo();
 void            restore_terminal_settings();
 command_node*   parse_line(token *tokens);
-void            print_command_nodes(command_node* head);
+void            print_command_node(command_node* head);
 
 #endif 

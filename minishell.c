@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/13 19:45:55 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/13 23:47:58 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,14 @@ const char* token_type_to_string(tokentype type)
         case TOKEN_HERE_DOC_EOF: return "TOKEN_HERE_DOC_EOF";
         default: return "UNKNOWN";
     }
+}
+
+token *get_last_token(token *head) {
+    if (!head) return NULL;
+    while (head->next) {
+        head = head->next;
+    }
+    return head;
 }
 
 void print_token(token *t) 
@@ -106,6 +114,7 @@ void tokenization(char *input) {
     token   *tokens;
     char    *lexed_str;
     command_node *head = NULL;
+    tokentype prev_type = TOKEN_NONE;
     
     input_string = input;
     tokens = NULL;
@@ -154,19 +163,29 @@ void tokenization(char *input) {
         } 
         else {
             int start = i;
-            tokentype current_type = (!tokens || tokens->type == TOKEN_PIPE) ? TOKEN_COMMAND : TOKEN_ARGUMENT;
+            tokentype current_type = TOKEN_COMMAND;
 
+            if ((prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE) && prev_type != TOKEN_REDIRECT_OUT && prev_type != TOKEN_REDIRECT_IN) {
+                current_type = TOKEN_COMMAND;
+            } else if ((get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_COMMAND)
+                || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_OUT)
+                    || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_IN)) 
+            {
+                current_type = TOKEN_ARGUMENT;
+            }
+            
             while (input_string[i] != ' ' && input_string[i] != '|' && i < (int)ft_strlen(input_string) && if_redirection(input_string[i]) == 0)
                 i++;
 
             char *command_or_arg = substring(input_string, start, i - 1);
             add_to_list(&tokens, create_token(command_or_arg, current_type));
+            prev_type = current_type;  // Update the previous token type
             i--;
         }
         i++;
     }
     head = parse_line(tokens);
-    print_command_nodes(head);
+    print_command_node(head);
 }
 
 int main(int argc, char **argv, char **envp)

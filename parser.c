@@ -6,43 +6,32 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/13 19:43:14 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/13 20:23:07 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void print_command_nodes(command_node* head) {
-    command_node* current = head;
-
-    while (current) {
+void print_command_node(command_node* node) {
+    while (node) {
         printf("Command Node:\n");
-
-        if (current->command) {
-            printf("  Command: %s\n", current->command->content);
-        } else {
-            printf("  Command: NULL\n");
+        if (node->command) {
+            printf("  Command: %s\n", node->command->content);
         }
-
-        if (current->args) {
-            printf("  Argument: %s\n", current->args->content);
-        } else {
-            printf("  Argument: NULL\n");
+        token *arg = node->args;
+        while (arg) {
+            printf("  Argument: %s\n", arg->content);
+            arg = arg->next;
         }
-
-        if (current->redirects) {
-            printf("  Redirection: %s", current->redirects->content);
-            if (current->redirects->next && (current->redirects->next->type == TOKEN_ARGUMENT || current->redirects->next->type == TOKEN_COMMAND)) {
-                printf(" %s\n", current->redirects->next->content);
-            } else {
-                printf("\n");
+        if (node->redirects) {
+            printf("  Redirection: %s\n", node->redirects->content);
+            // Assuming the file token is the next token after the redirection token
+            if (node->redirects->next) {
+                printf("  File: %s\n", node->redirects->next->content);
             }
-        } else {
-            printf("  Redirection: NULL\n");
         }
-
         printf("--------------------------\n");
-        current = current->next;
+        node = node->next;
     }
 }
 
@@ -57,20 +46,34 @@ command_node* parse_command(token **tokens) {
     cmd_node->next = NULL;
 
     token *current = *tokens;
+    token *last_arg = NULL;
 
     while (current && current->type != TOKEN_PIPE) {
         if (current->type == TOKEN_COMMAND) {
-            cmd_node->command = current;  // Assuming only one token for command.
+            if (!cmd_node->command) {
+                cmd_node->command = current;  // Assuming only one token for command.
+            }
             current = current->next;
         } else if (current->type == TOKEN_ARGUMENT) {
-            cmd_node->args = current; // For simplicity, only handling last argument. You should use a list or array.
+            if (!cmd_node->args) {
+                cmd_node->args = current;  // Capture the first argument token.
+            }
+            last_arg = current;
             current = current->next;
         } else if (current->type == TOKEN_REDIRECT_OUT || current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_APPEND_REDIRECTION || current->type == TOKEN_HERE_DOC) {
-            cmd_node->redirects = current; // For simplicity, only handling last redirect. A list or array might be needed.
+            cmd_node->redirects = current; // Capture redirection
             current = current->next;
+            if (current->type == TOKEN_ARGUMENT) {
+                current = current->next;  // Skip the file token (don't add it as an argument)
+            }
         } else {
             break;
         }
+    }
+
+    // Disconnect the token list at the last argument token
+    if (last_arg) {
+        last_arg->next = NULL;
     }
 
     *tokens = current;
