@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/15 01:59:01 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/15 02:01:47 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,5 @@ command_node* parse_line(token *tokens)
         else
             break;
     }
-
     return head;
 }
