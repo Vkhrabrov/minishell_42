@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/15 01:37:20 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/17 21:26:18 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,88 +111,87 @@ char *lex_quoted_string(char *input_string, int *i, char end_char)
 }
 
 void tokenization(char *input) {
-    char    *input_string;
-    int     i;
-    token   *tokens;
-    char    *lexed_str;
-    int     start;
-    tokentype current_type;
-    command_node *head = NULL;
+    int i = 0;
+    token *tokens = NULL;
     tokentype prev_type = TOKEN_NONE;
-    
-    input_string = input;
-    tokens = NULL;
-    i = 0;
+    int expect_command = 1;
+    int expect_filename_after_redir = 0;
 
-    while (i < (int)ft_strlen(input_string)) 
-    {
-        char c = input_string[i];
-        
-        if (c == ' ') 
-        {
+    while (i < (int)ft_strlen(input)) {
+        char c = input[i];
+
+        // Skip whitespace
+        if (c == ' ' || c == '\t') {
             i++;
             continue;
         }
 
-        if (c == '"') 
-        {
-            lexed_str = lex_quoted_string(input_string, &i, '"');
-            add_to_list(&tokens, create_token(lexed_str, TOKEN_ARGUMENT));
-        } 
-        else if (c == '\'') 
-        {
-            lexed_str = lex_quoted_string(input_string, &i, '\'');
-            add_to_list(&tokens, create_token(lexed_str, TOKEN_ARGUMENT));
-        } 
-        else if (c == '|')
-            add_to_list(&tokens, create_token("|", TOKEN_PIPE));
-        else if (c == '>' && input_string[i + 1] == '>')
-        {
-            add_to_list(&tokens, create_token(">>", TOKEN_APPEND_REDIRECTION));
-            i++;
-        } 
-        else if (c == '<' && input_string[i + 1] == '<')
-        {
-            add_to_list(&tokens, create_token("<<", TOKEN_HERE_DOC));
-            i++;
-        }
-        else if (c == '>')
-            add_to_list(&tokens, create_token(">", TOKEN_REDIRECT_OUT));
-        else if (c == '<')
-            add_to_list(&tokens, create_token("<", TOKEN_REDIRECT_IN));
-        else if (c == '$' && input_string[i + 1] != '?') 
-            add_to_list(&tokens, create_token("$", TOKEN_BACKGROUND_EXEC)); 
-        else if (c == '$' && input_string[i + 1] == '?') 
-        {
-            add_to_list(&tokens, create_token("$?", TOKEN_EXPAND_TO_EXIT));
-            i++;
-        } 
-        else 
-        {
-            start = i;
-            current_type = TOKEN_COMMAND;
+        // Handle quoted strings
+        if (c == '"' || c == '\'') {
+            char end_char = c;
+            char *arg = lex_quoted_string(input, &i, end_char);
 
-            if (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_HERE_DOC) 
-                current_type = TOKEN_HEREDOC_DELIM;
-            else if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE) 
+            tokentype current_type = TOKEN_ARGUMENT;
+            if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE || prev_type == TOKEN_REDIRECT_IN || prev_type == TOKEN_REDIRECT_OUT) {
                 current_type = TOKEN_COMMAND;
-            else if ((get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_COMMAND)
-                || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_OUT)
-                || (get_last_token(tokens) && get_last_token(tokens)->type == TOKEN_REDIRECT_IN)) 
-                current_type = TOKEN_ARGUMENT;
-            while (input_string[i] != ' ' && input_string[i] != '|'
-                && i < (int)ft_strlen(input_string) && if_redirection(input_string[i]) == 0)
+            }
+            add_to_list(&tokens, create_token(arg, current_type));
+            free(arg);
+
+            prev_type = current_type;
+        }
+        else if (c == '|') 
+        {
+            add_to_list(&tokens, create_token("|", TOKEN_PIPE));
+            prev_type = TOKEN_PIPE;
+            expect_command = 1;
+        } 
+        else if (if_redirection(c)) 
+        {
+            char next_char = input[i + 1];
+            if ((c == '>' && next_char == '>') || (c == '<' && next_char == '<')) {
+                char redir[3];
+                sprintf(redir, "%c%c", c, next_char);
+                add_to_list(&tokens, create_token(redir, (c == '>') ? TOKEN_APPEND_REDIRECTION : TOKEN_HERE_DOC));
                 i++;
-            char *command_or_arg = substring(input_string, start, i - 1);
+            } 
+            else {
+                add_to_list(&tokens, create_token(&c, (c == '>') ? TOKEN_REDIRECT_OUT : TOKEN_REDIRECT_IN));
+            }
+            prev_type = (c == '>') ? TOKEN_REDIRECT_OUT : TOKEN_REDIRECT_IN;
+            expect_filename_after_redir = 1;
+        } 
+        else {
+            int start = i;
+            tokentype current_type = TOKEN_COMMAND;
+            while (i < (int)ft_strlen(input) && !if_redirection(input[i]) && input[i] != ' ' && input[i] != '|') {
+                i++;
+            }
+            char *command_or_arg = substring(input, start, i - 1);
+             if (expect_command) {
+                current_type = TOKEN_COMMAND;
+                expect_command = 0; // Reset it
+            } else {
+                current_type = TOKEN_ARGUMENT;
+            }
+            if (expect_filename_after_redir) 
+            {
+                current_type = TOKEN_ARGUMENT;
+                expect_filename_after_redir = 0;  // Reset the flag
+                expect_command = 1;
+            }
             add_to_list(&tokens, create_token(command_or_arg, current_type));
+            free(command_or_arg); // Don't forget to free the memory!
             prev_type = current_type;
             i--;
         }
         i++;
     }
-    head = parse_line(tokens);
+    command_node *head = parse_line(tokens);
     print_command_node(head);
 }
+
+
 
 int main(int argc, char **argv, char **envp)
 {

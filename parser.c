@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/15 02:01:47 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/17 20:00:21 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,48 @@ void print_command_node(command_node* node)
     while (node) 
     {
         printf("Command Node:\n");
+
+        // Print command
         if (node->command) 
             printf("  Command: %s\n", node->command->content);
+
+        // Print arguments
         token *arg = node->args;
         while (arg) 
         {
             printf("  Argument: %s\n", arg->content);
             arg = arg->next;
         }
-        if (node->redirects) 
+
+        // Print input redirection
+        if (node->redirect_in) 
         {
-            printf("  Redirection: %s\n", node->redirects->content);
-            if (node->redirects->next) 
-            {
-                if (ft_strncmp(node->redirects->content, "<<", 2) == 0) 
-                    printf("  Redirection Target: %s\n", node->redirects->next->content);
-                if (node->here_doc_content)
-                    printf("  HERE_DOC Content: %s\n", node->here_doc_content);
-                else 
-                    printf("  File: %s\n", node->redirects->next->content);
-            }
+            printf("  Redirection In: %s ", node->redirect_in->content);
+            if (node->redirect_in->next)
+                printf(" %s", node->redirect_in->next->content);
+            printf("\n");
         }
+
+        // Print here_doc_content if present
+        if (node->here_doc_content)
+        {
+            printf("  HERE_DOC Content: %s\n", node->here_doc_content);
+        }
+
+        // Print output redirection
+        if (node->redirect_out) 
+        {
+            printf("  Redirection Out: %s ", node->redirect_out->content);
+            if (node->redirect_out->next)
+                printf(" %s", node->redirect_out->next->content);
+            printf("\n");
+        }
+
         printf("--------------------------\n");
         node = node->next;
     }
 }
+
 
 char *append_line(char *existing_content, char *new_line) 
 {
@@ -81,7 +98,8 @@ command_node* parse_command(token **tokens) {
     command_node *cmd_node = malloc(sizeof(command_node));
     cmd_node->command = NULL;
     cmd_node->args = NULL;
-    cmd_node->redirects = NULL;
+    cmd_node->redirect_in = NULL;
+    cmd_node->redirect_out = NULL;
     cmd_node->next = NULL;
     cmd_node->here_doc_content = NULL;
 
@@ -107,7 +125,7 @@ command_node* parse_command(token **tokens) {
         {
             if (current->next == NULL || current->next->type != TOKEN_HEREDOC_DELIM)
                 exit(printf("minishell: syntax error near unexpected token `newline'\n"));
-            cmd_node->redirects = current;
+            cmd_node->redirect_in = current;
             current = current->next;
             if (current->type == TOKEN_HEREDOC_DELIM) 
             {
@@ -116,16 +134,29 @@ command_node* parse_command(token **tokens) {
                 current = current->next;
             }
         }
-        else if (current->type == TOKEN_REDIRECT_OUT
-            || current->type == TOKEN_REDIRECT_IN
-            || current->type == TOKEN_APPEND_REDIRECTION
-            || current->type == TOKEN_HERE_DOC) 
+      else if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_APPEND_REDIRECTION) 
         {
-            cmd_node->redirects = current;
+            cmd_node->redirect_in = current;
             current = current->next;
-            if (current->type == TOKEN_ARGUMENT)
-                current = current->next;
-        } 
+            if (!current || current->type != TOKEN_ARGUMENT) 
+            {
+                printf("Error: Expected file after redirection symbol.\n");
+                return NULL;
+            }
+            current = current->next;
+        }
+        else if (current->type == TOKEN_REDIRECT_OUT) 
+        {
+            cmd_node->redirect_out = current;
+            current = current->next;
+            if (!current || current->type != TOKEN_ARGUMENT) 
+            {
+                printf("Error: Expected file after redirection symbol.\n");
+                return NULL;
+            }
+            current = current->next;
+        }
+
         else
             break;
     }
@@ -155,8 +186,7 @@ command_node* parse_line(token *tokens)
         }
         if (tokens && tokens->type == TOKEN_PIPE)
             tokens = tokens->next;
-        else if (tokens && (tokens->type == TOKEN_REDIRECT_OUT
-            || tokens->type == TOKEN_REDIRECT_IN
+        else if (tokens && (tokens->type == TOKEN_REDIRECT_IN
             || tokens->type == TOKEN_APPEND_REDIRECTION
             || tokens->type == TOKEN_HERE_DOC)) 
         {
@@ -166,7 +196,8 @@ command_node* parse_line(token *tokens)
                 printf("Error: Expected file after redirection symbol.\n");
                 return NULL;
             }
-            current->redirects = tokens;
+            current->redirect_in = tokens;
+            current->redirect_out = tokens;
             tokens = tokens->next;
         } 
         else

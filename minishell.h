@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/15 00:22:08 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/17 19:34:42 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ typedef struct command_node command_node;
 struct command_node {
     token           *command;
     token           *args;
-    token           *redirects;
+    token           *redirect_in;
+    token           *redirect_out;
     char            *here_doc_content;
     command_node    *next;
 };
