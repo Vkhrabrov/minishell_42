@@ -6,11 +6,76 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/17 20:00:21 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/20 00:09:40 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void reset_command_node(command_node* cmd) 
+{
+    cmd->command = NULL;
+    cmd->args = NULL;
+    cmd->redirect_in = NULL;
+    cmd->redirect_out = NULL;
+    cmd->here_doc_content = NULL;
+    cmd->var_expansion = NULL;
+    cmd->env_variable = NULL;
+}
+
+void free_command_node(command_node* node) 
+{
+    while (node) {
+        command_node* next_node = node->next;
+
+        // Free command
+        if (node->command) {
+            free(node->command->content);
+            free(node->command);
+        }
+
+        // Free arguments
+        token* arg = node->args;
+        while (arg) {
+            token* next_arg = arg->next;
+            free(arg->content);
+            free(arg);
+            arg = next_arg;
+        }
+
+        // Free variable expansions
+        if (node->var_expansion) {
+            free(node->var_expansion->content);
+            free(node->var_expansion);
+        }
+
+        // Free environment variables
+        if (node->env_variable) {
+            free(node->env_variable->content);
+            free(node->env_variable);
+        }
+
+        // Free input redirection
+        if (node->redirect_in) {
+            free(node->redirect_in->content);
+            free(node->redirect_in);
+        }
+
+        // Free here_doc_content if present
+        if (node->here_doc_content) {
+            free(node->here_doc_content);
+        }
+
+        // Free output redirection
+        if (node->redirect_out) {
+            free(node->redirect_out->content);
+            free(node->redirect_out);
+        }
+
+        free(node);
+        node = next_node;
+    }
+}
 
 void print_command_node(command_node* node) 
 {
@@ -28,6 +93,18 @@ void print_command_node(command_node* node)
         {
             printf("  Argument: %s\n", arg->content);
             arg = arg->next;
+        }
+
+        // Print variable expansions
+        if (node->var_expansion) 
+        {
+            printf("  Variable Expansion: %s\n", node->var_expansion->content);
+        }
+
+        // Print environment variables
+        if (node->env_variable) 
+        {
+            printf("  Environment Variable: %s\n", node->env_variable->content);
         }
 
         // Print input redirection
@@ -58,6 +135,7 @@ void print_command_node(command_node* node)
         node = node->next;
     }
 }
+
 
 
 char *append_line(char *existing_content, char *new_line) 
@@ -92,16 +170,19 @@ char *read_heredoc_content(const char *delimiter)
     return all_content;
 }
 
-command_node* parse_command(token **tokens) {
+command_node* parse_command(token **tokens) 
+{
     if (!tokens || !(*tokens)) return NULL;
 
     command_node *cmd_node = malloc(sizeof(command_node));
-    cmd_node->command = NULL;
-    cmd_node->args = NULL;
-    cmd_node->redirect_in = NULL;
-    cmd_node->redirect_out = NULL;
-    cmd_node->next = NULL;
-    cmd_node->here_doc_content = NULL;
+    // cmd_node->command = NULL;
+    // cmd_node->args = NULL;
+    // cmd_node->redirect_in = NULL;
+    // cmd_node->redirect_out = NULL;
+    // cmd_node->next = NULL;
+    // cmd_node->here_doc_content = NULL;
+    // cmd_node->var_expansion = NULL;
+    // cmd_node->env_variable = NULL;
 
     token *current = *tokens;
     token *last_arg = NULL;
@@ -121,6 +202,18 @@ command_node* parse_command(token **tokens) {
             last_arg = current;
             current = current->next;
         }
+        else if (current->type == TOKEN_VARIABLE_EXPANSION) 
+        {
+            cmd_node->var_expansion = current;
+            last_arg = current;
+            current = current->next;
+        }
+        else if (current->type == TOKEN_ENV_VARIABLE) 
+        {
+            cmd_node->env_variable = current;
+            last_arg = current;
+            current = current->next;
+        } 
         else if (current->type == TOKEN_HERE_DOC) 
         {
             if (current->next == NULL || current->next->type != TOKEN_HEREDOC_DELIM)
@@ -134,7 +227,7 @@ command_node* parse_command(token **tokens) {
                 current = current->next;
             }
         }
-      else if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_APPEND_REDIRECTION) 
+        else if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_APPEND_REDIRECTION) 
         {
             cmd_node->redirect_in = current;
             current = current->next;
@@ -172,6 +265,7 @@ command_node* parse_line(token *tokens)
 
     while (tokens) 
     {
+        
         command_node *current = parse_command(&tokens);
 
         if (!head) 

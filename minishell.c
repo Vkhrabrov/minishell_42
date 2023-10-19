@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/17 21:26:18 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/20 00:15:27 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ const char* token_type_to_string(tokentype type)
         case TOKEN_REDIRECT_OUT: return "REDIRECT_OUT";
         case TOKEN_HERE_DOC: return "HERE_DOC";
         case TOKEN_APPEND_REDIRECTION: return "APPEND_REDIRECTION";
-        case TOKEN_BACKGROUND_EXEC: return "BACKGROUND_EXEC";
+        case TOKEN_VARIABLE_EXPANSION: return "VARIABLE_EXPANSION";
         case TOKEN_EXPAND_TO_EXIT: return "EXPAND_TO_EXIT";
-        case TOKEN_HEREDOC_DELIM: return "TOKEN_HEREDOC_DELIM";
+        case TOKEN_HEREDOC_DELIM: return "HEREDOC_DELIM";
+        case TOKEN_ENV_VARIABLE: return "ENV_VARIABLE";
         default: return "UNKNOWN";
     }
 }
@@ -110,9 +111,9 @@ char *lex_quoted_string(char *input_string, int *i, char end_char)
     return substring(input_string, start, *i - 1);
 }
 
-void tokenization(char *input) {
+token *tokenization(token *tokens, char *input) {
     int i = 0;
-    token *tokens = NULL;
+    
     tokentype prev_type = TOKEN_NONE;
     int expect_command = 1;
     int expect_filename_after_redir = 0;
@@ -132,9 +133,10 @@ void tokenization(char *input) {
             char *arg = lex_quoted_string(input, &i, end_char);
 
             tokentype current_type = TOKEN_ARGUMENT;
-            if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE || prev_type == TOKEN_REDIRECT_IN || prev_type == TOKEN_REDIRECT_OUT) {
+            if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE || prev_type == TOKEN_REDIRECT_IN || prev_type == TOKEN_REDIRECT_OUT)
                 current_type = TOKEN_COMMAND;
-            }
+            else if (prev_type == TOKEN_VARIABLE_EXPANSION)
+                current_type = TOKEN_ENV_VARIABLE;
             add_to_list(&tokens, create_token(arg, current_type));
             free(arg);
 
@@ -146,6 +148,11 @@ void tokenization(char *input) {
             prev_type = TOKEN_PIPE;
             expect_command = 1;
         } 
+        else if (c == '$')
+        {
+            add_to_list(&tokens, create_token("$", TOKEN_VARIABLE_EXPANSION));
+            prev_type = TOKEN_VARIABLE_EXPANSION;
+        }
         else if (if_redirection(c)) 
         {
             char next_char = input[i + 1];
@@ -180,6 +187,8 @@ void tokenization(char *input) {
                 expect_filename_after_redir = 0;  // Reset the flag
                 expect_command = 1;
             }
+            if (prev_type == TOKEN_VARIABLE_EXPANSION)
+                current_type = TOKEN_ENV_VARIABLE;
             add_to_list(&tokens, create_token(command_or_arg, current_type));
             free(command_or_arg); // Don't forget to free the memory!
             prev_type = current_type;
@@ -187,14 +196,14 @@ void tokenization(char *input) {
         }
         i++;
     }
-    command_node *head = parse_line(tokens);
-    print_command_node(head);
+    return (tokens);
 }
-
-
 
 int main(int argc, char **argv, char **envp)
 {
+
+    token *tokens = NULL;
+    command_node *head = NULL;
     (void)argc;
     (void)argv;
     (void)envp;
@@ -205,8 +214,11 @@ int main(int argc, char **argv, char **envp)
     {
         char *input = readline("minishell> ");
         if (!input) break; 
-        tokenization(input);
-        
+        tokens = tokenization(tokens, input);
+        head = parse_line(tokens);
+        print_command_node(head);
+        // free_command_node(head);
+        // reset_command_node(head);
         add_history(input);
         free(input);
     }
