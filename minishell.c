@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/20 00:15:27 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/20 23:19:38 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void add_to_list(token **head, token *new_token)
 
 char *substring(char *input_string, int start, int end)
 {
+    
     char *substring;
     int k;
     int t;
@@ -111,24 +112,24 @@ char *lex_quoted_string(char *input_string, int *i, char end_char)
     return substring(input_string, start, *i - 1);
 }
 
-token *tokenization(token *tokens, char *input) {
+token *tokenization(char *input) 
+{
     int i = 0;
     
     tokentype prev_type = TOKEN_NONE;
     int expect_command = 1;
     int expect_filename_after_redir = 0;
+    token *tokens = NULL;
 
     while (i < (int)ft_strlen(input)) {
         char c = input[i];
-
-        // Skip whitespace
-        if (c == ' ' || c == '\t') {
+        if (c == ' ' || c == '\t') 
+        {
             i++;
             continue;
         }
-
-        // Handle quoted strings
-        if (c == '"' || c == '\'') {
+        if (c == '"' || c == '\'') 
+        {
             char end_char = c;
             char *arg = lex_quoted_string(input, &i, end_char);
 
@@ -158,39 +159,55 @@ token *tokenization(token *tokens, char *input) {
             char next_char = input[i + 1];
             if ((c == '>' && next_char == '>') || (c == '<' && next_char == '<')) {
                 char redir[3];
-                sprintf(redir, "%c%c", c, next_char);
-                add_to_list(&tokens, create_token(redir, (c == '>') ? TOKEN_APPEND_REDIRECTION : TOKEN_HERE_DOC));
+                redir[0] = c;
+                redir[1] = next_char;
+                redir[2] = '\0';
+                if (c == '>')
+                    add_to_list(&tokens, create_token(redir, TOKEN_APPEND_REDIRECTION));
+                else
+                    add_to_list(&tokens, create_token(redir, TOKEN_HERE_DOC));
                 i++;
             } 
-            else {
-                add_to_list(&tokens, create_token(&c, (c == '>') ? TOKEN_REDIRECT_OUT : TOKEN_REDIRECT_IN));
+            else 
+            {
+                char redir[2];
+                redir[0] = c;
+                redir[1] = '\0';
+                if (c == '>')
+                    add_to_list(&tokens, create_token(redir, TOKEN_REDIRECT_IN));
+                else
+                    add_to_list(&tokens, create_token(redir, TOKEN_REDIRECT_OUT));
             }
-            prev_type = (c == '>') ? TOKEN_REDIRECT_OUT : TOKEN_REDIRECT_IN;
+            if (c == '>')
+                prev_type = TOKEN_REDIRECT_OUT;
+            else
+                prev_type = TOKEN_REDIRECT_IN;
             expect_filename_after_redir = 1;
         } 
-        else {
+        else 
+        {
             int start = i;
             tokentype current_type = TOKEN_COMMAND;
-            while (i < (int)ft_strlen(input) && !if_redirection(input[i]) && input[i] != ' ' && input[i] != '|') {
+            while (i < (int)ft_strlen(input) && !if_redirection(input[i]) && input[i] != ' ' && input[i] != '|') 
                 i++;
-            }
             char *command_or_arg = substring(input, start, i - 1);
-             if (expect_command) {
+             if (expect_command) 
+             {
                 current_type = TOKEN_COMMAND;
-                expect_command = 0; // Reset it
-            } else {
+                expect_command = 0;
+            } 
+            else 
                 current_type = TOKEN_ARGUMENT;
-            }
             if (expect_filename_after_redir) 
             {
                 current_type = TOKEN_ARGUMENT;
-                expect_filename_after_redir = 0;  // Reset the flag
+                expect_filename_after_redir = 0;
                 expect_command = 1;
             }
             if (prev_type == TOKEN_VARIABLE_EXPANSION)
                 current_type = TOKEN_ENV_VARIABLE;
             add_to_list(&tokens, create_token(command_or_arg, current_type));
-            free(command_or_arg); // Don't forget to free the memory!
+            free(command_or_arg);
             prev_type = current_type;
             i--;
         }
@@ -214,7 +231,7 @@ int main(int argc, char **argv, char **envp)
     {
         char *input = readline("minishell> ");
         if (!input) break; 
-        tokens = tokenization(tokens, input);
+        tokens = tokenization(input);
         head = parse_line(tokens);
         print_command_node(head);
         // free_command_node(head);

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/20 00:09:40 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/20 23:27:27 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,16 +173,19 @@ char *read_heredoc_content(const char *delimiter)
 command_node* parse_command(token **tokens) 
 {
     if (!tokens || !(*tokens)) return NULL;
-
+    
     command_node *cmd_node = malloc(sizeof(command_node));
-    // cmd_node->command = NULL;
-    // cmd_node->args = NULL;
-    // cmd_node->redirect_in = NULL;
-    // cmd_node->redirect_out = NULL;
-    // cmd_node->next = NULL;
-    // cmd_node->here_doc_content = NULL;
-    // cmd_node->var_expansion = NULL;
-    // cmd_node->env_variable = NULL;
+    reset_command_node(cmd_node);
+
+     
+    cmd_node->command = NULL;
+    cmd_node->args = NULL;
+    cmd_node->redirect_in = NULL;
+    cmd_node->redirect_out = NULL;
+    cmd_node->next = NULL;
+    cmd_node->here_doc_content = NULL;
+    cmd_node->var_expansion = NULL;
+    cmd_node->env_variable = NULL;
 
     token *current = *tokens;
     token *last_arg = NULL;
@@ -217,7 +220,10 @@ command_node* parse_command(token **tokens)
         else if (current->type == TOKEN_HERE_DOC) 
         {
             if (current->next == NULL || current->next->type != TOKEN_HEREDOC_DELIM)
-                exit(printf("minishell: syntax error near unexpected token `newline'\n"));
+            {
+                printf("minishell: syntax error near unexpected token `newline'\n");
+                return NULL;
+            }
             cmd_node->redirect_in = current;
             current = current->next;
             if (current->type == TOKEN_HEREDOC_DELIM) 
@@ -232,10 +238,7 @@ command_node* parse_command(token **tokens)
             cmd_node->redirect_in = current;
             current = current->next;
             if (!current || current->type != TOKEN_ARGUMENT) 
-            {
-                printf("Error: Expected file after redirection symbol.\n");
                 return NULL;
-            }
             current = current->next;
         }
         else if (current->type == TOKEN_REDIRECT_OUT) 
@@ -281,8 +284,7 @@ command_node* parse_line(token *tokens)
         if (tokens && tokens->type == TOKEN_PIPE)
             tokens = tokens->next;
         else if (tokens && (tokens->type == TOKEN_REDIRECT_IN
-            || tokens->type == TOKEN_APPEND_REDIRECTION
-            || tokens->type == TOKEN_HERE_DOC)) 
+            || tokens->type == TOKEN_APPEND_REDIRECTION)) 
         {
             tokens = tokens->next;   
             if (!tokens || (tokens->type != TOKEN_COMMAND && tokens->type != TOKEN_ARGUMENT)) 
