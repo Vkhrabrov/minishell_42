@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/20 23:27:27 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/21 21:23:10 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,60 +21,6 @@ void reset_command_node(command_node* cmd)
     cmd->here_doc_content = NULL;
     cmd->var_expansion = NULL;
     cmd->env_variable = NULL;
-}
-
-void free_command_node(command_node* node) 
-{
-    while (node) {
-        command_node* next_node = node->next;
-
-        // Free command
-        if (node->command) {
-            free(node->command->content);
-            free(node->command);
-        }
-
-        // Free arguments
-        token* arg = node->args;
-        while (arg) {
-            token* next_arg = arg->next;
-            free(arg->content);
-            free(arg);
-            arg = next_arg;
-        }
-
-        // Free variable expansions
-        if (node->var_expansion) {
-            free(node->var_expansion->content);
-            free(node->var_expansion);
-        }
-
-        // Free environment variables
-        if (node->env_variable) {
-            free(node->env_variable->content);
-            free(node->env_variable);
-        }
-
-        // Free input redirection
-        if (node->redirect_in) {
-            free(node->redirect_in->content);
-            free(node->redirect_in);
-        }
-
-        // Free here_doc_content if present
-        if (node->here_doc_content) {
-            free(node->here_doc_content);
-        }
-
-        // Free output redirection
-        if (node->redirect_out) {
-            free(node->redirect_out->content);
-            free(node->redirect_out);
-        }
-
-        free(node);
-        node = next_node;
-    }
 }
 
 void print_command_node(command_node* node) 
@@ -136,8 +82,6 @@ void print_command_node(command_node* node)
     }
 }
 
-
-
 char *append_line(char *existing_content, char *new_line) 
 {
     if (!existing_content) 
@@ -190,62 +134,62 @@ command_node* parse_command(token **tokens)
     token *current = *tokens;
     token *last_arg = NULL;
 
-    while (current && current->type != TOKEN_PIPE) 
+    while (current && current->type != T_PIPE) 
     {
-        if (current->type == TOKEN_COMMAND) 
+        if (current->type == T_COMMAND) 
         {
             if (!cmd_node->command)
                 cmd_node->command = current;
             current = current->next;
         } 
-        else if (current->type == TOKEN_ARGUMENT) 
+        else if (current->type == T_ARG) 
         {
             if (!cmd_node->args)
                 cmd_node->args = current;
             last_arg = current;
             current = current->next;
         }
-        else if (current->type == TOKEN_VARIABLE_EXPANSION) 
+        else if (current->type == T_VAR_EXP) 
         {
             cmd_node->var_expansion = current;
             last_arg = current;
             current = current->next;
         }
-        else if (current->type == TOKEN_ENV_VARIABLE) 
+        else if (current->type == T_ENV_VAR) 
         {
             cmd_node->env_variable = current;
             last_arg = current;
             current = current->next;
         } 
-        else if (current->type == TOKEN_HERE_DOC) 
+        else if (current->type == T_HEREDOC) 
         {
-            if (current->next == NULL || current->next->type != TOKEN_HEREDOC_DELIM)
+            if (current->next == NULL || current->next->type != T_HEREDOC_DELIM)
             {
                 printf("minishell: syntax error near unexpected token `newline'\n");
                 return NULL;
             }
             cmd_node->redirect_in = current;
             current = current->next;
-            if (current->type == TOKEN_HEREDOC_DELIM) 
+            if (current->type == T_HEREDOC_DELIM) 
             {
                 char *delimiter = current->content;
                 cmd_node->here_doc_content = read_heredoc_content(delimiter);
                 current = current->next;
             }
         }
-        else if (current->type == TOKEN_REDIRECT_IN || current->type == TOKEN_APPEND_REDIRECTION) 
+        else if (current->type == T_REDIR_IN || current->type == T_APP_REDIR) 
         {
             cmd_node->redirect_in = current;
             current = current->next;
-            if (!current || current->type != TOKEN_ARGUMENT) 
+            if (!current || current->type != T_ARG) 
                 return NULL;
             current = current->next;
         }
-        else if (current->type == TOKEN_REDIRECT_OUT) 
+        else if (current->type == T_REDIR_OUT) 
         {
             cmd_node->redirect_out = current;
             current = current->next;
-            if (!current || current->type != TOKEN_ARGUMENT) 
+            if (!current || current->type != T_ARG) 
             {
                 printf("Error: Expected file after redirection symbol.\n");
                 return NULL;
@@ -281,13 +225,13 @@ command_node* parse_line(token *tokens)
             prev->next = current;
             prev = current;
         }
-        if (tokens && tokens->type == TOKEN_PIPE)
+        if (tokens && tokens->type == T_PIPE)
             tokens = tokens->next;
-        else if (tokens && (tokens->type == TOKEN_REDIRECT_IN
-            || tokens->type == TOKEN_APPEND_REDIRECTION)) 
+        else if (tokens && (tokens->type == T_REDIR_IN
+            || tokens->type == T_APP_REDIR)) 
         {
             tokens = tokens->next;   
-            if (!tokens || (tokens->type != TOKEN_COMMAND && tokens->type != TOKEN_ARGUMENT)) 
+            if (!tokens || (tokens->type != T_COMMAND && tokens->type != T_ARG)) 
             {
                 printf("Error: Expected file after redirection symbol.\n");
                 return NULL;

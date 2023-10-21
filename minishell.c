@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/20 23:19:38 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/21 21:53:45 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,204 +16,33 @@ const char* token_type_to_string(tokentype type)
 {
     switch (type) 
     {
-        case TOKEN_COMMAND: return "COMMAND";
-        case TOKEN_ARGUMENT: return "ARGUMENT";
-        case TOKEN_PIPE: return "PIPE";
-        case TOKEN_REDIRECT_IN: return "REDIRECT_IN";
-        case TOKEN_REDIRECT_OUT: return "REDIRECT_OUT";
-        case TOKEN_HERE_DOC: return "HERE_DOC";
-        case TOKEN_APPEND_REDIRECTION: return "APPEND_REDIRECTION";
-        case TOKEN_VARIABLE_EXPANSION: return "VARIABLE_EXPANSION";
-        case TOKEN_EXPAND_TO_EXIT: return "EXPAND_TO_EXIT";
-        case TOKEN_HEREDOC_DELIM: return "HEREDOC_DELIM";
-        case TOKEN_ENV_VARIABLE: return "ENV_VARIABLE";
+        case T_COMMAND: return "COMMAND";
+        case T_ARG: return "ARGUMENT";
+        case T_PIPE: return "PIPE";
+        case T_REDIR_IN: return "REDIRECT_IN";
+        case T_REDIR_OUT: return "REDIRECT_OUT";
+        case T_HEREDOC: return "HERE_DOC";
+        case T_APP_REDIR: return "APPEND_REDIRECTION";
+        case T_VAR_EXP: return "VARIABLE_EXPANSION";
+        case T_EXPAND_TO_EXIT: return "EXPAND_TO_EXIT";
+        case T_HEREDOC_DELIM: return "HEREDOC_DELIM";
+        case T_ENV_VAR: return "ENV_VARIABLE";
         default: return "UNKNOWN";
     }
 }
 
-token *get_last_token(token *head) 
-{
-    if (!head) return NULL;
-    while (head->next) {
-        head = head->next;
-    }
-    return head;
-}
-
 void print_token(token *t) 
 {
-    printf("Token content: '%s', Token type: %s\n", t->content, token_type_to_string(t->type));
+    printf("Token content: '%s', Token type: %s\n", t->content,
+        token_type_to_string(t->type));
 }
 
-token   *create_token(const char* content, tokentype type) 
-{
-    token   *new_token = (token*)malloc(sizeof(token));
-    if (!new_token) 
-    {
-        perror("Failed to allocate memory for token");
-        exit(EXIT_FAILURE);
-    }
-    new_token->content = ft_strdup(content);
-    if (!new_token->content) {
-        perror("Failed to allocate memory for token content");
-        free(new_token);
-        exit(EXIT_FAILURE);
-    }
-    new_token->type = type;
-    new_token->next = NULL;
-    return (new_token);
-}
-
-void add_to_list(token **head, token *new_token) 
-{
-    if (!*head) 
-    {
-        *head = new_token;
-        print_token(new_token);
-        return;
-    }
-    token* temp = *head;
-    while (temp->next)
-        temp = temp->next;
-    temp->next = new_token;
-    print_token(new_token);
-}
-
-char *substring(char *input_string, int start, int end)
-{
-    
-    char *substring;
-    int k;
-    int t;
-
-    k = end - start + 1;
-    t = 0;
-    substring = malloc(sizeof(char) * k + 1);
-    while (t < k)
-        substring[t++] = input_string[start++];
-    substring[t] = '\0';
-    return (substring);
-}
-
-int if_redirection(char c)
+int if_redir(char c)
 {
     if (c == '>' || c == '<')
         return (1);
     else
         return (0); 
-}
-
-char *lex_quoted_string(char *input_string, int *i, char end_char) 
-{
-    int start = (*i) + 1;
-    (*i)++;
-    while (input_string[*i] != end_char && *i < (int)ft_strlen(input_string)) 
-        (*i)++;
-    return substring(input_string, start, *i - 1);
-}
-
-token *tokenization(char *input) 
-{
-    int i = 0;
-    
-    tokentype prev_type = TOKEN_NONE;
-    int expect_command = 1;
-    int expect_filename_after_redir = 0;
-    token *tokens = NULL;
-
-    while (i < (int)ft_strlen(input)) {
-        char c = input[i];
-        if (c == ' ' || c == '\t') 
-        {
-            i++;
-            continue;
-        }
-        if (c == '"' || c == '\'') 
-        {
-            char end_char = c;
-            char *arg = lex_quoted_string(input, &i, end_char);
-
-            tokentype current_type = TOKEN_ARGUMENT;
-            if (prev_type == TOKEN_PIPE || prev_type == TOKEN_NONE || prev_type == TOKEN_REDIRECT_IN || prev_type == TOKEN_REDIRECT_OUT)
-                current_type = TOKEN_COMMAND;
-            else if (prev_type == TOKEN_VARIABLE_EXPANSION)
-                current_type = TOKEN_ENV_VARIABLE;
-            add_to_list(&tokens, create_token(arg, current_type));
-            free(arg);
-
-            prev_type = current_type;
-        }
-        else if (c == '|') 
-        {
-            add_to_list(&tokens, create_token("|", TOKEN_PIPE));
-            prev_type = TOKEN_PIPE;
-            expect_command = 1;
-        } 
-        else if (c == '$')
-        {
-            add_to_list(&tokens, create_token("$", TOKEN_VARIABLE_EXPANSION));
-            prev_type = TOKEN_VARIABLE_EXPANSION;
-        }
-        else if (if_redirection(c)) 
-        {
-            char next_char = input[i + 1];
-            if ((c == '>' && next_char == '>') || (c == '<' && next_char == '<')) {
-                char redir[3];
-                redir[0] = c;
-                redir[1] = next_char;
-                redir[2] = '\0';
-                if (c == '>')
-                    add_to_list(&tokens, create_token(redir, TOKEN_APPEND_REDIRECTION));
-                else
-                    add_to_list(&tokens, create_token(redir, TOKEN_HERE_DOC));
-                i++;
-            } 
-            else 
-            {
-                char redir[2];
-                redir[0] = c;
-                redir[1] = '\0';
-                if (c == '>')
-                    add_to_list(&tokens, create_token(redir, TOKEN_REDIRECT_IN));
-                else
-                    add_to_list(&tokens, create_token(redir, TOKEN_REDIRECT_OUT));
-            }
-            if (c == '>')
-                prev_type = TOKEN_REDIRECT_OUT;
-            else
-                prev_type = TOKEN_REDIRECT_IN;
-            expect_filename_after_redir = 1;
-        } 
-        else 
-        {
-            int start = i;
-            tokentype current_type = TOKEN_COMMAND;
-            while (i < (int)ft_strlen(input) && !if_redirection(input[i]) && input[i] != ' ' && input[i] != '|') 
-                i++;
-            char *command_or_arg = substring(input, start, i - 1);
-             if (expect_command) 
-             {
-                current_type = TOKEN_COMMAND;
-                expect_command = 0;
-            } 
-            else 
-                current_type = TOKEN_ARGUMENT;
-            if (expect_filename_after_redir) 
-            {
-                current_type = TOKEN_ARGUMENT;
-                expect_filename_after_redir = 0;
-                expect_command = 1;
-            }
-            if (prev_type == TOKEN_VARIABLE_EXPANSION)
-                current_type = TOKEN_ENV_VARIABLE;
-            add_to_list(&tokens, create_token(command_or_arg, current_type));
-            free(command_or_arg);
-            prev_type = current_type;
-            i--;
-        }
-        i++;
-    }
-    return (tokens);
 }
 
 int main(int argc, char **argv, char **envp)
