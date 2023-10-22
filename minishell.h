@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/21 21:53:39 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/22 23:39:38 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,8 @@ void            handle_special_tokens(char c, char *input, tokenizer_state *stat
 void            handle_redirection(char c, char *input, tokenizer_state *state);
 void            handle_quoted_string(char c, char *input, tokenizer_state *state);
 int             if_redir(char c);
+void            handle_commands_and_args(char *input, tokenizer_state *state);
+tokentype       c_a_part_2(tokenizer_state *state, tokentype current_type);
+tokenizer_state init_tokenizer_state(void);
 
 #endif 

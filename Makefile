@@ -6,7 +6,7 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/10/21 21:54:03 by vkhrabro         ###   ########.fr        #
+#    Updated: 2023/10/22 23:52:45 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ HEADER = minishell.h
 LIBFT = libft/
 READLINE = readline/
 
-SRC_F:= minishell signals parser lexer_utility_functions lexer
+SRC_F:= minishell signals parser lexer_utility_functions lexer_utility_functions_2 lexer
 
 FLAGS = -Wall -Wextra -Werror -g -MMD -I$(READLINE)/include 
 RM = rm -f
