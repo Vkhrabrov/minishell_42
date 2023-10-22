@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_builtin.c                                   :+:      :+:    :+:   */
+/*   export_builtin_MINE.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/21 21:51:29 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/22 23:32:35 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ typedef struct  s_env_lst
 	struct s_env_lst	*next;
 }
 t_env_lst;
+
+t_env_lst *env_lst = NULL;
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
@@ -92,8 +94,9 @@ void add_env_var_to_list(t_env_lst **head, const char *envp_line)
     size_t envp_line_len;
 
     new_node = malloc(sizeof(t_env_lst));
-    if (new_node == NULL) 
-        exit(-1);
+    if (new_node == NULL)
+		return ;
+        // exit(-1);
     equal_sign_position = find_char_index(envp_line, '=');
     envp_line_len = strlen(envp_line);
     if (equal_sign_position == envp_line_len)
@@ -109,7 +112,7 @@ void add_env_var_to_list(t_env_lst **head, const char *envp_line)
     insert_sorted(head, new_node);
 }
 
-void	fill_env_list(t_env_lst **env_lst, char *envp[])
+void	fill_env_list(t_env_lst **env_lst, char **envp)
 {
 	int	i;
 
@@ -121,36 +124,43 @@ void	fill_env_list(t_env_lst **env_lst, char *envp[])
     }
 }
 
-void export(char *envp[], char *new_var) 
+void	print_env_lst(t_env_lst **env_lst)
 {
-    t_env_lst   *env_lst;
-    int i;
-
-    env_lst = NULL;
-    i = 0;
-    if (new_var == NULL)
-        fill_env_list(&env_lst, envp);
-    else
+	t_env_lst *current;
+	
+	current = *env_lst;
+    while (current != NULL)
     {
-        fill_env_list(&env_lst, envp);
-        add_env_var_to_list(&env_lst, new_var);
-    }
-    while (env_lst != NULL)
-    {
-        printf("declare -x %s", env_lst->var_name);
-        printf("=\"%s", env_lst->var_value);
+        printf("declare -x %s", current->var_name);
+        printf("=\"%s", current->var_value);
         printf("\"\n");
-        env_lst = env_lst->next;       
+        current = current->next;       
     }
 }
 
-int main(int argc, char **argv, char *envp[]) 
+int main(int argc, char **argv, char **envp)
 {
-    (void)argc;
+    int i;
 
-    if (argv[1] == NULL)
-        export(envp, NULL);
-    else
-        export(envp, argv[1]);
-    return (0);
+    // Only populate the list on the first call
+    if (env_lst == NULL)
+	{
+printf("................ REFILLING THE LIST ..................\n");
+        fill_env_list(&env_lst, envp);
+	}
+printf("=============================== PREVIOUS LIST =============================\n");
+	print_env_lst(&env_lst);
+    if (argc > 1)
+	{
+        i = 1;
+        // fill_env_list(&env_lst, envp);
+        while (i < argc)
+		{
+            add_env_var_to_list(&env_lst, argv[i]);
+            i++;
+        }
+    }
+printf("=============================== MODIFIED LIST =============================\n");
+    print_env_lst(&env_lst);
+    return 0;
 }
