@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_builtin_MINE.c                              :+:      :+:    :+:   */
+/*   export_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/22 23:32:35 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/23 22:36:45 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,18 +138,13 @@ void	print_env_lst(t_env_lst **env_lst)
     }
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
     int i;
 
     // Only populate the list on the first call
     if (env_lst == NULL)
-	{
-printf("................ REFILLING THE LIST ..................\n");
         fill_env_list(&env_lst, envp);
-	}
-printf("=============================== PREVIOUS LIST =============================\n");
-	print_env_lst(&env_lst);
     if (argc > 1)
 	{
         i = 1;
@@ -160,7 +155,46 @@ printf("=============================== PREVIOUS LIST ==========================
             i++;
         }
     }
-printf("=============================== MODIFIED LIST =============================\n");
     print_env_lst(&env_lst);
     return 0;
 }
+
+// #include <unistd.h>
+// #include <signal.h>
+// typedef struct {
+//   int argc;
+//   char **argv;
+//   char **envp;
+// } siginfo_data_t;
+
+// void signal_handler(int signo, siginfo_t *siginfo, void *ucontext)
+// {
+//   siginfo_data_t *data = (siginfo_data_t *)siginfo->si_value.sival_ptr;
+
+//   (void)ucontext;
+//   (void)signo;
+//   printf("abc\n");
+//   export(data->argc, data->argv, data->envp);
+// 	free(data);
+// }
+
+// int main(int argc, char **argv, char **envp) 
+// {
+//   siginfo_data_t *data = malloc(sizeof(siginfo_data_t));
+
+//   data->argc = argc;
+//   data->argv = argv;
+//   data->envp = envp;
+
+//   struct sigaction sa;
+//   sa.sa_sigaction = signal_handler;
+//   sa.sa_flags = SA_SIGINFO;
+//   sa.sa_sigaction = (void (*) (int, siginfo_t *, void *))signal_handler;
+//   sigaction(SIGQUIT, &sa, NULL);
+
+//   while (1)
+//   {
+// 	  sleep(1);
+//   }
+//   return 0;
+// }
