@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/22 23:51:31 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/24 23:04:39 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ tokentype	c_a_part_2(tokenizer_state *state, tokentype current_type)
 {
 	if (state->expect_command)
 	{
-		current_type = T_COMMAND;
+		current_type = T_CMD;
 		state->expect_command = 0;
 	}
 	else
@@ -39,7 +39,7 @@ void	handle_commands_and_args(char *input, tokenizer_state *state)
 	char		*command_or_arg;
 
 	start = state->i;
-	current_type = T_COMMAND;
+	current_type = T_CMD;
 	while (state->i < (int)ft_strlen(input) && !if_redir(input[state->i])
 		&& input[state->i] != ' ' && input[state->i] != '|')
 		state->i++;

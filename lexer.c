@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/22 23:39:18 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/24 23:04:09 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	handle_quoted_string(char c, char *input, tokenizer_state *state)
 	if (state->prev_type == T_PIPE || state->prev_type == T_NONE
 		|| state->prev_type == T_REDIR_IN
 		|| state->prev_type == T_REDIR_OUT)
-		current_type = T_COMMAND;
+		current_type = T_CMD;
 	else if (state->prev_type == T_VAR_EXP)
 		current_type = T_ENV_VAR;
 	add_to_list(&(state->tokens), creat_token(arg, current_type));

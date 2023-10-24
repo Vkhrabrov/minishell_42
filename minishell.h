@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/22 23:39:38 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/24 23:02:13 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 typedef enum 
 {
-    T_COMMAND,
+    T_CMD,
     T_ARG,
     T_PIPE,
     T_NONE,
@@ -71,6 +71,14 @@ typedef struct tokenizer_state
     token *tokens;
 } tokenizer_state;
 
+typedef struct  s_env_lst
+{
+    char				*var_name;
+    char				*var_value;
+	struct s_env_lst	*next;
+}
+t_env_lst;
+
 void            init_signals(void);
 void            rl_replace_line (const char *text, int clear_undo);
 void            disable_control_chars_echo();
@@ -94,5 +102,10 @@ int             if_redir(char c);
 void            handle_commands_and_args(char *input, tokenizer_state *state);
 tokentype       c_a_part_2(tokenizer_state *state, tokentype current_type);
 tokenizer_state init_tokenizer_state(void);
-
+size_t          find_char_index(const char *str, char target);
+void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
+void            save_env_list(t_env_lst **env_lst, char **envp);
+void            print_env_lst(t_env_lst **env_lst);
+void            t_env_init(t_env_lst  *env_lst);
+void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
 #endif 

@@ -6,22 +6,11 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/21 21:23:10 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/24 23:03:56 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void reset_command_node(command_node* cmd) 
-{
-    cmd->command = NULL;
-    cmd->args = NULL;
-    cmd->redirect_in = NULL;
-    cmd->redirect_out = NULL;
-    cmd->here_doc_content = NULL;
-    cmd->var_expansion = NULL;
-    cmd->env_variable = NULL;
-}
 
 void print_command_node(command_node* node) 
 {
@@ -82,36 +71,39 @@ void print_command_node(command_node* node)
     }
 }
 
-char *append_line(char *existing_content, char *new_line) 
+char    *append_line(char *existing_content, char *new_line) 
 {
+    char    *joined;
+    char    *result;
     if (!existing_content) 
-        return ft_strdup(new_line);
-    char *joined = ft_strjoin(existing_content, "\n");
-    char *result = ft_strjoin(joined, new_line);
+        return (ft_strdup(new_line));
+    joined = ft_strjoin(existing_content, "\n");
+    result = ft_strjoin(joined, new_line);
     free(joined);
-    return result;
+    return (result);
 }
 
-char *read_heredoc_content(const char *delimiter) 
+char    *read_heredoc_content(const char *delimiter) 
 {
-    char *input_line;
-    char *all_content;
+    char    *input_line;
+    char    *all_content;
+    char    *temp_content;
 
     all_content = NULL;
     while (1) 
     {
         input_line = readline("> ");
-        if (ft_strncmp(input_line, (char *)delimiter, ft_strlen(delimiter)) == 0) 
+        if (ft_strncmp(input_line, (char *)delimiter, ft_strlen(delimiter)) == 0)
         {
             free(input_line);
             break;
         }
-        char *temp_content = append_line(all_content, input_line);
+        temp_content = append_line(all_content, input_line);
         free(all_content);
         all_content = temp_content;
         free(input_line);
     }
-    return all_content;
+    return (all_content);
 }
 
 command_node* parse_command(token **tokens) 
@@ -119,24 +111,12 @@ command_node* parse_command(token **tokens)
     if (!tokens || !(*tokens)) return NULL;
     
     command_node *cmd_node = malloc(sizeof(command_node));
-    reset_command_node(cmd_node);
-
-     
-    cmd_node->command = NULL;
-    cmd_node->args = NULL;
-    cmd_node->redirect_in = NULL;
-    cmd_node->redirect_out = NULL;
-    cmd_node->next = NULL;
-    cmd_node->here_doc_content = NULL;
-    cmd_node->var_expansion = NULL;
-    cmd_node->env_variable = NULL;
-
     token *current = *tokens;
     token *last_arg = NULL;
 
     while (current && current->type != T_PIPE) 
     {
-        if (current->type == T_COMMAND) 
+        if (current->type == T_CMD) 
         {
             if (!cmd_node->command)
                 cmd_node->command = current;
@@ -208,13 +188,14 @@ command_node* parse_command(token **tokens)
 
 command_node* parse_line(token *tokens) 
 {
-    command_node *head = NULL, *prev = NULL;
+    command_node    *head;
+    command_node    *prev;
 
+    head = NULL; 
+    prev = NULL;
     while (tokens) 
     {
-        
         command_node *current = parse_command(&tokens);
-
         if (!head) 
         {
             head = current;
@@ -231,7 +212,7 @@ command_node* parse_line(token *tokens)
             || tokens->type == T_APP_REDIR)) 
         {
             tokens = tokens->next;   
-            if (!tokens || (tokens->type != T_COMMAND && tokens->type != T_ARG)) 
+            if (!tokens || (tokens->type != T_CMD && tokens->type != T_ARG)) 
             {
                 printf("Error: Expected file after redirection symbol.\n");
                 return NULL;
@@ -243,5 +224,5 @@ command_node* parse_line(token *tokens)
         else
             break;
     }
-    return head;
+    return (head);
 }

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/21 21:53:45 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/24 23:02:20 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ const char* token_type_to_string(tokentype type)
 {
     switch (type) 
     {
-        case T_COMMAND: return "COMMAND";
+        case T_CMD: return "COMMAND";
         case T_ARG: return "ARGUMENT";
         case T_PIPE: return "PIPE";
         case T_REDIR_IN: return "REDIRECT_IN";
@@ -50,10 +50,15 @@ int main(int argc, char **argv, char **envp)
 
     token *tokens = NULL;
     command_node *head = NULL;
+    t_env_lst  *env_lst = NULL;
     (void)argc;
     (void)argv;
-    (void)envp;
 
+    // env_lst = malloc(sizeof(t_env_lst));
+    
+    // t_env_init(env_lst);
+    save_env_list(&env_lst, envp);
+    print_env_lst(&env_lst);
     disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
     init_signals();
     while (1) 
@@ -62,6 +67,8 @@ int main(int argc, char **argv, char **envp)
         if (!input) break; 
         tokens = tokenization(input);
         head = parse_line(tokens);
+        print_command_node(head);
+        expand_environment_variables(head, &env_lst);
         print_command_node(head);
         // free_command_node(head);
         // reset_command_node(head);
