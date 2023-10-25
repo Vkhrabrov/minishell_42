@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 22:11:13 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/24 23:47:07 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/25 20:05:57 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,36 @@
 
 // #include "minishell.h"
 #include <stdio.h>
-#include <string.h>		//	strncmp() --> replace with ft_strcnmp()!!!!!
+#include <string.h>		//	strncmp(), strlen() --> REPLACE with libf fts!!!!!
+#include <stdbool.h>
 #include "../libft/libft.h"
 
-void	echo_builtin(int argc, char *argv[])
-{
-	int	i;
-	int	option_flag;
 
-	if (argc == 1)
-		printf("\n");
-	else
-	{
-		i = 1;
-		option_flag = 0;
-		while (i < argc)
+void echo_builtin(int argc, char *argv[])
+{
+    int i;
+    bool option_passed;
+
+	option_passed = false;
+    if (argc == 1)
+        printf("\n");
+    else {
+        if (strncmp(argv[1], "-n", 2) == 0 && strlen(argv[1]) == 2)
+            option_passed = true;
+        if (option_passed == true)
+    		i = 2;
+		else
+    		i = 1;
+        while (i < argc)
 		{
-			if (strncmp(argv[1], "-n", 1) == 0)
-				option_flag = 1;
-			else
-			{
-				printf("%s ", argv[i]);
-				i++;
-			}
-		}
-		if (option_flag == 0)
-			printf("\n");
-	}
+            printf("%s", argv[i]);
+            if (i < argc - 1)
+                printf(" ");
+            i++;
+        }
+        if (option_passed == false)
+            printf("\n");
+    }
 }
 
 int	main(int argc, char **argv)
