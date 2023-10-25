@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/24 23:03:56 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/25 20:42:51 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,12 @@ command_node* parse_command(token **tokens)
             last_arg = current;
             current = current->next;
         }
+        // if (current->type == T_EXIT_STATUS) 
+        // {
+        //     if (!cmd_node->command)
+        //         cmd_node->command = current;
+        //     current = current->next;
+        // } 
         else if (current->type == T_VAR_EXP) 
         {
             cmd_node->var_expansion = current;

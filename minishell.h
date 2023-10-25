@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/25 20:54:28 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/25 21:02:06 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef enum
     T_APP_REDIR,
     T_VAR_EXP,
     T_BACKGROUND_EXEC,
-    T_EXPAND_TO_EXIT,
+    T_EXIT_STATUS,
     T_HEREDOC_DELIM,
     T_ENV_VAR,
 }             tokentype;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/25 20:52:33 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/25 21:01:40 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ const char* token_type_to_string(tokentype type)
         case T_HEREDOC: return "HERE_DOC";
         case T_APP_REDIR: return "APPEND_REDIRECTION";
         case T_VAR_EXP: return "VARIABLE_EXPANSION";
-        case T_EXPAND_TO_EXIT: return "EXPAND_TO_EXIT";
+        case T_EXIT_STATUS: return "EXIT_STATUS";
         case T_HEREDOC_DELIM: return "HEREDOC_DELIM";
         case T_ENV_VAR: return "ENV_VARIABLE";
         default: return "UNKNOWN";
