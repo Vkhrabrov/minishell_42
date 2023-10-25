@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/24 23:44:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/24 23:55:17 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	expand_environment_variables(command_node *cmds, t_env_lst **env_lst)
 	command_node	*current_command;
 	t_env_lst		*current_env;
 
-	current_command = commands;
+	current_command = cmds;
 	while (current_command)
 	{
 		if (current_command->env_variable)
