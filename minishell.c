@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/25 21:01:40 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/26 20:40:31 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,10 @@ int main(int argc, char **argv, char **envp)
         if (!input) break; 
         tokens = tokenization(input);
         head = parse_line(tokens);
-        print_command_node(head);
+        // print_command_node(head);
         expand_environment_variables(head, &env_lst);
         print_command_node(head);
+        process_command_list(head); 
         // free_command_node(head);
         // reset_command_node(head);
         add_history(input);
