@@ -6,7 +6,7 @@
 #    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/10/25 20:50:49 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/10/26 22:40:03 by ccarrace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,8 @@ HEADER = minishell.h
 LIBFT = libft/
 READLINE = readline/
 
-SRC_F:= minishell signals save_env_list parser lexer_utility_functions lexer_utility_functions_2 lexer env_list_creation expander
+SRC_F:= minishell signals parser lexer_utility_functions lexer_utility_functions_2 \
+	lexer env_list_creation expander 
 
 FLAGS = -Wall -Wextra -Werror -g -MMD -I$(READLINE)/include 
 RM = rm -f
