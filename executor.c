@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/26 21:01:19 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/27 22:56:36 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void process_command_list(command_node *head)
     int node_count = 0;
     command_node *current = head;
     // List of built-in commands (add your built-ins to this list)
-    char *builtins[] = {"cd", "echo", "exit", "env", "setenv", "unsetenv", NULL}; 
+    char *builtins[] = {"cd", "echo", "exit", "env", "pwd", "setenv", "unsetenv", NULL}; 
 
     // Count the number of nodes
     while (current) {
@@ -41,6 +41,7 @@ void process_command_list(command_node *head)
         }
         if (is_builtin) {
             printf("Executing built-in command: %s\n", head->command->content);
+			execute_builtin(head->command->content, head);
         } else {
             printf("Launching pipex execution process...\n");
         }

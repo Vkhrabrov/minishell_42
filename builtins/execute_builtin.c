@@ -6,16 +6,27 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/26 22:42:15 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/27 23:03:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	execute_builtin(t_data *data, t_command *cmd)
+#include "../minishell.h"
+
+int	execute_builtin(char *cmd_name, command_node *cmd_node)
 {
 	int	ret;
+	int	cmd_len;
 
-	ret = CMD_NOT_FOUND;
-	if (ft_strncmp(cmd->command, "echo", 5) == 0)
-		ret = echo_builtin(data, cmd->args);
+	cmd_len = ft_strlen(cmd_name);
+	ret = 127;	//	bash's exit status value if command not found
+	if (ft_strncmp(cmd_name, "echo", cmd_len) == 0)	
+		ret = echo_builtin(cmd_node->args);
+	else if (ft_strncmp(cmd_name, "pwd", cmd_len) == 0)
+		ret = pwd_builtin(cmd_node->args);
+	else if (ft_strncmp(cmd_name, "cd", cmd_len) == 0)
+	{
+		printf("sending '%s' string to cd_builtin\n", cmd_name);
+		// ret = cd_builtin();
+	}
 	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/26 22:54:40 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/27 23:03:28 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <signal.h>
 #include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
 #include <limits.h>     // PATH_SIZE
-#include <unistd.h>		// write;
+#include <unistd.h>
 #include "libft/libft.h" 
 
 typedef enum 
@@ -81,11 +81,7 @@ typedef struct  s_env_lst
 }
 t_env_lst;
 
-void            init_signals(void);
-void            rl_replace_line (const char *text, int clear_undo);
-// extern 			int rl_eof_found;
-void            disable_control_chars_echo();
-void            restore_terminal_settings();
+//	Vadim's intrincate stuff
 command_node*   parse_line(token *tokens);
 void            print_command_node(command_node* head);
 void            free_command_node(command_node* node); 
@@ -112,4 +108,16 @@ void            print_env_lst(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
 void            process_command_list(command_node *head);
+
+//	Signals
+void            init_signals(void);
+void            rl_replace_line (const char *text, int clear_undo);
+void            disable_control_chars_echo();
+void            restore_terminal_settings();
+
+//	Builtins
+int				echo_builtin(token *args_lst);
+int				pwd_builtin(token *args_lst);
+int				execute_builtin(char *cmd_name, command_node *cmd_node);
+
 #endif 

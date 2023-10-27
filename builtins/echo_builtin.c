@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 22:11:13 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/26 21:12:58 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/27 22:18:34 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,9 @@ void	create_args_lst(t_node **args_lst, int argc, char **argv)
 	}
 }
 
-void	print_list(t_node *args_lst)
+void	print_list(token *args_lst)
 {
+printf("entered print_list\n");
 	while (args_lst != NULL)
 	{
 		printf("%s\n", args_lst->content);
@@ -81,23 +82,21 @@ void	print_list(t_node *args_lst)
 	}
 }
 
-int	main(int argc, char **argv)
+int	echo_builtin(token *args_lst)
 {
-	t_node	*args_lst;
 	bool	option_passed;
 
-	args_lst = NULL;
 	option_passed = false;
-	create_args_lst(&args_lst, argc, argv);
 	// print_list(args_lst);
 	if (!args_lst)
 		printf("\n");
 	else
 	{
-		if (strncmp(args_lst->content, "-n", 2) == 0)
-			option_passed = true;
-		if (option_passed == true)
+		while (ft_strncmp(args_lst->content, "-n", 2) == 0)
+		{
 			args_lst = args_lst->next;
+			option_passed = true;
+		}
 		while (args_lst != NULL)
 		{
 			printf("%s", args_lst->content);
@@ -110,36 +109,3 @@ int	main(int argc, char **argv)
 	}
 	return (0);
 }
-
-// int	main(int argc, char **argv)
-// {
-// 	command_node	*args_lst;
-// 	bool	option_passed;
-// 	int		i;
-
-// 	args_lst = NULL;
-// 	option_passed = false;
-// 	create_args_lst(&args_lst, argc, argv);
-// 	// print_list(args_lst);
-// 	if (!args_lst)
-// 		printf("\n");
-// 	else
-// 	{
-// 		if (strncmp(args_lst->args->content, "-n", 2) == 0)
-// 			option_passed = true;
-// 		if (option_passed == true)
-// 			args_lst = args_lst->next;
-// 		while (args_lst != NULL)
-// 		{
-// 			printf("%s", args_lst->content);
-// 			if (args_lst->next != NULL)
-// 				printf(" ");
-// 			args_lst = args_lst->next;
-// 		}
-// 		if (option_passed == false)
-// 			printf("\n");
-// 	}
-// 	return (0);
-// }
-
-
