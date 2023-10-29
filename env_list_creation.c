@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list_creation.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/24 21:12:18 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/29 11:58:10 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,14 @@ void	save_env_list(t_env_lst **env_lst, char **envp)
     }
 }
 
-void	print_env_lst(t_env_lst **env_lst)
-{
-	t_env_lst *current;
+// void	print_env_lst(t_env_lst **env_lst)
+// {
+// 	t_env_lst *current;
 	
-	current = *env_lst;
-    while (current != NULL)
-    {
-        printf("%s=%s\n", current->var_name, current->var_value);
-        current = current->next;       
-    }
-}
+// 	current = *env_lst;
+//     while (current != NULL)
+//     {
+//         printf("%s=%s\n", current->var_name, current->var_value);
+//         current = current->next;       
+//     }
+// }

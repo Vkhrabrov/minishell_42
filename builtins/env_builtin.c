@@ -6,33 +6,47 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/15 11:56:29 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/29 11:57:32 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#include "../minishell.h"
 
 /*
     'envp' is derived from "environment pointer".
     The 'envp' argument is automatically provided by the operating system.
 */
-void env(char *envp[]) 
-{
-    int i;
 
-    i = 0;
-    while (envp[i] != NULL)
+int	env_builtin(t_env_lst **env_lst)
+{
+	t_env_lst *current;
+	
+	current = *env_lst;
+    while (current != NULL)
     {
-        printf("%s\n", envp[i]); 
-        i++;       
+        printf("%s=%s\n", current->var_name, current->var_value);
+        current = current->next;       
     }
+	return (0);
 }
 
-int main(int argc, char *argv[], char *envp[]) 
-{
-    (void)argc;
-    (void)argv;
+// void env(char *envp[]) 
+// {
+//     int i;
 
-    env(envp);
-    return (0);
-}
+//     i = 0;
+//     while (envp[i] != NULL)
+//     {
+//         printf("%s\n", envp[i]); 
+//         i++;       
+//     }
+// }
+
+// int main(int argc, char *argv[], char *envp[]) 
+// {
+//     (void)argc;
+//     (void)argv;
+
+//     env(envp);
+//     return (0);
+// }
