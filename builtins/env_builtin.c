@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/29 11:57:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/29 13:50:56 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
     The 'envp' argument is automatically provided by the operating system.
 */
 
-int	env_builtin(t_env_lst **env_lst)
+int	env_builtin(t_env_lst *env_lst)
 {
 	t_env_lst *current;
 	
-	current = *env_lst;
+	current = env_lst;
     while (current != NULL)
     {
         printf("%s=%s\n", current->var_name, current->var_value);

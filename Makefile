@@ -6,7 +6,7 @@
 #    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/10/29 10:53:56 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/10/29 22:53:58 by ccarrace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,9 @@ LIBFT = libft/
 READLINE = readline/
 
 SRC_F:= minishell signals parser lexer_utility_functions lexer_utility_functions_2 lexer \
-		env_list_creation expander executor builtins/execute_builtin builtins/echo_builtin \
-		builtins/pwd_builtin builtins/env_builtin
+		env_list_creation expander executor builtins/execute_builtin \
+		builtins/echo_builtin builtins/pwd_builtin builtins/env_builtin builtins/cd_builtin \
+		builtins/export_builtin
 
 FLAGS = -Wall -Wextra -Werror -g -MMD -I$(READLINE)/include 
 RM = rm -f

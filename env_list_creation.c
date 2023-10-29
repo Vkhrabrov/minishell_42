@@ -6,17 +6,17 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 11:58:10 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/29 19:24:01 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void t_env_init( t_env_lst  *env_lst)
-{
-    env_lst->var_name = NULL;
-    env_lst->var_value = NULL;
-}
+// void t_env_init( t_env_lst  *env_lst)
+// {
+//     env_lst->var_name = NULL;
+//     env_lst->var_value = NULL;
+// }
 
 size_t find_char_index(const char *str, char target) 
 {
@@ -72,14 +72,14 @@ void	save_env_list(t_env_lst **env_lst, char **envp)
     }
 }
 
-// void	print_env_lst(t_env_lst **env_lst)
-// {
-// 	t_env_lst *current;
+void	print_env_list(t_env_lst **env_lst)
+{
+	t_env_lst *current;
 	
-// 	current = *env_lst;
-//     while (current != NULL)
-//     {
-//         printf("%s=%s\n", current->var_name, current->var_value);
-//         current = current->next;       
-//     }
-// }
+	current = *env_lst;
+    while (current != NULL)
+    {
+        printf("%s=%s\n", current->var_name, current->var_value);
+        current = current->next;       
+    }
+}

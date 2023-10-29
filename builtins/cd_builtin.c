@@ -6,18 +6,22 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/27 21:09:50 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/29 20:24:15 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell"
+#include "../minishell.h"
 /*
  *	No path provided:	go to user's home directory
  *	
 */
 
-int	cd_builtin(const char *path)
+int	cd_builtin(token *args_lst)
 {
+	char	*path;
+
+	path = args_lst[0].content;
+printf("____________path provided = %s____________\n", args_lst[0].content);
 	if (path == NULL)
 	{
 		path = getenv("HOME");
@@ -36,13 +40,13 @@ int	cd_builtin(const char *path)
 	}
 }
 
-int	main(int argc, char **argv)
-{
-	if (argc == 1)
-		return cd_builtin(NULL);
-	else if (argc == 2)
-		return cd_builtin(argv[1])
-	{
-		ret
-	}
-}
+// int	main(int argc, char **argv)
+// {
+// 	if (argc == 1)
+// 		return cd_builtin(NULL);
+// 	else if (argc == 2)
+// 		return cd_builtin(argv[1]);
+// 	{
+// 		ret
+// 	}
+// }

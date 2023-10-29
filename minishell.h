@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 11:01:39 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/29 22:53:30 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ tokenizer_state init_tokenizer_state(void);
 size_t          find_char_index(const char *str, char target);
 void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
 void            save_env_list(t_env_lst **env_lst, char **envp);
-void            print_env_lst(t_env_lst **env_lst);
+void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
-void            process_command_list(command_node *head);
+void			process_command_list(command_node *head, t_env_lst *env_lst); 
 
 //	Signals
 void            init_signals(void);
@@ -116,10 +116,11 @@ void            disable_control_chars_echo();
 void            restore_terminal_settings();
 
 //	Builtins
-int				execute_builtin(char *cmd_name, command_node *cmd_node);
+int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst env_lst);
 int				echo_builtin(token *args_lst);
 int				pwd_builtin(token *args_lst);
-int				env_builtin(token *args_lst);
-
+int				env_builtin(t_env_lst *env_lst);
+int				cd_builtin(token *args_lst);
+int				export_builtin(t_env_lst *env_lst);
 
 #endif 

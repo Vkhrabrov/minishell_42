@@ -6,13 +6,13 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 11:13:36 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/29 13:46:37 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void process_command_list(command_node *head) 
+void process_command_list(command_node *head, t_env_lst *env_lst) 
 {
     int node_count = 0;
     command_node *current = head;
@@ -41,7 +41,7 @@ void process_command_list(command_node *head)
         }
         if (is_builtin) {
             printf("Executing built-in command: %s\n", head->command->content);
-			execute_builtin(head->command->content, head);
+			execute_builtin(head->command->content, head, *env_lst);
         } else {
             printf("Launching pipex execution process...\n");
         }
