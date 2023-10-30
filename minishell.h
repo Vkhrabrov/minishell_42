@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 22:53:30 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 00:03:08 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void            handle_commands_and_args(char *input, tokenizer_state *state);
 tokentype       c_a_part_2(tokenizer_state *state, tokentype current_type);
 tokenizer_state init_tokenizer_state(void);
 size_t          find_char_index(const char *str, char target);
-void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
+// void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
 void            save_env_list(t_env_lst **env_lst, char **envp);
 void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
@@ -121,6 +121,6 @@ int				echo_builtin(token *args_lst);
 int				pwd_builtin(token *args_lst);
 int				env_builtin(t_env_lst *env_lst);
 int				cd_builtin(token *args_lst);
-int				export_builtin(t_env_lst *env_lst);
+int				export_builtin(t_env_lst *env_lst, token *args_lst);
 
 #endif 

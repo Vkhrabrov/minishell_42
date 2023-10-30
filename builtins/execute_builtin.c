@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/29 22:45:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/30 23:05:54 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,6 @@ int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst env_lst)
 	else if (ft_strncmp(cmd_name, "cd", cmd_len) == 0)
 		ret = cd_builtin(cmd_node->args);
 	else if (ft_strncmp(cmd_name, "export", cmd_len) == 0)
-		ret = export_builtin(&env_lst);
+		ret = export_builtin(&env_lst, cmd_node->args);
 	return (ret);
 }
