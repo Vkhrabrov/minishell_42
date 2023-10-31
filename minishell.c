@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 13:44:35 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 20:08:29 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ int main(int argc, char **argv, char **envp)
     
     // t_env_init(env_lst);
     save_env_list(&env_lst, envp);
-    print_env_list(&env_lst);
-	// head->env_lst = env_lst;
+    // print_env_lst(&env_lst);
     disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
     init_signals();
     while (1) 

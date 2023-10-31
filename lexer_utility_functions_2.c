@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/24 23:04:39 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/28 12:50:27 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ tokentype	c_a_part_2(tokenizer_state *state, tokentype current_type)
 	}
 	if (state->prev_type == T_VAR_EXP)
 		current_type = T_ENV_VAR;
+	if (state->prev_type == T_HEREDOC)
+	{
+		current_type = T_HEREDOC_DELIM;
+		state->expect_command = 1;
+	}
 	return (current_type);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/31 19:41:44 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 20:07:57 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include <limits.h>     // PATH_SIZE
 #include <unistd.h>
 #include "libft/libft.h" 
+#include <unistd.h>
+#include <string.h>
 
 typedef enum 
 {
@@ -59,6 +61,8 @@ struct command_node
     token           *redirect_out;
     token           *var_expansion;
     token           *env_variable;
+    char            *redirect_in_filename;
+    char            *redirect_out_filename;
     char            *here_doc_content;
 
     command_node    *next;
