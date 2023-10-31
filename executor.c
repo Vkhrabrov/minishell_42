@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/31 23:11:28 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/01 00:30:04 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,8 @@ char *find_command_path(const char *cmd, char **paths) {
     return full_cmd_path;
 }
 
-void handle_here_doc(command_node *cmd_node) {
+void handle_here_doc(command_node *cmd_node) 
+{
     if (!cmd_node->here_doc_content) 
         return;
 
@@ -163,6 +164,22 @@ void handle_here_doc(command_node *cmd_node) {
     dup2(pipefd[0], STDIN_FILENO);
     close(pipefd[0]);
 }
+
+void handle_infile(command_node *cmd_node)
+{
+    if (!cmd_node->redirect_in_filename) 
+        return;
+
+    int infd = open(cmd_node->redirect_in_filename, O_RDONLY);
+    if (infd == -1) 
+    {
+        perror("open");
+        exit(EXIT_FAILURE);
+    }
+    dup2(infd, STDIN_FILENO);
+    close(infd);
+}
+
 
 void execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
 {
@@ -181,7 +198,8 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
     {  // This block will be executed by the child process
         if (cmd_node->here_doc_content) 
             handle_here_doc(cmd_node);
-        
+        if (cmd_node->redirect_in_filename)
+            handle_infile(cmd_node);
         execve(full_cmd_path, final_args, final_env);
         perror("execve");
         exit(1);
@@ -233,6 +251,7 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
 			execute_builtin(head->command->content, head, env_lst);
         } else {
             printf("Launching pipex execution process...\n");
+            execute_command_node(head, env_lst);
         }
     }
 }

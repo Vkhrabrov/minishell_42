@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/31 23:10:48 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/01 00:30:33 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include "libft/libft.h" 
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
+
 
 typedef enum 
 {
