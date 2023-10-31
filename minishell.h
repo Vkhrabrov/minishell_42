@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/30 19:19:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/31 19:56:54 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <signal.h>
 #include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
 #include <limits.h>     // PATH_SIZE
+#include <unistd.h>		// write;
 #include "libft/libft.h" 
 #include <unistd.h>
 #include <string.h>
@@ -86,6 +87,7 @@ t_env_lst;
 
 void            init_signals(void);
 void            rl_replace_line (const char *text, int clear_undo);
+// extern 			int rl_eof_found;
 void            disable_control_chars_echo();
 void            restore_terminal_settings();
 command_node*   parse_line(token *tokens);

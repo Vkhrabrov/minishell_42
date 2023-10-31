@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/27 23:18:06 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/31 19:56:09 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int if_redir(char c)
 
 int main(int argc, char **argv, char **envp)
 {
-
     token *tokens = NULL;
     command_node *head = NULL;
     t_env_lst  *env_lst = NULL;
@@ -64,7 +63,8 @@ int main(int argc, char **argv, char **envp)
     while (1) 
     {
         char *input = readline("minishell> ");
-        if (!input) break; 
+        if (!input) 
+			break;
         tokens = tokenization(input);
         head = parse_line(tokens);
         // print_command_node(head);
@@ -76,6 +76,12 @@ int main(int argc, char **argv, char **envp)
         add_history(input);
         free(input);
     }
+
+	while(head->args->next != NULL)
+	{
+		printf("%s\n", head->args->content);
+		head->args = head->args->next;
+	}
     // restore_terminal_settings();    //  Restore terminal settings before exiting
     return (0);
 }
