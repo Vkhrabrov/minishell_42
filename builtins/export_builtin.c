@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/31 00:07:23 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/01 00:00:45 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void	print_export_list(t_env_lst **env_lst)
     while (current != NULL)
     {
         printf("declare -x %s", current->var_name);
-        printf("=\"%s", current->var_value);
+		if (current->var_value != NULL)
+        	printf("=\"%s", current->var_value);
         printf("\"\n");
         current = current->next;       
     }
@@ -61,11 +62,13 @@ void	free_env_lst_copy(t_env_lst *env_lst_copy)
 {
     t_env_lst *temp;
 
-    while (env_lst_copy != NULL) {
+    while (env_lst_copy != NULL)
+	{
         temp = env_lst_copy;
         env_lst_copy = env_lst_copy->next;
         free(temp->var_name);
-		free(temp->var_value);
+		if (temp->var_value != NULL)
+			free(temp->var_value);
         free(temp);
     }
 }
@@ -122,8 +125,11 @@ int export_builtin(t_env_lst *env_lst, token *args_lst)
 	
 	if (ft_list_size(args_lst) > 0)
 	{
-		while (args_lst != NULL)
+		while (args_lst != NULL) 
 		{
+			// Antes de anadir la variable tengo que comprobar que no exista previamente !!!!!!
+			// Si existe, he de comprobar si el valor es distinto y actualizarlo
+			// TAMBIEN PUEDE SUCEDER QUE NO TENGA VALOR
 			set_new_var(&env_lst, args_lst->content);
 			args_lst = args_lst->next;
 		}

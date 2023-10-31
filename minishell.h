@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/31 20:07:57 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 23:10:48 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,12 @@ void            disable_control_chars_echo();
 void            restore_terminal_settings();
 
 //	Builtins
-int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst env_lst);
+int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
 int				echo_builtin(token *args_lst);
 int				pwd_builtin(token *args_lst);
 int				env_builtin(t_env_lst *env_lst);
 int				cd_builtin(token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
-int				find_max_len(char *str1, char *str2);
+int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
 
 #endif 

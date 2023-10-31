@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/31 18:48:57 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 23:10:03 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	find_max_len(char *str1, char *str2)
 }
 
 
-int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst env_lst)
+int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 {
 	int	ret;
 
@@ -38,10 +38,12 @@ int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst env_lst)
 	else if (ft_strncmp(cmd_name, "pwd", find_max_len(cmd_name, "pwd")) == 0)
 		ret = pwd_builtin(cmd_node->args);
 	else if (ft_strncmp(cmd_name, "env", find_max_len(cmd_name, "env")) == 0)
-		ret = env_builtin(&env_lst);
+		ret = env_builtin(env_lst);
 	else if (ft_strncmp(cmd_name, "cd", find_max_len(cmd_name, "cd")) == 0)
 		ret = cd_builtin(cmd_node->args);
 	else if (ft_strncmp(cmd_name, "export", find_max_len(cmd_name, "export")) == 0)
-		ret = export_builtin(&env_lst, cmd_node->args);
+		ret = export_builtin(env_lst, cmd_node->args);
+	else if (ft_strncmp(cmd_name, "unset", find_max_len(cmd_name, "unset")) == 0)
+		ret = unset_builtin(&env_lst, cmd_node->args);
 	return (ret);
 }
