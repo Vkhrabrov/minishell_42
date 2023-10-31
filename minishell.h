@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/31 00:03:08 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 19:41:44 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,6 @@ int				pwd_builtin(token *args_lst);
 int				env_builtin(t_env_lst *env_lst);
 int				cd_builtin(token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
+int				find_max_len(char *str1, char *str2);
 
 #endif 

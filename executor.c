@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 13:46:37 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/10/31 19:43:02 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void process_command_list(command_node *head, t_env_lst *env_lst)
     if (node_count == 1) {
         int is_builtin = 0;
         for (int i = 0; builtins[i]; i++) {
-            if (ft_strncmp(head->command->content, builtins[i], ft_strlen(head->command->content)) == 0)
+            if (ft_strncmp(head->command->content, builtins[i], ft_strlen(builtins[i])) == 0)
             {
                 is_builtin = 1;
                 break;
