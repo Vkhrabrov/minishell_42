@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/25 20:42:51 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/30 19:36:41 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,55 +17,24 @@ void print_command_node(command_node* node)
     while (node) 
     {
         printf("Command Node:\n");
-
-        // Print command
         if (node->command) 
             printf("  Command: %s\n", node->command->content);
-
-        // Print arguments
         token *arg = node->args;
         while (arg) 
         {
             printf("  Argument: %s\n", arg->content);
             arg = arg->next;
         }
-
-        // Print variable expansions
         if (node->var_expansion) 
-        {
             printf("  Variable Expansion: %s\n", node->var_expansion->content);
-        }
-
-        // Print environment variables
         if (node->env_variable) 
-        {
             printf("  Environment Variable: %s\n", node->env_variable->content);
-        }
-
-        // Print input redirection
-        if (node->redirect_in) 
-        {
-            printf("  Redirection In: %s ", node->redirect_in->content);
-            if (node->redirect_in->next)
-                printf(" %s", node->redirect_in->next->content);
-            printf("\n");
-        }
-
-        // Print here_doc_content if present
         if (node->here_doc_content)
-        {
             printf("  HERE_DOC Content: %s\n", node->here_doc_content);
-        }
-
-        // Print output redirection
+        if (node->redirect_in) 
+            printf("  Redirection In: %s\n  Filename: %s\n", node->redirect_in->content, node->redirect_in_filename);
         if (node->redirect_out) 
-        {
-            printf("  Redirection Out: %s ", node->redirect_out->content);
-            if (node->redirect_out->next)
-                printf(" %s", node->redirect_out->next->content);
-            printf("\n");
-        }
-
+            printf("  Redirection Out: %s\n  Filename: %s\n", node->redirect_out->content, node->redirect_out_filename);
         printf("--------------------------\n");
         node = node->next;
     }
@@ -165,23 +134,26 @@ command_node* parse_command(token **tokens)
         }
         else if (current->type == T_REDIR_IN || current->type == T_APP_REDIR) 
         {
-            cmd_node->redirect_in = current;
+            cmd_node->redirect_in = current; // Save the redirection symbol
             current = current->next;
             if (!current || current->type != T_ARG) 
                 return NULL;
+            cmd_node->redirect_in_filename = ft_strdup(current->content); // Save the filename
             current = current->next;
         }
         else if (current->type == T_REDIR_OUT) 
         {
-            cmd_node->redirect_out = current;
+            cmd_node->redirect_out = current; // Save the redirection symbol
             current = current->next;
             if (!current || current->type != T_ARG) 
             {
                 printf("Error: Expected file after redirection symbol.\n");
                 return NULL;
             }
+            cmd_node->redirect_out_filename = ft_strdup(current->content); // Save the filename
             current = current->next;
         }
+
 
         else
             break;

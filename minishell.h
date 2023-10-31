@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/26 20:33:26 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/30 19:19:33 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
 #include <limits.h>     // PATH_SIZE
 #include "libft/libft.h" 
+#include <unistd.h>
+#include <string.h>
 
 typedef enum 
 {
@@ -58,6 +60,8 @@ struct command_node
     token           *redirect_out;
     token           *var_expansion;
     token           *env_variable;
+    char            *redirect_in_filename;
+    char            *redirect_out_filename;
     char            *here_doc_content;
 
     command_node    *next;
@@ -109,5 +113,5 @@ void            save_env_list(t_env_lst **env_lst, char **envp);
 void            print_env_lst(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
-void            process_command_list(command_node *head);
+void            process_command_list(command_node *head, t_env_lst *env_lst);
 #endif 
