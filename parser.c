@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/30 19:36:41 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/31 21:22:36 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,91 +78,83 @@ char    *read_heredoc_content(const char *delimiter)
 command_node* parse_command(token **tokens) 
 {
     if (!tokens || !(*tokens)) return NULL;
+    command_node *cmd_node = ft_calloc(1, sizeof(command_node));
+    if (!cmd_node) 
+    {
+        perror("Memory allocation failed for command_node");
+        exit(EXIT_FAILURE);
+    }
     
-    command_node *cmd_node = malloc(sizeof(command_node));
     token *current = *tokens;
-    token *last_arg = NULL;
+    token *temp_last_token = NULL;
 
     while (current && current->type != T_PIPE) 
     {
+        if (!current) break;
+
         if (current->type == T_CMD) 
         {
-            if (!cmd_node->command)
-                cmd_node->command = current;
-            current = current->next;
-        } 
+            cmd_node->command = current;
+        }
         else if (current->type == T_ARG) 
         {
             if (!cmd_node->args)
                 cmd_node->args = current;
-            last_arg = current;
-            current = current->next;
+            temp_last_token = current;
         }
-        // if (current->type == T_EXIT_STATUS) 
-        // {
-        //     if (!cmd_node->command)
-        //         cmd_node->command = current;
-        //     current = current->next;
-        // } 
         else if (current->type == T_VAR_EXP) 
         {
             cmd_node->var_expansion = current;
-            last_arg = current;
-            current = current->next;
+            temp_last_token = current;
         }
         else if (current->type == T_ENV_VAR) 
         {
             cmd_node->env_variable = current;
-            last_arg = current;
-            current = current->next;
-        } 
+            temp_last_token = current;
+        }
         else if (current->type == T_HEREDOC) 
         {
-            if (current->next == NULL || current->next->type != T_HEREDOC_DELIM)
+            if (current->next && current->next->type == T_HEREDOC_DELIM) 
+            {
+                cmd_node->redirect_in = current;
+                char *delimiter = current->next->content;
+                cmd_node->here_doc_content = read_heredoc_content(delimiter);
+                current = current->next;
+            } 
+            else 
             {
                 printf("minishell: syntax error near unexpected token `newline'\n");
                 return NULL;
             }
-            cmd_node->redirect_in = current;
-            current = current->next;
-            if (current->type == T_HEREDOC_DELIM) 
-            {
-                char *delimiter = current->content;
-                cmd_node->here_doc_content = read_heredoc_content(delimiter);
-                current = current->next;
-            }
         }
         else if (current->type == T_REDIR_IN || current->type == T_APP_REDIR) 
         {
-            cmd_node->redirect_in = current; // Save the redirection symbol
-            current = current->next;
-            if (!current || current->type != T_ARG) 
-                return NULL;
-            cmd_node->redirect_in_filename = ft_strdup(current->content); // Save the filename
-            current = current->next;
+            cmd_node->redirect_in = current;
+            if (current->next && current->next->type == T_ARG)
+            {
+                cmd_node->redirect_in_filename = ft_strdup(current->next->content);
+                current = current->next;
+            }
         }
         else if (current->type == T_REDIR_OUT) 
         {
-            cmd_node->redirect_out = current; // Save the redirection symbol
-            current = current->next;
-            if (!current || current->type != T_ARG) 
+            cmd_node->redirect_out = current;
+            if (current->next && current->next->type == T_ARG)
             {
-                printf("Error: Expected file after redirection symbol.\n");
-                return NULL;
+                cmd_node->redirect_out_filename = ft_strdup(current->next->content);
+                current = current->next;
             }
-            cmd_node->redirect_out_filename = ft_strdup(current->content); // Save the filename
-            current = current->next;
         }
 
-
-        else
-            break;
+        current = current->next;
     }
-    if (last_arg)
-        last_arg->next = NULL;
+    if (temp_last_token)
+        temp_last_token->next = NULL;
     *tokens = current;
     return cmd_node;
 }
+
+
 
 command_node* parse_line(token *tokens) 
 {
