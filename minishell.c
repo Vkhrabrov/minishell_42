@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/31 21:08:40 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/10/31 21:39:47 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ int main(int argc, char **argv, char **envp)
         free(input);
     }
 
-	while(head->args->next != NULL)
-	{
-		printf("%s\n", head->args->content);
-		head->args = head->args->next;
-	}
+	// while(head->args->next != NULL)
+	// {
+	// 	printf("%s\n", head->args->content);
+	// 	head->args = head->args->next;
+	// }
     // restore_terminal_settings();    //  Restore terminal settings before exiting
     return (0);
 }
