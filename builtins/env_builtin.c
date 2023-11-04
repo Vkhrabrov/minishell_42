@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/29 13:50:56 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/03 23:45:55 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ int	env_builtin(t_env_lst *env_lst)
 	current = env_lst;
     while (current != NULL)
     {
-        printf("%s=%s\n", current->var_name, current->var_value);
-        current = current->next;       
+		if (current->var_value != NULL)
+        	printf("%s=%s\n", current->var_name, current->var_value);
+        current = current->next;     
     }
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/01 19:34:37 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/04 00:26:43 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_ls
 int				echo_builtin(token *args_lst);
 int				pwd_builtin(token *args_lst);
 int				env_builtin(t_env_lst *env_lst);
-int				cd_builtin(token *args_lst);
+int				cd_builtin(t_env_lst *env_lst, token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
 int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
 

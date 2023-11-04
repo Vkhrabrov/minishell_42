@@ -6,42 +6,42 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/03 00:51:49 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/03 23:17:34 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_env_lst *copy_env_list(t_env_lst *env_lst)
-{
-	t_env_lst	*head;
-	t_env_lst	*tail;
-	t_env_lst	*new_node;
+// t_env_lst *copy_env_list(t_env_lst *env_lst)
+// {
+// 	t_env_lst	*head;
+// 	t_env_lst	*tail;
+// 	t_env_lst	*new_node;
 
-	// head = NULL;
-	tail = NULL;
-	while (env_lst != NULL)
-	{
-		new_node = malloc(sizeof(t_env_lst));
-		if (!new_node)
-			return (NULL);
-		new_node->var_name = ft_strdup(env_lst->var_name);
-		new_node->var_value = ft_strdup(env_lst->var_value);
-		new_node->next = NULL;
-		if (tail == NULL)
-		{
-			head = new_node;
-			tail = new_node;
-		}
-		else
-		{
-			tail->next = new_node;
-			tail = new_node;
-		}
-		env_lst = env_lst->next;
-	}
-	return (head);
-}
+// 	// head = NULL;
+// 	tail = NULL;
+// 	while (env_lst != NULL)
+// 	{
+// 		new_node = malloc(sizeof(t_env_lst));
+// 		if (!new_node)
+// 			return (NULL);
+// 		new_node->var_name = ft_strdup(env_lst->var_name);
+// 		new_node->var_value = ft_strdup(env_lst->var_value);
+// 		new_node->next = NULL;
+// 		if (tail == NULL)
+// 		{
+// 			head = new_node;
+// 			tail = new_node;
+// 		}
+// 		else
+// 		{
+// 			tail->next = new_node;
+// 			tail = new_node;
+// 		}
+// 		env_lst = env_lst->next;
+// 	}
+// 	return (head);
+// }
 
 void	print_export_list(t_env_lst **env_lst)
 {
@@ -62,20 +62,20 @@ void	print_export_list(t_env_lst **env_lst)
     }
 }
 
-void	free_env_lst_copy(t_env_lst *env_lst_copy)
-{
-    t_env_lst *temp;
+// void	free_env_lst_copy(t_env_lst *env_lst_copy)
+// {
+//     t_env_lst *temp;
 
-    while (env_lst_copy != NULL)
-	{
-        temp = env_lst_copy;
-        env_lst_copy = env_lst_copy->next;
-        free(temp->var_name);
-		if (temp->var_value != NULL)
-			free(temp->var_value);
-        free(temp);
-    }
-}
+//     while (env_lst_copy != NULL)
+// 	{
+//         temp = env_lst_copy;
+//         env_lst_copy = env_lst_copy->next;
+//         free(temp->var_name);
+// 		if (temp->var_value != NULL)
+// 			free(temp->var_value);
+//         free(temp);
+//     }
+// }
 
 int	ft_list_size(token *args_lst)
 {
@@ -175,7 +175,7 @@ int export_builtin(t_env_lst *env_lst, token *args_lst)
             set_new_var(&env_lst, args_lst->content);
             args_lst = args_lst->next;
         }
-        print_export_list(&env_lst);
+        // print_export_list(&env_lst);
     }
 	else
 	{
