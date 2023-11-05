@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/29 19:24:01 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/05 11:23:25 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,20 @@ void	print_env_list(t_env_lst **env_lst)
     {
         printf("%s=%s\n", current->var_name, current->var_value);
         current = current->next;       
+    }
+}
+
+void	free_env_list(t_env_lst *env_lst)
+{
+    t_env_lst *temp;
+
+    while (env_lst != NULL)
+	{
+        temp = env_lst;
+        env_lst = env_lst->next;
+        free(temp->var_name);
+		if (temp->var_value != NULL)
+			free(temp->var_value);
+        free(temp);
     }
 }

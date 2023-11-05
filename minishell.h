@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/04 00:26:43 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/05 11:57:32 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ tokenizer_state init_tokenizer_state(void);
 size_t          find_char_index(const char *str, char target);
 void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
 void            save_env_list(t_env_lst **env_lst, char **envp);
+void			free_env_list(t_env_lst *env_lst);
 void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
@@ -129,5 +130,6 @@ int				env_builtin(t_env_lst *env_lst);
 int				cd_builtin(t_env_lst *env_lst, token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
 int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
+void			free_args_list(token *args_lst);
 
 #endif 

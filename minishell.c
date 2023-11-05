@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/01 00:30:19 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/05 12:14:23 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int if_redir(char c)
     else
         return (0); 
 }
+extern int rl_eof_found;
 
 int main(int argc, char **argv, char **envp)
 {
@@ -76,12 +77,15 @@ int main(int argc, char **argv, char **envp)
         add_history(input);
         free(input);
     }
+	// free_env_list(env_lst);
+	if (rl_eof_found)
+    {
+		free_env_list(env_lst);
+        ft_putstr_fd("\033[A", 1);
+        ft_putstr_fd("\0\33[2K", 1);
+        printf("%s", "minishell> exit\n");
+    }
 
-	// while(head->args->next != NULL)
-	// {
-	// 	printf("%s\n", head->args->content);
-	// 	head->args = head->args->next;
-	// }
     // restore_terminal_settings();    //  Restore terminal settings before exiting
     return (0);
 }

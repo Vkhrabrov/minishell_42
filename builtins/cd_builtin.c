@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/04 01:54:13 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/05 12:48:22 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 	char 	*error_msg;
 	char	*old_pwd;
 
-	path = args_lst[0].content;
-	old_pwd = get_curr_work_dir();
+	path = NULL;
+	if (args_lst != NULL)
+		path = args_lst[0].content;
+	old_pwd = ft_strdup(get_curr_work_dir());
 	if (path == NULL) // No path provided:	go to user's home directory
 	{
 		path = getenv("HOME");
@@ -46,19 +48,18 @@ int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 		{
 			if (ft_strncmp(env_lst->var_name, "OLDPWD", 6) == 0)
 			{
-printf("__________path stored in 'oldpwd': %s__________\n", old_pwd);
 				free(env_lst->var_value);
 				env_lst->var_value = ft_strdup(old_pwd);
-printf("__________path dup in OLDPWD node: %s__________\n", old_pwd);
 			}
 			else if (ft_strncmp(env_lst->var_name, "PWD", 3) == 0)
 			{
 				free(env_lst->var_value);
 				env_lst->var_value = ft_strdup(get_curr_work_dir());
-printf("__________path dup in PWD node: %s__________\n", get_curr_work_dir());
 			}
 			env_lst = env_lst->next;
 		}
+		free(old_pwd);
+		free(args_lst);
 		return (0);
 	}
 	else
