@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/05 12:43:14 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/06 00:36:21 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	find_max_len(char *str1, char *str2)
 	return (max_len);
 }
 
-
 int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 {
 	int	exit_status;
@@ -45,5 +44,7 @@ int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 		exit_status = export_builtin(env_lst, cmd_node->args);
 	else if (ft_strncmp(cmd_name, "unset", find_max_len(cmd_name, "unset")) == 0)
 		exit_status = unset_builtin(&env_lst, cmd_node->args);
+		else if (ft_strncmp(cmd_name, "exit", find_max_len(cmd_name, "exit")) == 0)
+		exit_status = exit_builtin(cmd_node->args);
 	return (exit_status);
 }

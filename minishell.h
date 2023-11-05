@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/05 11:57:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/06 00:34:55 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,10 @@ int				env_builtin(t_env_lst *env_lst);
 int				cd_builtin(t_env_lst *env_lst, token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
 int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
+int				exit_builtin(token *args_lst);
 void			free_args_list(token *args_lst);
 
+//	Builtins utils
+int				find_max_len(char *str1, char *str2);
+long			ft_atol(const char *str);
 #endif 
