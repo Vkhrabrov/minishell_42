@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/05 11:23:25 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/08 00:11:36 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,10 @@ void add_env_var_to_list(t_env_lst **head, const char *envp_line)
 	else
 	{
         new_node->var_name = ft_substr(envp_line, 0, equal_sign_position);
-        new_node->var_value = ft_substr(envp_line, equal_sign_position + 1, envp_line_len - equal_sign_position);
+		if (ft_strncmp(new_node->var_name, "OLDPWD", 6) == 0)
+        	new_node->var_value = NULL;		
+		else	
+        	new_node->var_value = ft_substr(envp_line, equal_sign_position + 1, envp_line_len - equal_sign_position);
     }
 	new_node->next = NULL;
   	if (*head == NULL)
