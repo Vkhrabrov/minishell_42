@@ -6,11 +6,22 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/06 19:16:20 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/07 23:37:30 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+/* find_char_index called by
+	- env_list_creation()
+	- export_builtin()
+*/
+
+/* find_max_len called by
+	- builtins_execute.c
+	- exit_builtin.c
+	- export_builtin.c
+*/
 
 /* ft_list_size called by
 	- export_builtin()

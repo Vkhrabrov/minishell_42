@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/05 12:14:23 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/07 22:09:53 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv, char **envp)
         head = parse_line(tokens);
         // print_command_node(head);
         expand_environment_variables(head, &env_lst);
-        print_command_node(head);
+        // print_command_node(head);
         process_command_list(head, env_lst); 
         // free_command_node(head);
         // reset_command_node(head);
