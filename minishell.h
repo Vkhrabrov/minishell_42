@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/06 00:34:55 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/07 00:01:00 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,4 +136,7 @@ void			free_args_list(token *args_lst);
 //	Builtins utils
 int				find_max_len(char *str1, char *str2);
 long			ft_atol(const char *str);
+char			*ft_ltoa(long n);
+int				ft_list_size(token *args_lst);
+
 #endif 

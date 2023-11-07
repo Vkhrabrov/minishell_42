@@ -6,11 +6,28 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/06 00:44:43 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/06 19:16:20 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+/* ft_list_size called by
+	- export_builtin()
+	- exit_builtin()
+*/
+int	ft_list_size(token *args_lst)
+{
+	int	i;
+
+	i = 0;
+	while (args_lst)
+	{
+		i++;
+		args_lst = args_lst->next;
+	}
+	return (i);
+}
 
 void	free_args_list(token *args_lst)
 {

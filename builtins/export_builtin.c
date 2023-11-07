@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/03 23:17:34 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/06 19:16:35 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,19 +76,6 @@ void	print_export_list(t_env_lst **env_lst)
 //         free(temp);
 //     }
 // }
-
-int	ft_list_size(token *args_lst)
-{
-	int	i;
-
-	i = 0;
-	while (args_lst)
-	{
-		i++;
-		args_lst = args_lst->next;
-	}
-	return (i);
-}
 
 static void set_new_var(t_env_lst **head, char *arg)
 {

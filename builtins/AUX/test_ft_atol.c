@@ -26,20 +26,20 @@ long	ft_atol(const char *str)
 	return (result * sign);
 }
 
-// static int	find_max_len(char *str1, char *str2)
-// {
-// 	int	len1;
-// 	int	len2;
-// 	int	max_len;
+static int	find_max_len(char *str1, char *str2)
+{
+	int	len1;
+	int	len2;
+	int	max_len;
 
-// 	len1 = strlen(str1);
-// 	len2 = strlen(str2);
-// 	if (len1 > len2)
-// 		max_len = len1;
-// 	else
-// 		max_len = len2;
-// 	return (max_len);
-// }
+	len1 = strlen(str1);
+	len2 = strlen(str2);
+	if (len1 > len2)
+		max_len = len1;
+	else
+		max_len = len2;
+	return (max_len);
+}
 
 static long	ft_long_length(long n)
 {
