@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/06 19:16:35 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/08 00:48:17 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,27 @@ void	print_export_list(t_env_lst **env_lst)
 //     }
 // }
 
+bool	is_var_name_valid(char *arg, int equal_sign_position)
+{
+	int	i;
+
+	i = 0;
+	while (i < equal_sign_position)
+	{
+		if (arg[i] == ' ')
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
 static void set_new_var(t_env_lst **head, char *arg)
 {
     size_t equal_sign_position = find_char_index(arg, '=');
     size_t arg_len = ft_strlen(arg);
 
+	if (is_var_name_valid((*head)->var_name, equal_sign_position) == false)
+		return ;
     // Search for an existing node with the same name
     while (*head != NULL) {
         if (ft_strncmp((*head)->var_name, arg, equal_sign_position) == 0 &&
@@ -97,8 +113,8 @@ static void set_new_var(t_env_lst **head, char *arg)
                     (*head)->var_value = NULL;
                 }
             }
-			else if (ft_strncmp((*head)->var_value, arg + equal_sign_position + 1, arg_len - equal_sign_position - 1) != 0) {
-                // Update value if it's different
+			else
+			{
                 free((*head)->var_value);
                 (*head)->var_value = ft_strdup(arg + equal_sign_position + 1);
             }
