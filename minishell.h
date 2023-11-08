@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/08 00:45:22 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/08 22:06:25 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,5 +139,8 @@ int				find_max_len(char *str1, char *str2);
 long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
+
+//	Builtins errors
+void			build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
 
 #endif 

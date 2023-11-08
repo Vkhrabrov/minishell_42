@@ -6,42 +6,11 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/08 00:48:17 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/08 22:50:49 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// t_env_lst *copy_env_list(t_env_lst *env_lst)
-// {
-// 	t_env_lst	*head;
-// 	t_env_lst	*tail;
-// 	t_env_lst	*new_node;
-
-// 	// head = NULL;
-// 	tail = NULL;
-// 	while (env_lst != NULL)
-// 	{
-// 		new_node = malloc(sizeof(t_env_lst));
-// 		if (!new_node)
-// 			return (NULL);
-// 		new_node->var_name = ft_strdup(env_lst->var_name);
-// 		new_node->var_value = ft_strdup(env_lst->var_value);
-// 		new_node->next = NULL;
-// 		if (tail == NULL)
-// 		{
-// 			head = new_node;
-// 			tail = new_node;
-// 		}
-// 		else
-// 		{
-// 			tail->next = new_node;
-// 			tail = new_node;
-// 		}
-// 		env_lst = env_lst->next;
-// 	}
-// 	return (head);
-// }
 
 void	print_export_list(t_env_lst **env_lst)
 {
@@ -62,44 +31,33 @@ void	print_export_list(t_env_lst **env_lst)
     }
 }
 
-// void	free_env_lst_copy(t_env_lst *env_lst_copy)
-// {
-//     t_env_lst *temp;
-
-//     while (env_lst_copy != NULL)
-// 	{
-//         temp = env_lst_copy;
-//         env_lst_copy = env_lst_copy->next;
-//         free(temp->var_name);
-// 		if (temp->var_value != NULL)
-// 			free(temp->var_value);
-//         free(temp);
-//     }
-// }
-
-bool	is_var_name_valid(char *arg, int equal_sign_position)
+static bool	is_var_name_valid(char *arg, int equal_sign_position)
 {
 	int	i;
 
 	i = 0;
 	while (i < equal_sign_position)
 	{
-		if (arg[i] == ' ')
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (false);
 		i++;
 	}
 	return (true);
 }
 
-static void set_new_var(t_env_lst **head, char *arg)
+static int set_new_var(t_env_lst **head, char *arg)
 {
-    size_t equal_sign_position = find_char_index(arg, '=');
-    size_t arg_len = ft_strlen(arg);
+    size_t 	equal_sign_position = find_char_index(arg, '=');
+    size_t 	arg_len = ft_strlen(arg);
 
-	if (is_var_name_valid((*head)->var_name, equal_sign_position) == false)
-		return ;
+	if (is_var_name_valid(arg, equal_sign_position) == false)
+	{
+		build_error_msg("export: ", arg, " : not a valid identifier", true);
+		return (1);
+	}
     // Search for an existing node with the same name
-    while (*head != NULL) {
+    while (*head != NULL)
+	{
         if (ft_strncmp((*head)->var_name, arg, equal_sign_position) == 0 &&
             (*head)->var_name[equal_sign_position] == '\0')
 			{
@@ -118,25 +76,28 @@ static void set_new_var(t_env_lst **head, char *arg)
                 free((*head)->var_value);
                 (*head)->var_value = ft_strdup(arg + equal_sign_position + 1);
             }
-            return; // Node already updated, no need to create a new one
+            return (0); // Node already updated, no need to create a new one
         }
         head = &(*head)->next;
     }
     // If no existing node with the same name, create a new node
     t_env_lst *new_node = malloc(sizeof(t_env_lst));
     if (new_node == NULL)
-        return;
-
-    if (equal_sign_position == arg_len) {
+        return (1);
+    if (equal_sign_position == arg_len)
+	{
         new_node->var_name = ft_strdup(arg);
         new_node->var_value = NULL;
-    } else {
+    }
+	else
+	{
         new_node->var_name = ft_substr(arg, 0, equal_sign_position);
         new_node->var_value = ft_strdup(arg + equal_sign_position + 1);
     }
     // new_node->next = NULL;
 	new_node->next = *head;
     *head = new_node;
+	return (0);
 }
 
 t_env_lst *insert_sorted(t_env_lst **head, t_env_lst *new_node)
@@ -215,84 +176,4 @@ int export_builtin(t_env_lst *env_lst, token *args_lst)
     }
     return (0);
 }
-
-// int export_builtin(t_env_lst *env_lst, token *args_lst)
-// {
-//     t_env_lst	*sorted;
-	
-// 	if (ft_list_size(args_lst) > 0)
-// 	{
-// 		while (args_lst != NULL) 
-// 		{
-// 			set_new_var(&env_lst, args_lst->content);
-// 			args_lst = args_lst->next;
-// 		}
-// 	}
-// 	else
-// 	{
-// 		sorted = NULL;
-// 		while (env_lst != NULL)
-// 		{
-// 			insert_sorted(&sorted, env_lst);
-// 			env_lst = env_lst->next;
-// 		}
-// 		print_export_list(&sorted);
-// 	}
-// 	return (0);
-// }
-
-// int export_builtin(t_env_lst *env_lst, token *args_lst)
-// {
-//     t_env_lst	*sorted;
-// 	t_env_lst	*current;
-// 	t_env_lst	*temp;
-// 	size_t		len1;
-// 	size_t		len2;
-// 	size_t		max_len;
-// 	t_env_lst	*env_lst_copy; 
-	
-// 	if (ft_list_size(args_lst) > 0)
-// 	{
-// 		while (args_lst != NULL) 
-// 		{
-// 			set_new_var(&env_lst, args_lst->content);
-// 			args_lst = args_lst->next;
-// 		}
-// 	}
-// 	else
-// 	{
-// 		env_lst_copy = copy_env_list(env_lst);
-// 		if (env_lst_copy == NULL || env_lst_copy->next == NULL)
-// 			return (1); // Already sorted or empty list
-// 		sorted = NULL;
-// 		while (env_lst_copy != NULL)
-// 		{
-// 			current = env_lst_copy;
-// 			env_lst_copy = env_lst_copy->next;
-// 			len1 = ft_strlen(current->var_name);
-// 			if (sorted != NULL)
-// 				len2 = ft_strlen(sorted->var_name);
-// 			if (len1 > len2)
-// 				max_len = len1;
-// 			else 
-// 				max_len = len2;
-// 			if (sorted == NULL || ft_strncmp(current->var_name, sorted->var_name, max_len) <= 0)
-// 			{
-// 				current->next = sorted;
-// 				sorted = current;
-// 			}
-// 			else
-// 			{
-// 				temp = sorted;
-// 				while (temp->next != NULL && ft_strncmp(current->var_name, temp->next->var_name, max_len) > 0)
-// 					temp = temp->next;
-// 				current->next = temp->next;
-// 				temp->next = current;
-// 			}
-// 		}
-// 		print_export_list(&sorted);
-// 		free_env_lst_copy(env_lst_copy);
-// 	}
-// 	return (0);
-// }
 

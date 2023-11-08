@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/07 22:12:40 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/08 22:51:01 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,13 @@ char	*trim_first_arg(char *str)
 
 int	exit_builtin(token *args_lst)
 {
-	int		exit_status = 0;
+	int		exit_status;
 	int		num_args;
 	size_t	i;
 	long	num;
 	char	*str;
 
+	exit_status = 0;
 	// int		len;
 	/* _____ ARGS PROVIDED _____ */
 	if (args_lst != NULL)

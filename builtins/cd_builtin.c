@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/05 12:48:22 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/09 00:52:58 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ char	*get_curr_work_dir()
 int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 {
 	char	*path;
-	char 	*error_msg;
 	char	*old_pwd;
 
 	path = NULL;
@@ -36,9 +35,10 @@ int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 	if (path == NULL) // No path provided:	go to user's home directory
 	{
 		path = getenv("HOME");
-		if (path == NULL)
+		if (path == NULL || path[0] == '\0')
 		{
-			printf("HOME environment variable is not set\n");
+			// printf("minishell: cd: HOME not set\n");
+			build_error_msg("cd: ", "HOME", " is not set", false);
 			return (1);
 		}
 	}
@@ -64,10 +64,7 @@ int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 	}
 	else
 	{
-		// printf("minishell: cd: %s: No such file or directory\n", path);
-		error_msg = ft_strjoin("minishell: cd: ", path);
-		perror(error_msg);
-		free(error_msg);
+		build_error_msg("cd: ", path, ": No such file or directory", false);
 		return (1);
 	}
 }
