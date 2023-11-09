@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utility_functions.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:43:29 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/22 23:50:44 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/10 00:41:07 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,14 @@ void	add_to_list(token **head, token *new_token)
 	if (!*head)
 	{
 		*head = new_token;
-		print_token(new_token);
+		// print_token(new_token);
 		return ;
 	}
 	temp = *head;
 	while (temp->next)
 		temp = temp->next;
 	temp->next = new_token;
-	print_token(new_token);
+	// print_token(new_token);
 }
 
 char	*substring(char *input_string, int start, int end)

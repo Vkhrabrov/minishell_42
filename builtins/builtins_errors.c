@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 19:43:51 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/08 23:19:23 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/09 20:19:03 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*quote_arg(char *arg)
 	return (arg);
 }
 
-void	build_error_msg(char *command_name, char *arg, char *err_description, \
+int	build_error_msg(char *command_name, char *arg, char *err_description, \
 						bool quoted)
 {
 	char	*quoted_arg;
@@ -60,4 +60,5 @@ void	build_error_msg(char *command_name, char *arg, char *err_description, \
 	free(error_msg_first_part);
 	free(error_msg_second_part);
 	free(full_error_msg);
+	return(1);
 }

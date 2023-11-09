@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/08 22:06:25 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/09 20:14:47 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,6 @@ char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
 
 //	Builtins errors
-void			build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
+int			build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
 
 #endif 
