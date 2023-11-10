@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 22:11:13 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/27 22:18:34 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/10 19:04:22 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ int	echo_builtin(token *args_lst)
 	{
 		while (ft_strncmp(args_lst->content, "-n", 2) == 0)
 		{
+			if (!args_lst->next)
+				return (0);
 			args_lst = args_lst->next;
 			option_passed = true;
 		}
