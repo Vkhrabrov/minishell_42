@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/10 00:41:48 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/11 23:01:24 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv, char **envp)
 			break;
         tokens = tokenization(input);
         head = parse_line(tokens);
-        // print_command_node(head);
+        print_command_node(head);
         expand_environment_variables(head, &env_lst);
         // print_command_node(head);
         process_command_list(head, env_lst); 

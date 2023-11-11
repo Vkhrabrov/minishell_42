@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/10 00:42:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/11 23:07:24 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,24 +77,29 @@ char **convert_env_list_to_array(t_env_lst *env_lst) {
         temp = temp->next;
     }
 
+    
     char **env_array = malloc(sizeof(char *) * (count + 1));
     if (!env_array) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
+  
 
     int i = 0;
     while (env_lst) {
         int length = ft_strlen(env_lst->var_name) + ft_strlen(env_lst->var_value) + 2;
         env_array[i] = malloc(length);
+        
         if (!env_array[i]) {
             perror("malloc");
             exit(EXIT_FAILURE);
         }
         // snprintf(env_array[i], length, "%s=%s", env_lst->var_name, env_lst->var_value);
+        
         i++;
         env_lst = env_lst->next;
     }
+    
     env_array[i] = NULL;
 
     return env_array;
@@ -190,9 +195,11 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         perror(cmd_node->command->content);
         exit(127);
     }
-
+    
     char **final_args = convert_command_node_args_to_array(cmd_node);
+    
     char **final_env = convert_env_list_to_array(env_lst);
+    
 
     if (pid == 0) 
     {  // This block will be executed by the child process
@@ -220,6 +227,55 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
     free(final_env);
 }
 
+void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd) {
+    if (in_fd != STDIN_FILENO) {
+        dup2(in_fd, STDIN_FILENO);
+        close(in_fd);
+    }
+    if (out_fd != STDOUT_FILENO) {
+        dup2(out_fd, STDOUT_FILENO);
+        close(out_fd);
+    }
+    execute_command_node(cmd_node, env_lst);
+    exit(EXIT_FAILURE); // Если execve вернул управление, значит произошла ошибка
+}
+
+int pipex(command_node *head, t_env_lst *env_lst) {
+    int end[2], in_fd = STDIN_FILENO;
+    pid_t pid;
+    command_node *current = head;
+
+    while (current) {
+        if (current->next && pipe(end) < 0) {
+            perror("pipe");
+            exit(EXIT_FAILURE);
+        }
+        pid = fork();
+        if (pid < 0) {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        } else if (pid == 0) {
+            if (current->next) {
+                close(end[0]);
+            }
+            child_process(current, env_lst, in_fd, current->next ? end[1] : STDOUT_FILENO);
+        }
+        if (in_fd != STDIN_FILENO) {
+            close(in_fd);
+        }
+        if (current->next) {
+            close(end[1]);
+            in_fd = end[0];
+        }
+        current = current->next;
+    }
+    while ((pid = waitpid(-1, NULL, 0))) {
+        if (errno == ECHILD) {
+            break;
+        }
+    }
+    return 0;
+}
 
 void process_command_list(command_node *head, t_env_lst *env_lst) {
     int node_count = 0;
@@ -231,9 +287,10 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
         node_count++;
         current = current->next;
     }
-
+    printf("Node count: %d\n", node_count);
     if (node_count > 1) {
         printf("Launching pipex...\n");
+        pipex(head, env_lst);
         return;
     }
 
@@ -250,7 +307,7 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
             // printf("Executing built-in command: %s\n", head->command->content);
 			execute_builtin(head->command->content, head, env_lst);
         } else {
-            printf("Launching pipex execution process...\n");
+            printf("Launching single command execution process...\n");
             execute_command_node(head, env_lst);
         }
     }
