@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/03 23:45:55 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/12 22:12:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
     'envp' is derived from "environment pointer".
     The 'envp' argument is automatically provided by the operating system.
 */
-
 int	env_builtin(t_env_lst *env_lst)
 {
 	t_env_lst *current;
@@ -30,6 +29,40 @@ int	env_builtin(t_env_lst *env_lst)
     }
 	return (0);
 }
+
+// int env_builtin(t_env_lst *env_lst, token *search_var)
+// {
+//     t_env_lst *current = env_lst;
+
+//     if (search_var->content == NULL)
+// 	{
+//         while (current != NULL)
+// 		{
+//             if (current->var_value != NULL)
+//                 printf("%s=%s\n", current->var_name, current->var_value);
+//             current = current->next;
+//         }
+//         return 0; // Return success
+//     }
+// 	else
+// 	{
+//         while (current != NULL)
+// 		{
+//             if (current->var_name != NULL && ft_strncmp(current->var_name, search_var->content, find_max_len(current->var_name, search_var->content)) == 0)
+// 			{
+//                 if (current->var_value != NULL)
+// 				{
+//                     printf("%s=%s\n", current->var_name, current->var_value);
+//                     return 0; // Variable found, return success
+//                 }
+// 				else
+//                     return 1; // Variable found, but value is NULL, return failure
+//             }
+//             current = current->next;
+//         }
+//         return 1; // Variable not found, return failure
+//     }
+// }
 
 // void env(char *envp[]) 
 // {

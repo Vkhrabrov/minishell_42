@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/10 00:42:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/12 23:30:38 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
     }
 
     if (node_count > 1) {
-        printf("Launching pipex...\n");
+        // printf("Launching pipex...\n");
         return;
     }
 
@@ -250,7 +250,7 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
             // printf("Executing built-in command: %s\n", head->command->content);
 			execute_builtin(head->command->content, head, env_lst);
         } else {
-            printf("Launching pipex execution process...\n");
+            // printf("Launching pipex execution process...\n");
             execute_command_node(head, env_lst);
         }
     }
