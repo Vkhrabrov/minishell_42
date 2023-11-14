@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/12 23:30:38 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/14 20:30:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
     free(final_env);
 }
 
-
+/* CARLOS: need to return exit_status, function cannot be void */
 void process_command_list(command_node *head, t_env_lst *env_lst) {
     int node_count = 0;
     command_node *current = head;
