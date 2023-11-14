@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 21:49:58 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/26 21:48:09 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 00:26:11 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,6 @@ void init_signals(void)
     sigemptyset(&sigquit_action.sa_mask);
     sigquit_action.sa_flags = 0;
     sigaction(SIGQUIT, &sigquit_action, NULL);
-
-	// if (rl_eof_found)
-    // {
-    //     ft_putstr_fd("\033[A", 1);
-    //     ft_putstr_fd("\0\33[2K", 1);
-    //     printf("%s", "minishell> exit\n");
-    // }
 }
 
 static void new_prompt_line()
