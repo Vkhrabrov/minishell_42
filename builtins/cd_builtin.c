@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/09 22:37:48 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 00:23:36 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,64 +25,61 @@
  *		Since an empty string is a valid directory name, no error is returned,
  *		and cd successfully changes to the current working directory.
 */
-// static bool	is_arg_valid(char *arg)
+// static bool is_arg_valid(char *arg)
 // {
-// 	size_t	i;
+//     size_t i;
+//     size_t opening_quotes;
 
 // 	i = 0;
-// 	while (arg[i] != '\0')
-// 	{
-// 		if (arg[i] == '"')
-// 		{
-// 			printf("Opening double quote found\n");
-// 			while (arg[i] == '"')
-// 				i++;
-// 		}
-// 		else if (arg[i] == '\'')
-// 		{
-// 			printf("Opening single quote found\n");
-// 			while (arg[i] == '\'')
-// 				i++;
-// 		}
-// 		else
-// 			break;
-// 	}
-// printf("i = %zu\n", i);
-// 	return (i % 2 != 0);
+// 	opening_quotes = 0;
+//     while (i < ft_strlen(arg))
+//     {
+//         if (arg[i] == '"')
+//         {
+//             opening_quotes++;
+//             while (arg[i] == '"')
+//                 i++;
+//         }
+//         else if (arg[i] == '\'')
+//         {
+//             opening_quotes++;
+//             while (arg[i] == '\'')
+//                 i++;
+//         }
+// 		break; //i++;
+//     }
+// 	if (opening_quotes % 2 == 0)
+// 		return (true);
+// 	return (false);
 // }
 
-static bool	is_arg_valid(char *arg)
+static bool is_arg_valid(char *arg)
 {
-	size_t	i;
-	size_t	opening_quotes;
+    size_t i;
+    size_t opening_quotes;
 
 	i = 0;
 	opening_quotes = 0;
-	while (i < ft_strlen(arg))
-	{
-		if (arg[i] == '"')
-		{
-			opening_quotes++;
-			while (arg[i] == '"')
-				i++;
-		}
-		else if (arg[i] == '\'')
-		{
-			opening_quotes++;
-			while (arg[i] == '\'')
-				i++;
-		}
-		else
-			break;
-	}
-printf("i = %zu\n", i);
-printf("opening_quotes = %zu\n", i);
+    while (i < ft_strlen(arg))
+    {
+        if (arg[i] == '"')
+        {
+            opening_quotes++;
+            while (arg[i] == '"')
+                i++;
+        }
+        else if (arg[i] == '\'')
+        {
+            opening_quotes++;
+            while (arg[i] == '\'')
+                i++;
+        }
+		break; //i++;
+    }
 	if (opening_quotes % 2 == 0)
-		return (false);
-	else
 		return (true);
+	return (false);
 }
-
 
 char	*get_curr_work_dir()
 {
@@ -112,20 +109,18 @@ int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 	char	*old_pwd;
 
 	path = NULL;
-	if (args_lst != NULL)
+	if (args_lst != NULL && args_lst->content != NULL)
 		path = args_lst->content;
-	if (is_arg_valid(path) == false)
-		return (build_error_msg("cd :", path, ": No such file or directory", false ));
-	old_pwd = ft_strdup(get_curr_work_dir());
-	if (path == NULL) // No path provided:	go to user's home directory
+// printf("path is %s\n", path);
+	if (path == NULL || *path == '~') // No path provided:	go to user's home directory
 	{
 		path = get_env_var_value(env_lst, "HOME");
 		if (path == NULL || path[0] == '\0')
-		{
-			build_error_msg("cd: ", "HOME", " not set", false);
-			return (1);
-		}
+			return(build_error_msg("cd: ", "HOME", " not set", false));
 	}
+	if (is_arg_valid(path) == false)
+		return (build_error_msg("1__cd :", path, ": No such file or directory", false ));
+	old_pwd = ft_strdup(get_curr_work_dir());
 	if (chdir(path) == 0)
 	{
 		while (env_lst != NULL)
@@ -147,10 +142,7 @@ int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 		return (0);
 	}
 	else
-	{
-		build_error_msg("cd: ", path, ": No such file or directory", false);
-		return (1);
-	}
+		return(build_error_msg("2__cd: ", path, ": No such file or directory", false));
 }
 
 // int	main(int argc, char **argv)
