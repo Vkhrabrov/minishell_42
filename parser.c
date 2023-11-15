@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/10/31 21:22:36 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/12 22:45:06 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,10 @@ void print_command_node(command_node* node)
             printf("  Environment Variable: %s\n", node->env_variable->content);
         if (node->here_doc_content)
             printf("  HERE_DOC Content: %s\n", node->here_doc_content);
-        if (node->redirect_in) 
+        if (node->redirect_in)
             printf("  Redirection In: %s\n  Filename: %s\n", node->redirect_in->content, node->redirect_in_filename);
+        // if (node->ex_status)
+        //     printf("  Exit status: %s\n, node->ex_status->content");
         if (node->redirect_out) 
             printf("  Redirection Out: %s\n  Filename: %s\n", node->redirect_out->content, node->redirect_out_filename);
         printf("--------------------------\n");
@@ -105,6 +107,11 @@ command_node* parse_command(token **tokens)
         else if (current->type == T_VAR_EXP) 
         {
             cmd_node->var_expansion = current;
+            temp_last_token = current;
+        }
+        else if (current->type == T_EXIT_STATUS)
+        {
+            cmd_node->ex_status = current;
             temp_last_token = current;
         }
         else if (current->type == T_ENV_VAR) 

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/11 23:07:24 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/12 23:12:38 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,9 @@ char **convert_env_list_to_array(t_env_lst *env_lst) {
 
     int i = 0;
     while (env_lst) {
-        int length = ft_strlen(env_lst->var_name) + ft_strlen(env_lst->var_value) + 2;
+        int length = ft_strlen(env_lst->var_name) + 2;
+        if (env_lst->var_value)
+            length += ft_strlen(env_lst->var_value);
         env_array[i] = malloc(length);
         
         if (!env_array[i]) {
@@ -186,7 +188,7 @@ void handle_infile(command_node *cmd_node)
 }
 
 
-void execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
+int execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
 {
     char **paths = get_paths_from_env(env_lst);
     char *full_cmd_path = find_command_path(cmd_node->command->content, paths);
@@ -207,9 +209,9 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
             handle_here_doc(cmd_node);
         if (cmd_node->redirect_in_filename)
             handle_infile(cmd_node);
-        execve(full_cmd_path, final_args, final_env);
+        cmd_node->exit_status = execve(full_cmd_path, final_args, final_env);
         perror("execve");
-        exit(1);
+        // cmd_node->exit_status = 1;
     } 
     else 
     {  // This block will be executed by the parent process
@@ -225,6 +227,8 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         free(final_env[i]);
     }
     free(final_env);
+    printf("i'm here");
+    return (0);
 }
 
 void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd) {
@@ -237,7 +241,7 @@ void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int ou
         close(out_fd);
     }
     execute_command_node(cmd_node, env_lst);
-    exit(EXIT_FAILURE); // Если execve вернул управление, значит произошла ошибка
+    exit(EXIT_FAILURE);
 }
 
 int pipex(command_node *head, t_env_lst *env_lst) {
@@ -297,18 +301,21 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
     if (node_count == 1) {
         int is_builtin = 0;
         for (int i = 0; builtins[i]; i++) {
-            if (ft_strncmp(head->command->content, builtins[i], ft_strlen(builtins[i])) == 0)
+            if (ft_strncmp(head->command->content, builtins[i], find_max_len(head->command->content, builtins[i])) == 0)
             {
                 is_builtin = 1;
                 break;
             }
         }
         if (is_builtin) {
-            // printf("Executing built-in command: %s\n", head->command->content);
 			execute_builtin(head->command->content, head, env_lst);
         } else {
             printf("Launching single command execution process...\n");
-            execute_command_node(head, env_lst);
+            if (execute_command_node(head, env_lst) == 1)
+                head->exit_status = 1;
+            else   
+                head->exit_status = 0; 
+            printf("exit status: %d\n", head->exit_status);
         }
     }
 }

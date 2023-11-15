@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/11 23:01:16 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/12 19:49:47 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ void add_env_var_to_list(t_env_lst **head, const char *envp_line)
 	else
 	{
         new_node->var_name = ft_substr(envp_line, 0, equal_sign_position);
-		// if (ft_strncmp(new_node->var_name, "OLDPWD", 6) == 0)
-        // 	new_node->var_value = NULL;		
-		// else	
+		if (ft_strncmp(new_node->var_name, "OLDPWD", 6) == 0)
+        	new_node->var_value = NULL;		
+		else	
         	new_node->var_value = ft_substr(envp_line, equal_sign_position + 1, envp_line_len - equal_sign_position);
     }
 	new_node->next = NULL;

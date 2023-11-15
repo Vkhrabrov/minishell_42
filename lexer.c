@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/10/30 19:29:41 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/12 20:13:58 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,18 +87,19 @@ void	handle_special_tokens(char c, char *input, tokenizer_state *state)
 		state->prev_type = T_PIPE;
 		state->expect_command = 1;
 	}
+	else if (c == '$' && next_char == '?')
+	{
+		redir[0] = c;
+		redir[1] = next_char;    
+		redir[2] = '\0';
+		add_to_list(&(state->tokens), creat_token(redir, T_EXIT_STATUS));
+		state->i++;
+	}
 	else if (c == '$')
 	{
 		add_to_list(&(state->tokens),
 			creat_token("$", T_VAR_EXP));
 		state->prev_type = T_VAR_EXP;
-	}
-	else if (c == '$' && next_char == '?')
-	{
-		redir[0] = c;
-		redir[1] = next_char;
-		redir[2] = '\0';
-		add_to_list(&(state->tokens), creat_token(redir, T_EXIT_STATUS));
 	}
 	else if (if_redir(c))
 		handle_redirection(c, input, state);

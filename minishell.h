@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/10 20:18:43 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/12 22:51:12 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,11 @@ struct command_node
     token           *redirect_out;
     token           *var_expansion;
     token           *env_variable;
+    token           *ex_status;
     char            *redirect_in_filename;
     char            *redirect_out_filename;
     char            *here_doc_content;
+    int             exit_status;
 
     command_node    *next;
 };
