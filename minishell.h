@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/12 22:51:12 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/15 19:59:54 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,8 @@ void			free_env_list(t_env_lst *env_lst);
 void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
-void			process_command_list(command_node *head, t_env_lst *env_lst); 
+// void			process_command_list(command_node *head, t_env_lst *env_lst); 
+int				process_command_list(command_node *head, t_env_lst *env_lst); 
 
 //	Signals
 void            init_signals(void);
@@ -131,6 +132,7 @@ int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_ls
 int				echo_builtin(token *args_lst);
 int				pwd_builtin(token *args_lst);
 int				env_builtin(t_env_lst *env_lst);
+// int 			env_builtin(t_env_lst *env_lst, token *search_var);
 int				cd_builtin(t_env_lst *env_lst, token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
 int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
@@ -144,6 +146,6 @@ char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
 
 //	Builtins errors
-int			build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
+int				build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
 
 #endif 

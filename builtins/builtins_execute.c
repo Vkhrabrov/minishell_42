@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/06 00:36:21 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/14 21:14:13 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 	else if (ft_strncmp(cmd_name, "cd", find_max_len(cmd_name, "cd")) == 0)
 		exit_status = cd_builtin(env_lst, cmd_node->args);
 	else if (ft_strncmp(cmd_name, "export", find_max_len(cmd_name, "export")) == 0)
-		exit_status = export_builtin(env_lst, cmd_node->args);
+		exit_status = export_builtin(env_lst, cmd_node->args);	
 	else if (ft_strncmp(cmd_name, "unset", find_max_len(cmd_name, "unset")) == 0)
 		exit_status = unset_builtin(&env_lst, cmd_node->args);
-		else if (ft_strncmp(cmd_name, "exit", find_max_len(cmd_name, "exit")) == 0)
+	else if (ft_strncmp(cmd_name, "exit", find_max_len(cmd_name, "exit")) == 0)
 		exit_status = exit_builtin(cmd_node->args);
+// printf("exit_status received = [%d]\n", exit_status);
 	return (exit_status);
 }

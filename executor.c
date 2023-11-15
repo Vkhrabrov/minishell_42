@@ -6,9 +6,10 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/12 23:12:38 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/15 19:58:57 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
@@ -293,9 +294,10 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
     }
     printf("Node count: %d\n", node_count);
     if (node_count > 1) {
-        printf("Launching pipex...\n");
+        // printf("Launching pipex...\n");
         pipex(head, env_lst);
-        return;
+        // return; 
+		return (0); /* CARLOS */
     }
 
     if (node_count == 1) {
@@ -308,7 +310,8 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
             }
         }
         if (is_builtin) {
-			execute_builtin(head->command->content, head, env_lst);
+            // printf("Executing built-in command: %s\n", head->command->content);
+			return(execute_builtin(head->command->content, head, env_lst)); /* CARLOS */
         } else {
             printf("Launching single command execution process...\n");
             if (execute_command_node(head, env_lst) == 1)
@@ -318,4 +321,5 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
             printf("exit status: %d\n", head->exit_status);
         }
     }
+	return (0); /* CARLOS */
 }

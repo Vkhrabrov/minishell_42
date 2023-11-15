@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/08 22:50:49 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:40:07 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ static bool	is_var_name_valid(char *arg, int equal_sign_position)
 	int	i;
 
 	i = 0;
+	if (!ft_isalpha(arg[i]) && arg[i] != '_')
+		return (false);
+	i++;
 	while (i < equal_sign_position)
 	{
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
@@ -49,11 +52,14 @@ static int set_new_var(t_env_lst **head, char *arg)
 {
     size_t 	equal_sign_position = find_char_index(arg, '=');
     size_t 	arg_len = ft_strlen(arg);
+	int		exit_status;
 
+	exit_status = 0;
 	if (is_var_name_valid(arg, equal_sign_position) == false)
 	{
-		build_error_msg("export: ", arg, " : not a valid identifier", true);
-		return (1);
+		exit_status = build_error_msg("export: ", arg, " : not a valid identifier", true);
+		// printf("exit_status sent from 'set_new_var' = %d\n", exit_status);
+		return(exit_status);
 	}
     // Search for an existing node with the same name
     while (*head != NULL)
@@ -136,7 +142,12 @@ int export_builtin(t_env_lst *env_lst, token *args_lst)
 	{
         while (args_lst != NULL)
 		{
-            set_new_var(&env_lst, args_lst->content);
+            if (set_new_var(&env_lst, args_lst->content) == 1)
+			{
+				// printf("set_new_var() returned 1\n");
+				return (1);
+			}
+			// printf("set_new_var() returned 0\n");
             args_lst = args_lst->next;
         }
         // print_export_list(&env_lst);
