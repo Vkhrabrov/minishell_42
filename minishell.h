@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 19:59:54 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/15 22:26:20 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ struct token
     tokentype   type;
     token      *next;
 };
+
+int g_exitstatus;
 
 typedef struct command_node command_node;
 
@@ -117,9 +119,8 @@ void            save_env_list(t_env_lst **env_lst, char **envp);
 void			free_env_list(t_env_lst *env_lst);
 void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
-void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
-// void			process_command_list(command_node *head, t_env_lst *env_lst); 
-int				process_command_list(command_node *head, t_env_lst *env_lst); 
+void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
+void			process_command_list(command_node *head, t_env_lst *env_lst); 
 
 //	Signals
 void            init_signals(void);
@@ -128,7 +129,7 @@ void            disable_control_chars_echo();
 void            restore_terminal_settings();
 
 //	Builtins
-int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
+void			execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
 int				echo_builtin(token *args_lst);
 int				pwd_builtin(token *args_lst);
 int				env_builtin(t_env_lst *env_lst);

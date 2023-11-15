@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 19:58:57 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/15 23:29:00 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         free(final_env[i]);
     }
     free(final_env);
-    printf("i'm here");
+    // printf("i'm here");
     return (0);
 }
 
@@ -282,7 +282,7 @@ int pipex(command_node *head, t_env_lst *env_lst) {
     return 0;
 }
 
-void process_command_list(command_node *head, t_env_lst *env_lst) {
+void	process_command_list(command_node *head, t_env_lst *env_lst) {
     int node_count = 0;
     command_node *current = head;
     // List of built-in commands (add your built-ins to this list)
@@ -292,12 +292,12 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
         node_count++;
         current = current->next;
     }
-    printf("Node count: %d\n", node_count);
+    // printf("Node count: %d\n", node_count);
     if (node_count > 1) {
         // printf("Launching pipex...\n");
         pipex(head, env_lst);
         // return; 
-		return (0); /* CARLOS */
+		return ; /* CARLOS */
     }
 
     if (node_count == 1) {
@@ -309,17 +309,35 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
                 break;
             }
         }
-        if (is_builtin) {
-            // printf("Executing built-in command: %s\n", head->command->content);
-			return(execute_builtin(head->command->content, head, env_lst)); /* CARLOS */
-        } else {
+        if (is_builtin) 
+		{
+			if (ft_strncmp(head->command->content, "exit", find_max_len(head->command->content, "exit")) == 0)
+				exit_builtin(head->args);
+			else
+			{
+				pid_t pid;
+				pid = fork();
+				// printf("Executing built-in command: %s\n", head->command->content);
+				if (pid == 0)
+					execute_builtin(head->command->content, head, env_lst); 
+				else
+				{
+					int status;
+					waitpid(pid, &status, 0);
+					g_exitstatus = WEXITSTATUS(status);
+					// printf("parent status 2 = %d\n", g_exitstatus);
+				}
+			}
+        } 
+		else 
+		{
             printf("Launching single command execution process...\n");
             if (execute_command_node(head, env_lst) == 1)
                 head->exit_status = 1;
             else   
                 head->exit_status = 0; 
-            printf("exit status: %d\n", head->exit_status);
+            // printf("exit status: %d\n", head->exit_status);
         }
     }
-	return (0); /* CARLOS */
+	// return (0); /* CARLOS */
 }

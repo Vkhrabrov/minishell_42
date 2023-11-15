@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 19:43:51 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/12 13:15:07 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/16 00:36:09 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*quote_arg(char *arg)
 	}
 	arg[0] = '`';
 	len = strlen(arg);
-	arg[len] = '"';
+	arg[len] = '\'';
 	arg[len + 1] = '\0';
 	return (arg);
 }

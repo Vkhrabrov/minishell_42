@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 19:59:13 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/15 23:04:48 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int main(int argc, char **argv, char **envp)
     (void)argc;
     (void)argv;
 
+	g_exitstatus = 0;
     // env_lst = malloc(sizeof(t_env_lst));
     
     // t_env_init(env_lst);
@@ -68,10 +69,10 @@ int main(int argc, char **argv, char **envp)
 			break;
         tokens = tokenization(input);
         head = parse_line(tokens);
-        print_command_node(head);
+        // print_command_node(head);
         expand_environment_variables(head, &env_lst);
         // print_command_node(head);
-        process_command_list(head, env_lst); 
+        process_command_list(head, env_lst);
         
         // free_command_node(head);
         // reset_command_node(head);
@@ -88,5 +89,6 @@ int main(int argc, char **argv, char **envp)
     }
 
     // restore_terminal_settings();    //  Restore terminal settings before exiting
-    return (0);
+	// printf("exit final status: %d\n", g_exitstatus);
+    return (g_exitstatus);
 }
