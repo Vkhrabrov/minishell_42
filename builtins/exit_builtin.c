@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/14 22:38:13 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 19:14:52 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,14 @@ int exit_builtin(token *args_lst)
 			remove_trailing_spaces(args_lst->content);
 		if (*args_lst->content == '+' && ft_isdigit(args_lst->content[1]))
 			args_lst->content++;
-		else if (*args_lst->content == '-' && args_lst->content[1] == '0')
-			args_lst->content++;
 		else if (*args_lst->content == ' ' && ft_isdigit(args_lst->content[1]))
 			args_lst->content++;
-
+		else if (*args_lst->content == '-' && args_lst->content[1] == '0')
+			args_lst->content++;
+		if (ft_strncmp(args_lst->content, "--", find_max_len(args_lst->content, "--")) == 0)
+			exit(0);
 		num = ft_atol(args_lst->content);
-		str = ft_ltoa(num);
-		// if (strlen(args_lst->content) == 0 || strspn(args_lst->content, " ") == strlen(args_lst->content)) 
+		str = ft_ltoa(num); 
 		if (num == 0 && is_valid_numeric(args_lst->content) == false)
 		{
 			build_error_msg("exit: ", args_lst->content, ": numeric argument required", false);

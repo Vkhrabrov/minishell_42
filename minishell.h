@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/13 23:53:38 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:33:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,8 @@ void			free_env_list(t_env_lst *env_lst);
 void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst);
-void			process_command_list(command_node *head, t_env_lst *env_lst); 
+// void			process_command_list(command_node *head, t_env_lst *env_lst); 
+int				process_command_list(command_node *head, t_env_lst *env_lst); 
 
 //	Signals
 void            init_signals(void);

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/14 20:14:29 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:40:07 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int set_new_var(t_env_lst **head, char *arg)
 	if (is_var_name_valid(arg, equal_sign_position) == false)
 	{
 		exit_status = build_error_msg("export: ", arg, " : not a valid identifier", true);
-		printf("exit_status sent from 'set_new_var' = %d\n", exit_status);
+		// printf("exit_status sent from 'set_new_var' = %d\n", exit_status);
 		return(exit_status);
 	}
     // Search for an existing node with the same name
@@ -144,10 +144,10 @@ int export_builtin(t_env_lst *env_lst, token *args_lst)
 		{
             if (set_new_var(&env_lst, args_lst->content) == 1)
 			{
-				printf("set_new_var() returned 1\n");
+				// printf("set_new_var() returned 1\n");
 				return (1);
 			}
-			printf("set_new_var() returned 0\n");
+			// printf("set_new_var() returned 0\n");
             args_lst = args_lst->next;
         }
         // print_export_list(&env_lst);

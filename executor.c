@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/14 20:30:42 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/15 18:31:31 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ void execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
 }
 
 /* CARLOS: need to return exit_status, function cannot be void */
-void process_command_list(command_node *head, t_env_lst *env_lst) {
+int process_command_list(command_node *head, t_env_lst *env_lst) { /* CARLOS */
     int node_count = 0;
     command_node *current = head;
     // List of built-in commands (add your built-ins to this list)
@@ -234,7 +234,8 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
 
     if (node_count > 1) {
         // printf("Launching pipex...\n");
-        return;
+        // return; 
+		return (0); /* CARLOS */
     }
 
     if (node_count == 1) {
@@ -248,10 +249,11 @@ void process_command_list(command_node *head, t_env_lst *env_lst) {
         }
         if (is_builtin) {
             // printf("Executing built-in command: %s\n", head->command->content);
-			execute_builtin(head->command->content, head, env_lst);
+			return(execute_builtin(head->command->content, head, env_lst)); /* CARLOS */
         } else {
             // printf("Launching pipex execution process...\n");
             execute_command_node(head, env_lst);
         }
     }
+	return (0); /* CARLOS */
 }
