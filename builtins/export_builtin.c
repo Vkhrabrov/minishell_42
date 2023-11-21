@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/15 18:40:07 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/16 00:37:10 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,12 @@ static int set_new_var(t_env_lst **head, char *arg)
 	exit_status = 0;
 	if (is_var_name_valid(arg, equal_sign_position) == false)
 	{
-		exit_status = build_error_msg("export: ", arg, " : not a valid identifier", true);
+		exit_status = build_error_msg("export: ", arg, ": not a valid identifier", true);
+		// printf ("exit_status = %d\n", exit_status);
+		if (exit_status == 1)
+			exit(1);
 		// printf("exit_status sent from 'set_new_var' = %d\n", exit_status);
-		return(exit_status);
+		// return(exit_status);
 	}
     // Search for an existing node with the same name
     while (*head != NULL)

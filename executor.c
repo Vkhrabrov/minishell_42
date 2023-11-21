@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/21 20:13:49 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/21 20:27:08 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,7 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         free(final_env[i]);
     }
     free(final_env);
+    // printf("i'm here");
     return (0);
 }
 
