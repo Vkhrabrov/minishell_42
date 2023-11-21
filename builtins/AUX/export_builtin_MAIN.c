@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/02 21:55:17 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/19 10:50:39 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,14 @@ char	*test_value = current->var_value;
     }
 }
 
-void	free_env_lst_copy(t_env_lst *env_lst_copy)
+void	free_temp_ptr(t_env_lst *temp_ptr)
 {
     t_env_lst *temp;
 
-    while (env_lst_copy != NULL)
+    while (temp_ptr != NULL)
 	{
-        temp = env_lst_copy;
-        env_lst_copy = env_lst_copy->next;
+        temp = temp_ptr;
+        temp_ptr = temp_ptr->next;
         free(temp->var_name);
 		if (temp->var_value != NULL)
 			free(temp->var_value);
@@ -119,7 +119,7 @@ int	ft_list_size(token *args_lst)
 	return (i);
 }
 
-static void set_new_var(t_env_lst **head, char *arg)
+void set_new_var(t_env_lst **head, char *arg)
 {
 	t_env_lst *new_node;
     size_t equal_sign_position = find_char_index(arg, '=');

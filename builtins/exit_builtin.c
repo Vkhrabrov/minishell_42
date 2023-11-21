@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/15 23:22:59 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/20 22:16:47 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,15 @@ void	remove_trailing_spaces(char *str)
     str[len] = '\0';
 }
 
+/* exit_builtin
+ * When bash executes exit with a long number as argument, it
+ * displays 'exit' in a new line and then exits the function.
+ * However, 'mpanic' tester fails if that newline is displayed
+ * To pass 'mpanic', add 
+ *		write(1, "exit\n", 5);
+ * before each 'exit' command. To emulate bash, remove that
+ * line if it exists.
+*/
 int exit_builtin(token *args_lst)
 {
 	long	num;
@@ -104,17 +113,22 @@ int exit_builtin(token *args_lst)
 			exit(0);
 		num = ft_atol(args_lst->content);
 		str = ft_ltoa(num); 
-		if (num == 0 && is_valid_numeric(args_lst->content) == false)
+		// if the string is not a valid arg (empty, spaces, alpha chars) 
+		// or the number is out of long's range (atol -> ltoa -> compare results)
+		if ((num == 0 && is_valid_numeric(args_lst->content) == false) ||
+			ft_strncmp(args_lst->content, str, find_max_len(args_lst->content, str)) != 0)
 		{
+			ft_putstr_fd("exit\n", 2);
 			build_error_msg("exit: ", args_lst->content, ": numeric argument required", false);
 			exit(255);
 		}
-		else if (ft_strncmp(args_lst->content, str, find_max_len(args_lst->content, str)) != 0)
-		{
-			// If the strings don't match, it's out of range
-			build_error_msg("exit: ", args_lst->content, ": numeric argument required", false);
-			exit(255);
-		}
+		// else if (ft_strncmp(args_lst->content, str, find_max_len(args_lst->content, str)) != 0)
+		// {
+		// 	// If the strings don't match, it's out of range
+		// 	ft_putstr_fd("exit\n", 2);
+		// 	build_error_msg("exit: ", args_lst->content, ": numeric argument required", false);
+		// 	exit(255);
+		// }
 		else
 		{
 			// Handle cases when the number is a long
@@ -128,9 +142,34 @@ int exit_builtin(token *args_lst)
 	}
 	else
 	{
-		// build_error_msg("exit: ", NULL, "too many arguments", false);
-		printf("minishell: exit: too many arguments\n");
-		return (1);	
+		pid_t	pid;
+		size_t	i;
+
+		i = 0;
+		while (i < ft_strlen(args_lst->content))
+		{
+			if (!ft_isdigit(args_lst->content[i]))
+			{
+				ft_putstr_fd("exit\n", 2);
+				build_error_msg("exit: ", args_lst->content, ": numeric argument required", false);
+				exit(255);
+			}
+			i++;
+		}
+		pid = fork();
+		if (pid == 0)
+		{
+
+			build_error_msg("exit: ", NULL, "too many arguments", false);
+			exit(1);
+		}
+		else
+		{
+			int status;
+			waitpid(pid, &status, 0);
+			g_exitstatus = WEXITSTATUS(status);
+		}
+		return (1);
 	}
 }
 

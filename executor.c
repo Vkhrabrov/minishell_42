@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 23:29:00 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/19 11:46:36 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,7 +331,7 @@ void	process_command_list(command_node *head, t_env_lst *env_lst) {
         } 
 		else 
 		{
-            printf("Launching single command execution process...\n");
+            // printf("Launching single command execution process...\n");
             if (execute_command_node(head, env_lst) == 1)
                 head->exit_status = 1;
             else   

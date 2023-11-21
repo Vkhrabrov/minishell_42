@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 22:11:13 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/12 13:13:54 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/16 21:04:46 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void print_list(token *args_lst)
     }
 }
 
-int	echo_builtin(token *args_lst)
+int	echo_builtin(t_env_lst *env_lst, token *args_lst)
 {
 	bool	is_valid_option;
 
@@ -90,6 +90,8 @@ int	echo_builtin(token *args_lst)
 	// print_list(args_lst);
 	if (!args_lst)
 		printf("\n");
+	else if (*args_lst->content == '~' && !args_lst->content[1])
+		printf("%s\n", get_env_var_value(env_lst, "HOME"));
 	else
 	{
 		// while (ft_strncmp(args_lst->content, "-n", find_max_len(args_lst->content, "-n")) == 0)

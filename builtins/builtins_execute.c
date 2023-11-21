@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/15 23:23:53 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/20 22:57:39 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	find_max_len(char *str1, char *str2)
 	return (max_len);
 }
 
-void	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
+int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 {
 	// pid_t pid = fork();
 
@@ -39,11 +39,11 @@ void	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 
 		exit_status = 127;	//	bash's exit status value if command not found
 		if (ft_strncmp(cmd_name, "echo", find_max_len(cmd_name, "echo")) == 0)	
-			exit_status = echo_builtin(cmd_node->args);
+			exit_status = echo_builtin(env_lst, cmd_node->args);
 		else if (ft_strncmp(cmd_name, "pwd", find_max_len(cmd_name, "pwd")) == 0)
-			exit_status = pwd_builtin(cmd_node->args);
+			exit_status = pwd_builtin(env_lst);
 		else if (ft_strncmp(cmd_name, "env", find_max_len(cmd_name, "env")) == 0)
-			exit_status = env_builtin(env_lst);
+			exit_status = env_builtin(env_lst, cmd_node->args);
 		else if (ft_strncmp(cmd_name, "cd", find_max_len(cmd_name, "cd")) == 0)
 			exit_status = cd_builtin(env_lst, cmd_node->args);
 		else if (ft_strncmp(cmd_name, "export", find_max_len(cmd_name, "export")) == 0)
@@ -54,6 +54,8 @@ void	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 		// 	exit_status = exit_builtin(cmd_node->args);
 	// printf("exit_status received = [%d]\n", exit_status);
 		// return (exit_status);
+		g_exitstatus = exit_status;
+		return (exit_status);
 	// }
 	// else
 	// {

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/03 00:41:30 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/19 10:50:39 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,14 @@ void	print_export_list(t_env_lst **env_lst)
     }
 }
 
-void	free_env_lst_copy(t_env_lst *env_lst_copy)
+void	free_temp_ptr(t_env_lst *temp_ptr)
 {
     t_env_lst *temp;
 
-    while (env_lst_copy != NULL)
+    while (temp_ptr != NULL)
 	{
-        temp = env_lst_copy;
-        env_lst_copy = env_lst_copy->next;
+        temp = temp_ptr;
+        temp_ptr = temp_ptr->next;
         free(temp->var_name);
 		if (temp->var_value != NULL)
 			free(temp->var_value);

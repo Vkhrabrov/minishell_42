@@ -6,26 +6,31 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/07 23:37:30 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/19 20:32:02 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-/* find_char_index called by
+/* find_char_index() called in
 	- env_list_creation()
 	- export_builtin()
 */
 
-/* find_max_len called by
+/* find_max_len() called in
 	- builtins_execute.c
 	- exit_builtin.c
 	- export_builtin.c
 */
 
-/* ft_list_size called by
-	- export_builtin()
-	- exit_builtin()
+/* ft_list_size() called in
+	- export_builtin.c
+	- exit_builtin.c
+*/
+
+/* get_env_var_value() called in
+	- echo_builtin.c
+	- cd_builtin.c
 */
 int	ft_list_size(token *args_lst)
 {
@@ -51,6 +56,35 @@ void	free_args_list(token *args_lst)
 		free(current);
         args_lst = args_lst->next;
     }	
+}
+
+char	*get_env_var_value(t_env_lst *env_lst, char *str)
+{
+	while (env_lst != NULL)
+	{
+		if (ft_strncmp(env_lst->var_name, str, find_max_len(env_lst->var_name, str)) == 0)
+			return(env_lst->var_value);
+		env_lst = env_lst->next;
+	}
+	return (str);
+}
+
+void	update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value) 
+{
+	t_env_lst	*temp_ptr;
+
+	temp_ptr = env_lst;
+	while (temp_ptr)
+	{
+		if (ft_strncmp(temp_ptr->var_name, sought_name, find_max_len(temp_ptr->var_name, sought_name)) == 0)
+		{
+			free(temp_ptr->var_value);
+			temp_ptr->var_value = strdup(new_value);
+			return ;
+		}
+		temp_ptr = temp_ptr->next;
+	}
+	free(temp_ptr);
 }
 
 long	ft_atol(const char *str)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list_creation.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 19:55:53 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/18 01:52:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ void add_env_var_to_list(t_env_lst **head, const char *envp_line)
 	else
 	{
         new_node->var_name = ft_substr(envp_line, 0, equal_sign_position);
-		// if (ft_strncmp(new_node->var_name, "OLDPWD", 6) == 0)
-        // 	new_node->var_value = NULL;		
-		// else	
+		if (ft_strncmp(new_node->var_name, "OLDPWD", find_max_len(new_node->var_name, "OLDPWD")) == 0)
+        	new_node->var_value = NULL;		
+		else	
         	new_node->var_value = ft_substr(envp_line, equal_sign_position + 1, envp_line_len - equal_sign_position);
     }
 	new_node->next = NULL;

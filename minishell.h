@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 22:26:20 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/20 22:54:14 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,11 @@ void            disable_control_chars_echo();
 void            restore_terminal_settings();
 
 //	Builtins
-void			execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
-int				echo_builtin(token *args_lst);
-int				pwd_builtin(token *args_lst);
-int				env_builtin(t_env_lst *env_lst);
-// int 			env_builtin(t_env_lst *env_lst, token *search_var);
+int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
+int				echo_builtin(t_env_lst *env_lst, token *args_lst);
+// int			pwd_builtin(token *args_lst);
+int				pwd_builtin(t_env_lst *env_lst);
+int				env_builtin(t_env_lst *env_lst, token *args_lst);
 int				cd_builtin(t_env_lst *env_lst, token *args_lst);
 int				export_builtin(t_env_lst *env_lst, token *args_lst);
 int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
@@ -145,6 +145,8 @@ int				find_max_len(char *str1, char *str2);
 long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
+char			*get_env_var_value(t_env_lst *env_lst, char *str);
+void			update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
 
 //	Builtins errors
 int				build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
