@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 19:59:13 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:48:31 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv, char **envp)
         head = parse_line(tokens);
         print_command_node(head);
         expand_environment_variables(head, &env_lst);
-        // print_command_node(head);
+        print_command_node(head);
         process_command_list(head, env_lst); 
         
         // free_command_node(head);
@@ -88,5 +88,5 @@ int main(int argc, char **argv, char **envp)
     }
 
     // restore_terminal_settings();    //  Restore terminal settings before exiting
-    return (0);
+    return (g_exitstatus);
 }

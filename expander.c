@@ -6,73 +6,85 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/12 20:18:37 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/20 23:45:56 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-token	*create_new_token(char *content, tokentype type)
-{
-	token	*new_token;
+token *create_new_token(char *content, tokentype type) {
+    token *new_token = (token *)malloc(sizeof(token));
+    if (!new_token) {
+        // Handle malloc failure
+        return NULL;
+    }
 
-	new_token = (token *)malloc(sizeof(token));
-	new_token->content = ft_strdup(content);
-	new_token->type = type;
-	new_token->next = NULL;
-	return (new_token);
+    new_token->content = ft_strdup(content);
+    if (!new_token->content) {
+        // Handle strdup failure
+        free(new_token);
+        return NULL;
+    }
+
+    new_token->type = type;
+    new_token->next = NULL;
+    return new_token;
 }
 
-void	replace_env_with_token(command_node *current_command, char *env_value)
-{
-	tokentype	type;
-	token		*new_token;
+void replace_env_with_token(command_node *current_command, char *env_value) {
+    tokentype type = current_command->command ? T_ARG : T_CMD;
+    token *new_token = create_new_token(env_value, type);
+    if (!new_token) {
+        // Handle create_new_token failure
+        return;
+    }
 
-	type = T_CMD;
-	if (current_command->command)
-		type = T_ARG;
-	new_token = create_new_token(env_value, type);
-	if (new_token->type == T_ARG)
-	{
-		new_token->next = current_command->args;
-		current_command->args = new_token;
-	}
-	else
-		current_command->command = new_token;
-	free(current_command->var_expansion->content);
-	free(current_command->var_expansion);
-	current_command->var_expansion = NULL;
-	free(current_command->env_variable->content);
-	free(current_command->env_variable);
-	current_command->env_variable = NULL;
+    if (type == T_ARG) {
+        new_token->next = current_command->args;
+        current_command->args = new_token;
+    } else {
+        new_token->next = current_command->command;
+        current_command->command = new_token;
+    }
+
+    if (current_command->var_expansion) {
+        free(current_command->var_expansion->content);
+        free(current_command->var_expansion);
+        current_command->var_expansion = NULL;
+    }
+
+    if (current_command->env_variable) {
+        free(current_command->env_variable->content);
+        free(current_command->env_variable);
+        current_command->env_variable = NULL;
+    }
 }
 
-void	expand_environment_variables(command_node *cmds, t_env_lst **env_lst)
-{
-	command_node	*current_command;
-	t_env_lst		*current_env;
+void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
+    command_node *current_command = cmds;
+    while (current_command) {
+        if (current_command->env_variable) {
+            t_env_lst *current_env = *env_lst;
+            while (current_env) {
+                if (ft_strncmp(current_env->var_name, current_command->env_variable->content, ft_strlen(current_command->env_variable->content)) == 0) {
+                    replace_env_with_token(current_command, current_env->var_value);
+                    break;
+                }
+                current_env = current_env->next;
+            }
+        }
 
-	current_command = cmds;
-	while (current_command)
-	{
-		if (current_command->env_variable)
-		{
-			current_env = *env_lst;
-			while (current_env)
-			{
-				if (ft_strncmp(current_env->var_name,
-						current_command->env_variable->content,
-						ft_strlen(current_command->env_variable->content))
-					== 0)
-				{
-					replace_env_with_token(current_command,
-						current_env->var_value);
-					break ;
-				}
-				current_env = current_env->next;
-			}
-		}
-		// else if (current_command->env_variable)
-		current_command = current_command->next;
-	}
+        if (current_command->ex_status) {
+            char *exit_status_str = ft_itoa(g_exitstatus);
+            if (!exit_status_str) {
+                // Handle ft_itoa failure
+                current_command = current_command->next;
+                continue;
+            }
+            replace_env_with_token(current_command, exit_status_str);
+            free(exit_status_str);
+        }
+
+        current_command = current_command->next;
+    }
 }

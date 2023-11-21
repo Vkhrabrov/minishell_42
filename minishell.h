@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 19:59:54 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/20 22:27:06 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef enum
 }             tokentype;
 
 typedef struct token token;
+int g_exitstatus;
 
 struct token
 {
