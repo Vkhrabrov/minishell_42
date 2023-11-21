@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/21 20:28:54 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/21 20:30:57 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void			free_env_list(t_env_lst *env_lst);
 void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
-void			process_command_list(command_node *head, t_env_lst *env_lst); 
+int 			process_command_list(command_node *head, t_env_lst *env_lst); 
 
 //	Signals
 void            init_signals(void);
