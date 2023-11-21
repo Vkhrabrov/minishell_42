@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/20 23:23:37 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/21 20:35:09 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,5 @@ int main(int argc, char **argv, char **envp)
     }
 
     // restore_terminal_settings();    //  Restore terminal settings before exiting
-	// printf("exit final status: %d\n", g_exitstatus);
     return (g_exitstatus);
 }

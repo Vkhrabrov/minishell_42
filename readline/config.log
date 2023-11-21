@@ -36,6 +36,7 @@ Load average: 1.36, Mach factor: 4.63
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
 
+PATH: /Users/vkhrabro/.brew/bin/
 PATH: /usr/local/bin/
 PATH: /usr/bin/
 PATH: /bin/
@@ -44,6 +45,7 @@ PATH: /sbin/
 PATH: /Applications/VMware Fusion.app/Contents/Public/
 PATH: /usr/local/go/bin/
 PATH: /usr/local/munki/
+PATH: /Users/vkhrabro/.brew/bin/
 
 
 ## ----------- ##
@@ -3063,7 +3065,7 @@ bash_cv_wcwidth_broken=no
 AR='ar'
 ARFLAGS='cr'
 BRACKETED_PASTE='-DBRACKETED_PASTE_DEFAULT=1'
-BUILD_DIR='/Users/ccarrace/Documents/42Cursus/minishell_42/readline'
+BUILD_DIR='/Users/vkhrabro/Projects/minishell/readline'
 CC='gcc'
 CFLAGS='-g -O2 -Wno-parentheses -Wno-format-security -Wno-tautological-constant-out-of-range-compare'
 CPP='gcc -E'
