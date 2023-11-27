@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 20:53:39 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/18 01:52:42 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/26 14:38:39 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,6 @@
 //     env_lst->var_name = NULL;
 //     env_lst->var_value = NULL;
 // }
-
-size_t find_char_index(const char *str, char target) 
-{
-    size_t index;
-    
-    index = 0;
-    while (str[index] != '\0' && str[index] != target)
-        index++;
-    return index;
-}
 
 void add_env_var_to_list(t_env_lst **head, const char *envp_line)
 {

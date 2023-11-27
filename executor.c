@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/21 20:34:57 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/22 19:30:24 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ char **convert_env_list_to_array(t_env_lst *env_lst) {
             perror("malloc");
             exit(EXIT_FAILURE);
         }
-        // snprintf(env_array[i], length, "%s=%s", env_lst->var_name, env_lst->var_value);
+        snprintf(env_array[i], length, "%s=%s", env_lst->var_name, env_lst->var_value);
         
         i++;
         env_lst = env_lst->next;

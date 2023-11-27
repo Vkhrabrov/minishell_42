@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/21 20:35:17 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/28 00:13:32 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@
 #include <stdbool.h>
 #include <errno.h>
 
+enum shell_mode
+{
+    INTERACTIVE,
+    NON_INTERACTIVE
+};
 
 typedef enum 
 {
@@ -132,7 +137,6 @@ void            restore_terminal_settings();
 //	Builtins
 int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
 int				echo_builtin(t_env_lst *env_lst, token *args_lst);
-// int			pwd_builtin(token *args_lst);
 int				pwd_builtin(t_env_lst *env_lst);
 int				env_builtin(t_env_lst *env_lst, token *args_lst);
 int				cd_builtin(t_env_lst *env_lst, token *args_lst);
@@ -147,7 +151,7 @@ long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
 char			*get_env_var_value(t_env_lst *env_lst, char *str);
-void			update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
+int				update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
 
 //	Builtins errors
 int				build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);

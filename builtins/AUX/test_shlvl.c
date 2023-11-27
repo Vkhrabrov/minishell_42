@@ -32,7 +32,6 @@ int main(int argc, char *argv[], char *envp[]) {
     return 0;
 }
 
-
 void	update_shlvl(void)
 {
 	char	*value;

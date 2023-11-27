@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 20:29:41 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/10/31 23:17:43 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/26 14:17:46 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 /*
  * We pass a pointer to the pointer of the head of the list because we may need 
  * to modify the head of the list if the first node matches. If we only pass a 
- * pointer to the list (t_env_lst *env_lst), you won't be able to update the 
- * head of the list if you need to remove the first. 
+ * pointer to the list (t_env_lst *env_lst), we won't be able to update the 
+ * head of the list if we need to remove the first node. 
 */
 int unset_builtin(t_env_lst **env_lst, token *args_lst)
 {
