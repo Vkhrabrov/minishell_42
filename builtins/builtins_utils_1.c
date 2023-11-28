@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/28 00:14:45 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/28 20:16:40 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value)
 		if (ft_strncmp(temp_ptr->var_name, sought_name, find_max_len(temp_ptr->var_name, sought_name)) == 0)
 		{
 			free(temp_ptr->var_value);
-			temp_ptr->var_value = strdup(new_value);
+			temp_ptr->var_value = ft_strdup(new_value);
 			return (0);
 		}
 		temp_ptr = temp_ptr->next;
