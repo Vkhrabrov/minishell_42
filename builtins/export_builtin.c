@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/16 00:37:10 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/29 00:34:09 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@ void	print_export_list(t_env_lst **env_lst)
     }
 }
 
+/* is_var_name_valid()
+ * 
+ *	- Only alphabetical characters or underscore allowed 
+ *		at the beginning of the name
+ *	- Only alphanumerical characters or underscore allowed
+ *		in the rest of the name
+ */
 static bool	is_var_name_valid(char *arg, int equal_sign_position)
 {
 	int	i;
