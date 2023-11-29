@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/28 00:13:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/30 00:13:38 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,16 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include <errno.h>
+
+#define MS_TOOMANYARG	"too many arguments"
+#define MS_NOTSET 		" not set"
+#define MS_NOTNUMARG	": numeric argument required"
+#define MS_INVALDOPT	": invalid option"
+#define MS_NOFILEDIR	": No such file or directory"
+#define MS_NOTDIR		": Not a directory"
+#define MS_ACCESFORB	": Permission denied"
+#define MS_LONGNAME		": File name too long"
+#define MS_INVALIDID	": not a valid identifier"
 
 enum shell_mode
 {
@@ -99,6 +109,7 @@ typedef struct  s_env_lst
 }
 t_env_lst;
 
+
 //	Vadim's intrincate stuff
 command_node*   parse_line(token *tokens);
 void            print_command_node(command_node* head);
@@ -145,7 +156,12 @@ int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
 int				exit_builtin(token *args_lst);
 void			free_args_list(token *args_lst);
 
-//	Builtins utils
+//	Echo specific utilities
+bool			is_valid_numeric(const char *str);
+void			remove_leading_zeros(char *str);
+void			remove_trailing_spaces(char *str);
+
+//	Builtins general utilities
 int				find_max_len(char *str1, char *str2);
 long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
