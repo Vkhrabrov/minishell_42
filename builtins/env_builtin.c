@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/29 21:18:58 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/29 23:14:07 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	env_builtin(t_env_lst *env_lst, token *args_lst)
 	t_env_lst	*current;
 
 	if (ft_list_size(args_lst) > 0)
-		return (build_error_msg("env: ", args_lst->content, \
-				": No such file or directory", false));
+		return (build_error_msg("env: ", args_lst->content, MS_NOFILEDIR, \
+			false));
 	else
 	{
 		current = env_lst;
