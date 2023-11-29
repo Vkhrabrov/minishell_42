@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/28 20:16:40 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/29 19:28:20 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,33 @@
 // }
 
 /* find_char_index() called in
-	env_list_creation()		export_builtin()
+	env_list_creation()	export_builtin()
+*/
+// size_t find_char_index(const char *str, char target) 
+// {
+//     size_t index;
+    
+//     index = 0;
+//     while (str[index] != '\0' && str[index] != target)
+//         index++;
+//     return index;
+// }
+
+/* find_char_index() called in
+	echo_builtin()		env_list_creation()		export_builtin()	
 */
 size_t find_char_index(const char *str, char target) 
 {
     size_t index;
     
     index = 0;
-    while (str[index] != '\0' && str[index] != target)
+    while (str[index] != '\0')
+	{
+		if (str[index] == target)
+			return (index);
         index++;
-    return index;
+	}
+	return (0);
 }
 
 /* find_max_len() called in
