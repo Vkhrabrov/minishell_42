@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/30 00:13:38 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/01 01:19:03 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <stdbool.h>
 #include <errno.h>
 
+// Error messages definition
 #define MS_TOOMANYARG	"too many arguments"
 #define MS_NOTSET 		" not set"
 #define MS_NOTNUMARG	": numeric argument required"
