@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/01 01:19:03 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/01 21:17:12 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,11 @@ void			free_args_list(token *args_lst);
 bool			is_valid_numeric(const char *str);
 void			remove_leading_zeros(char *str);
 void			remove_trailing_spaces(char *str);
+
+//	Export specific utilities
+void			print_export_list(t_env_lst **env_lst);
+bool			is_var_name_valid(char *arg, int equal_sign_position);
+t_env_lst 		*insert_sorted(t_env_lst **head, t_env_lst *new_node);
 
 //	Builtins general utilities
 int				find_max_len(char *str1, char *str2);
