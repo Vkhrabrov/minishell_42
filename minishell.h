@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/11/23 22:47:03 by vkhrabro         ###   ########.fr       */
+=======
+/*   Updated: 2023/12/03 13:57:28 by ccarrace         ###   ########.fr       */
+>>>>>>> origin/master
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +32,22 @@
 #include <stdbool.h>
 #include <errno.h>
 
+// Error messages definition
+#define MS_TOOMANYARG	"too many arguments"
+#define MS_NOTSET 		" not set"
+#define MS_NOTNUMARG	": numeric argument required"
+#define MS_INVALDOPT	": invalid option"
+#define MS_NOFILEDIR	": No such file or directory"
+#define MS_NOTDIR		": Not a directory"
+#define MS_ACCESFORB	": Permission denied"
+#define MS_LONGNAME		": File name too long"
+#define MS_BADID	": not a valid identifier"
+
+enum shell_mode
+{
+    INTERACTIVE,
+    NON_INTERACTIVE
+};
 
 typedef enum 
 {
@@ -96,6 +116,7 @@ typedef struct  s_env_lst
 }
 t_env_lst;
 
+
 //	Vadim's intrincate stuff
 command_node*   parse_line(token *tokens);
 void            print_command_node(command_node* head);
@@ -135,7 +156,6 @@ void            restore_terminal_settings();
 //	Builtins
 int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);
 int				echo_builtin(t_env_lst *env_lst, token *args_lst);
-// int			pwd_builtin(token *args_lst);
 int				pwd_builtin(t_env_lst *env_lst);
 int				env_builtin(t_env_lst *env_lst, token *args_lst);
 int				cd_builtin(t_env_lst *env_lst, token *args_lst);
@@ -144,13 +164,29 @@ int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
 int				exit_builtin(token *args_lst);
 void			free_args_list(token *args_lst);
 
-//	Builtins utils
+//	Cd specific utilities
+int				is_path_null(t_env_lst *env_lst, char *path);
+int				are_hyphens_valid(t_env_lst *env_lst, char *path);
+bool 			is_arg_properly_quoted(char *arg);
+char			*get_curr_work_dir();
+
+//	Echo specific utilities
+bool			is_valid_numeric(const char *str);
+void			remove_leading_zeros(char *str);
+void			remove_trailing_spaces(char *str);
+
+//	Export specific utilities
+void			print_export_list(t_env_lst **env_lst);
+bool			is_var_name_valid(char *arg, int equal_sign_position);
+t_env_lst 		*insert_sorted(t_env_lst **head, t_env_lst *new_node);
+
+//	Builtins general utilities
 int				find_max_len(char *str1, char *str2);
 long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
 char			*get_env_var_value(t_env_lst *env_lst, char *str);
-void			update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
+int				update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
 
 //	Builtins errors
 int				build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);

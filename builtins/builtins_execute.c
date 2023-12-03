@@ -6,31 +6,19 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/11/21 20:58:56 by vkhrabro         ###   ########.fr       */
+=======
+/*   Updated: 2023/12/03 12:40:46 by ccarrace         ###   ########.fr       */
+>>>>>>> origin/master
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-
-int	find_max_len(char *str1, char *str2)
-{
-	int	len1;
-	int	len2;
-	int	max_len;
-
-	len1 = ft_strlen(str1);
-	len2 = ft_strlen(str2);
-	if (len1 > len2)
-		max_len = len1;
-	else
-		max_len = len2;
-	return (max_len);
-}
-
 int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 {
+<<<<<<< HEAD
 	// pid_t pid = fork();
 
 	// if (pid == 0)
@@ -64,4 +52,27 @@ int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 	// 	g_exitstatus = WEXITSTATUS(status);
 	// 	printf("parent status = %d\n", g_exitstatus);
 	// }
+=======
+	char	*name;
+	int		exit_status;
+
+	name = cmd_name;
+	exit_status = 127;
+	if (ft_strncmp(name, "echo", find_max_len(name, "echo")) == 0)
+		exit_status = echo_builtin(env_lst, cmd_node->args);
+	else if (ft_strncmp(name, "pwd", find_max_len(name, "pwd")) == 0)
+		exit_status = pwd_builtin(env_lst);
+	else if (ft_strncmp(name, "env", find_max_len(name, "env")) == 0)
+		exit_status = env_builtin(env_lst, cmd_node->args);
+	else if (ft_strncmp(name, "cd", find_max_len(name, "cd")) == 0)
+		exit_status = cd_builtin(env_lst, cmd_node->args);
+	else if (ft_strncmp(name, "export", find_max_len(name, "export")) == 0)
+		exit_status = export_builtin(env_lst, cmd_node->args);
+	else if (ft_strncmp(name, "unset", find_max_len(name, "unset")) == 0)
+		exit_status = unset_builtin(&env_lst, cmd_node->args);
+	else if (ft_strncmp(name, "exit", find_max_len(name, "exit")) == 0)
+		exit_status = exit_builtin(cmd_node->args);
+	g_exitstatus = exit_status;
+	return (exit_status);
+>>>>>>> origin/master
 }

@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/11/24 00:16:52 by vkhrabro         ###   ########.fr       */
+=======
+/*   Updated: 2023/11/23 23:42:12 by ccarrace         ###   ########.fr       */
+>>>>>>> origin/master
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +58,7 @@ int main(int argc, char **argv, char **envp)
     t_env_lst  *env_lst = NULL;
     (void)argc;
     (void)argv;
+<<<<<<< HEAD
     g_exitstatus = 0;
     random_fd = open("fd_test", O_TRUNC | O_CREAT | O_RDWR, 0644);
     if (random_fd == -1)
@@ -62,6 +67,9 @@ int main(int argc, char **argv, char **envp)
         exit(EXIT_FAILURE);
     }
     close(random_fd);
+=======
+
+>>>>>>> origin/master
     // env_lst = malloc(sizeof(t_env_lst));
     
     // t_env_init(env_lst);
@@ -69,11 +77,28 @@ int main(int argc, char **argv, char **envp)
     // print_env_lst(&env_lst);
     disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
     init_signals();
+
+	// enum shell_mode mode;
+	// if (isatty(STDIN_FILENO))
+	// {
+	// 	mode = INTERACTIVE;
+	// 	printf("out: INTERACTIVE MODE\n");
+	// }
+	// else
+	// {
+	// 	mode = NON_INTERACTIVE;
+	// 	printf("out: NON INTERACTIVE MODE\n");
+	// }
+	
     while (1) 
     {
         char *input = readline("minishell> ");
         if (!input) 
 			break;
+		// if (mode == INTERACTIVE)
+		// 	printf("in: INTERACTIVE MODE\n");
+		// else
+		// 	printf("in: NON INTERACTIVE MODE\n");
         tokens = tokenization(input);
         head = parse_line(tokens);
         // print_command_node(head);
