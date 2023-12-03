@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:38:44 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/26 14:39:57 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 12:51:02 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,14 @@ static char	*ft_long_min(void)
 	return (str);
 }
 
+	// LL suffix ensures number is interpreted 
+	// as a long integer literal.
 char	*ft_ltoa(long n)
 {
 	long	len;
 	char	*str;
 
 	len = ft_long_length(n);
-	// LL suffix ensures number is interpreted as a long integer literal.
 	if (n == -9223372036854775807LL - 1)
 		return (ft_long_min());
 	str = malloc(sizeof(char) * (len + 1));
