@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/26 14:21:44 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 12:40:46 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 {
 	char	*name;
 	int		exit_status;
-	
+
 	name = cmd_name;
 	exit_status = 127;
 	if (ft_strncmp(name, "echo", find_max_len(name, "echo")) == 0)
