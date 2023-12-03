@@ -6,7 +6,7 @@
 #    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/12/03 11:22:10 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/12/03 11:55:49 by ccarrace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ READLINE = readline/
 
 SRC_F:= minishell signals parser lexer_utility_functions lexer_utility_functions_2 \
 		lexer env_list_creation expander executor \
-		builtins/cd_builtin builtins/cd_utilities builtins/echo_builtin \
+		builtins/cd_builtin builtins/cd_utils builtins/echo_builtin \
 		builtins/exit_builtin builtins/exit_utils builtins/env_builtin \
 		builtins/export_builtin builtins/export_utils builtins/pwd_builtin \
 		builtins/unset_builtin builtins/builtins_errors builtins/builtins_execute \
