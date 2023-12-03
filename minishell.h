@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/01 21:17:12 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 11:20:41 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,12 @@ int				export_builtin(t_env_lst *env_lst, token *args_lst);
 int 			unset_builtin(t_env_lst **env_lst, token *args_lst);
 int				exit_builtin(token *args_lst);
 void			free_args_list(token *args_lst);
+
+//	Cd specific utilities
+int				is_path_null(t_env_lst *env_lst, char *path);
+int				are_hyphens_valid(t_env_lst *env_lst, char *path);
+bool 			is_arg_properly_quoted(char *arg);
+char			*get_curr_work_dir();
 
 //	Echo specific utilities
 bool			is_valid_numeric(const char *str);
