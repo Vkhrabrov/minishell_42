@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/01 21:49:19 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 13:57:28 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static int	set_new_var(t_env_lst **head, char *arg)
 	equal_sign_position = find_char_index(arg, '=');
 	arg_len = ft_strlen(arg);
 	if (!is_var_name_valid(arg, equal_sign_position))
-		return (build_error_msg("export: ", arg, MS_INVALIDID, true));
+		return (build_error_msg("export: ", arg, MS_BADID, true));
 	while (*head != NULL)
 	{
 		if (ft_strncmp((*head)->var_name, arg, equal_sign_position) == 0
