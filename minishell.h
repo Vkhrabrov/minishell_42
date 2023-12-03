@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/03 11:20:41 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 13:57:28 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 #define MS_NOTDIR		": Not a directory"
 #define MS_ACCESFORB	": Permission denied"
 #define MS_LONGNAME		": File name too long"
-#define MS_INVALIDID	": not a valid identifier"
+#define MS_BADID	": not a valid identifier"
 
 enum shell_mode
 {
