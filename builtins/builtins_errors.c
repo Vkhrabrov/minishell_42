@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 19:43:51 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/17 20:02:21 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 12:38:18 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,69 +31,41 @@ char	*quote_arg(char *arg)
 	return (arg);
 }
 
-// int	build_error_msg(char *command_name, char *arg, char *err_description, \
-// 						bool quoted)
-// {
-// 	char	*quoted_arg;
-// 	char	*error_msg_first_part;
-// 	char	*error_msg_second_part;
-// 	char	*full_error_msg;
-
-// 	error_msg_first_part = NULL;
-// 	error_msg_second_part = NULL;
-// 	full_error_msg = NULL;
-// 	if (quoted == true)
-// 	{
-// 		quoted_arg = quote_arg(arg);
-// 		error_msg_first_part = ft_strjoin("minishell: ", command_name);
-// 		error_msg_second_part = ft_strjoin(error_msg_first_part, quoted_arg);
-// 		full_error_msg = ft_strjoin(error_msg_second_part, err_description);
-// 	}
-// 	else
-// 	{
-// 		error_msg_first_part = ft_strjoin("minishell: ", command_name);
-// 		error_msg_second_part = ft_strjoin(error_msg_first_part, arg);
-// 		full_error_msg = ft_strjoin(error_msg_second_part, err_description);
-// 	}
-// 	write(STDERR_FILENO, full_error_msg, ft_strlen(full_error_msg));
-// 	write(STDERR_FILENO, "\n", 1);
-// 	free(error_msg_first_part);
-// 	free(error_msg_second_part);
-// 	free(full_error_msg);
-// 	return(1);
-// }
+void	print_and_free(char *error_msg_part_one, char *error_msg_part_two, \
+						char *full_error_msg)
+{
+	ft_putstr_fd(full_error_msg, STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
+	free(error_msg_part_one);
+	free(error_msg_part_two);
+	free(full_error_msg);
+}
 
 int	build_error_msg(char *command_name, char *arg, char *err_description, \
 						bool quoted)
 {
 	char	*quoted_arg;
-	char	*error_msg_first_part;
-	char	*error_msg_second_part;
+	char	*error_msg_part_one;
+	char	*error_msg_part_two;
 	char	*full_error_msg;
 
-	error_msg_first_part = NULL;
-	error_msg_second_part = NULL;
+	error_msg_part_one = NULL;
+	error_msg_part_two = NULL;
 	full_error_msg = NULL;
-	error_msg_first_part = ft_strjoin("minishell: ", command_name);
+	error_msg_part_one = ft_strjoin("minishell: ", command_name);
 	if (arg != NULL)
 	{
 		if (quoted == true)
 		{
 			quoted_arg = quote_arg(arg);
-			error_msg_second_part = ft_strjoin(error_msg_first_part, quoted_arg);
+			error_msg_part_two = ft_strjoin(error_msg_part_one, quoted_arg);
 		}
 		else
-			error_msg_second_part = ft_strjoin(error_msg_first_part, arg);
-			full_error_msg = ft_strjoin(error_msg_second_part, err_description);
+			error_msg_part_two = ft_strjoin(error_msg_part_one, arg);
+		full_error_msg = ft_strjoin(error_msg_part_two, err_description);
 	}
 	else
-		full_error_msg = ft_strjoin(error_msg_first_part, err_description);
-	ft_putstr_fd(full_error_msg, STDERR_FILENO);
-	ft_putstr_fd("\n", STDERR_FILENO);	
-	// write(STDERR_FILENO, full_error_msg, ft_strlen(full_error_msg));
-	// write(STDERR_FILENO, "\n", 1);
-	free(error_msg_first_part);
-	free(error_msg_second_part);
-	free(full_error_msg);
-	return(1);
+		full_error_msg = ft_strjoin(error_msg_part_one, err_description);
+	print_and_free(error_msg_part_one, error_msg_part_two, full_error_msg);
+	return (EXIT_FAILURE);
 }
