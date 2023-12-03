@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/11/24 00:16:52 by vkhrabro         ###   ########.fr       */
-=======
-/*   Updated: 2023/11/23 23:42:12 by ccarrace         ###   ########.fr       */
->>>>>>> origin/master
+/*   Updated: 2023/12/03 20:26:56 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +54,6 @@ int main(int argc, char **argv, char **envp)
     t_env_lst  *env_lst = NULL;
     (void)argc;
     (void)argv;
-<<<<<<< HEAD
     g_exitstatus = 0;
     random_fd = open("fd_test", O_TRUNC | O_CREAT | O_RDWR, 0644);
     if (random_fd == -1)
@@ -67,9 +62,6 @@ int main(int argc, char **argv, char **envp)
         exit(EXIT_FAILURE);
     }
     close(random_fd);
-=======
-
->>>>>>> origin/master
     // env_lst = malloc(sizeof(t_env_lst));
     
     // t_env_init(env_lst);
