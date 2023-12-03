@@ -6,11 +6,13 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/17 23:17:35 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/11/23 21:54:11 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 
 void	handle_quoted_string(char c, char *input, tokenizer_state *state)
 {
@@ -104,6 +106,12 @@ void	handle_special_tokens(char c, char *input, tokenizer_state *state)
 	else if (if_redir(c))
 		handle_redirection(c, input, state);
 }
+void print_tokens(const token *tokens) {
+    while (tokens != NULL) {
+        printf("Token: '%s', Type: %s\n", tokens->content, token_type_to_string(tokens->type));
+        tokens = tokens->next;
+    }
+}
 
 token	*tokenization(char *input)
 {
@@ -127,5 +135,6 @@ token	*tokenization(char *input)
 			handle_commands_and_args(input, &state);
 		state.i++;
 	}
+	// print_tokens(state.tokens);
 	return (state.tokens);
 }

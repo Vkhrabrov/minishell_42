@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/23 23:42:12 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 20:26:56 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,20 @@ extern int rl_eof_found;
 
 int main(int argc, char **argv, char **envp)
 {
+    int random_fd;
     token *tokens = NULL;
     command_node *head = NULL;
     t_env_lst  *env_lst = NULL;
     (void)argc;
     (void)argv;
-
+    g_exitstatus = 0;
+    random_fd = open("fd_test", O_TRUNC | O_CREAT | O_RDWR, 0644);
+    if (random_fd == -1)
+    {
+        perror("");
+        exit(EXIT_FAILURE);
+    }
+    close(random_fd);
     // env_lst = malloc(sizeof(t_env_lst));
     
     // t_env_init(env_lst);
@@ -105,5 +113,6 @@ int main(int argc, char **argv, char **envp)
     }
 
     // restore_terminal_settings();    //  Restore terminal settings before exiting
+    // printf("%d\n", g_exitstatus);
     return (g_exitstatus);
 }

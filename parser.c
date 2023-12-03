@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/11/20 22:50:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/11/22 23:31:34 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void print_command_node(command_node* node)
             printf("  HERE_DOC Content: %s\n", node->here_doc_content);
         if (node->redirect_in)
             printf("  Redirection In: %s\n  Filename: %s\n", node->redirect_in->content, node->redirect_in_filename);
+        if (node->redirect_append)
+            printf("  Redirection Append: %s\n  Filename: %s\n", node->redirect_append->content, node->redirect_out_filename);
         if (node->ex_status)
             printf("  Exit status: %s\n", node->ex_status->content);
         if (node->redirect_out) 
@@ -97,7 +99,10 @@ command_node* parse_command(token **tokens)
 
         if (current->type == T_CMD) 
         {
-            cmd_node->command = current;
+            if (!cmd_node->command)
+                cmd_node->command = current;
+            else
+                cmd_node->args = current;
         }
         else if (current->type == T_ARG) 
         {
@@ -135,12 +140,21 @@ command_node* parse_command(token **tokens)
                 return NULL;
             }
         }
-        else if (current->type == T_REDIR_IN || current->type == T_APP_REDIR) 
+        else if (current->type == T_REDIR_IN) 
         {
             cmd_node->redirect_in = current;
             if (current->next && current->next->type == T_ARG)
             {
                 cmd_node->redirect_in_filename = ft_strdup(current->next->content);
+                current = current->next;
+            }
+        }
+        else if (current->type == T_APP_REDIR)
+        {
+            cmd_node->redirect_append = current;
+            if (current->next && current->next->type == T_ARG)
+            {
+                cmd_node->redirect_out_filename = ft_strdup(current->next->content);
                 current = current->next;
             }
         }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/03 13:57:28 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 20:27:28 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ typedef enum
 }             tokentype;
 
 typedef struct token token;
-int g_exitstatus;
 
 struct token
 {
@@ -82,6 +81,8 @@ struct command_node
     token           *args;
     token           *redirect_in;
     token           *redirect_out;
+    token           *redirect_append;
+    token           *redirections;
     token           *var_expansion;
     token           *env_variable;
     token           *ex_status;
@@ -99,6 +100,7 @@ typedef struct tokenizer_state
     tokentype prev_type;
     int expect_command;
     int expect_filename_after_redir;
+    int last_was_redir_arg;
     token *tokens;
 } tokenizer_state;
 
@@ -139,6 +141,7 @@ void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
 int 			process_command_list(command_node *head, t_env_lst *env_lst); 
+const char      *token_type_to_string(tokentype type);
 
 //	Signals
 void            init_signals(void);
