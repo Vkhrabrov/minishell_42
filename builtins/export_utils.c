@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 21:11:35 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/01 21:54:06 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/03 10:26:40 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ t_env_lst	*insert_sorted(t_env_lst **head, t_env_lst *new_node)
 	t_env_lst	*current;
 	t_env_lst	*prev;
 
-	*current = *head;
-	*prev = NULL;
+	current = *head;
+	prev = NULL;
 	while (current != NULL && ft_strncmp(new_node->var_name, current->var_name,
 			strlen(current->var_name)) > 0)
 	{
