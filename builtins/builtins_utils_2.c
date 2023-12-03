@@ -6,11 +6,24 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:38:44 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/03 12:51:02 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/04 00:34:24 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	free_args_list(token *args_lst)
+{
+    token *current;
+
+    while (args_lst != NULL)
+	{
+        current = args_lst;
+        free(current->content);
+		free(current);
+        args_lst = args_lst->next;
+    }	
+}
 
 long	ft_atol(const char *str)
 {
