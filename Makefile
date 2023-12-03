@@ -6,7 +6,7 @@
 #    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/12/03 11:55:49 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/12/04 00:39:39 by ccarrace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,9 +40,15 @@ all: make_libs $(NAME)
 configure_readline:
 	cd $(READLINE) && ./configure
 
-make_libs: configure_readline
+make_libs:
+	@if [ ! -f "$(READLINE)/libreadline.a" ]; then \
+		echo "Configuring and building Readline..."; \
+		$(MAKE) configure_readline; \
+		$(MAKE) -C $(READLINE); \
+	else \
+		echo "Readline is already up to date."; \
+	fi
 	$(MAKE) -C $(LIBFT)
-	$(MAKE) -C $(READLINE)
 	@echo "\033[1;32mLibraries have been compiled successfully\033[0m"
 
 $(NAME): $(OBJS) $(HEADER) Makefile
