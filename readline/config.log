@@ -36,6 +36,7 @@ Load average: 1.21, Mach factor: 4.78
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
 
+PATH: /Users/vkhrabro/.brew/bin/
 PATH: /usr/local/bin/
 PATH: /usr/bin/
 PATH: /bin/
@@ -3063,7 +3064,7 @@ bash_cv_wcwidth_broken=no
 AR='ar'
 ARFLAGS='cr'
 BRACKETED_PASTE='-DBRACKETED_PASTE_DEFAULT=1'
-BUILD_DIR='/Users/ccarrace/Documents/42Cursus/minishell_42/readline'
+BUILD_DIR='/Users/vkhrabro/Projects/minishell/readline'
 CC='gcc'
 CFLAGS='-g -O2 -Wno-parentheses -Wno-format-security -Wno-tautological-constant-out-of-range-compare'
 CPP='gcc -E'
