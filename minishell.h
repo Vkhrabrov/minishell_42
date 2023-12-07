@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/03 21:52:05 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/07 22:13:58 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ void			remove_trailing_spaces(char *str);
 void			print_export_list(t_env_lst **env_lst);
 bool			is_var_name_valid(char *arg, int equal_sign_position);
 t_env_lst 		*insert_sorted(t_env_lst **head, t_env_lst *new_node);
+void			add_new_var(t_env_lst **head, char *arg, size_t equal_sign_position);
 
 //	Builtins general utilities
 int				find_max_len(char *str1, char *str2);

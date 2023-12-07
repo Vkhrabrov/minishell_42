@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/07 00:06:30 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/07 22:12:21 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,28 @@ int main(int argc, char **argv, char **envp)
     
     // t_env_init(env_lst);
     save_env_list(&env_lst, envp);
+// printf("SHLVL = %s\n", get_env_var_value(env_lst, "SHLVL"));
+
+	// if(get_env_var_value(env_lst, "SHLVL") == 0)
+	// 	printf("SHLVL is an empty string\n");
+	// if(ft_strncmp("SHLVL", get_env_var_value(env_lst, "SHLVL"), 5) == 0)
+	// 	printf("SHLVL has been unset\n");
+
+	int	shlvl = ft_atoi(get_env_var_value(env_lst, "SHLVL"));
+	// if (ft_strncmp("SHLVL", get_env_var_value(env_lst, "SHLVL"), 5) == 0)
+	// 	printf("1 ");
+	if (shlvl < 0)
+		shlvl = 0;
+	else if (shlvl != 0 && shlvl % 1000 == 0)
+	{
+		build_error_msg("warning: shell level (", ft_itoa(shlvl + 1), ") too high, resetting to 1", false);
+		shlvl = 1;
+	}
+	else if (shlvl != 0)
+		shlvl++;
+	update_env_var_value(env_lst, "SHLVL", ft_itoa(shlvl));
+
+
     // print_env_lst(&env_lst);
     disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
     init_signals();
@@ -112,7 +134,7 @@ int main(int argc, char **argv, char **envp)
         printf("%s", "minishell> exit\n");
     }
 
-    // restore_terminal_settings();    //  Restore terminal settings before exiting
+    restore_terminal_settings();    //  Restore terminal settings before exiting
     // printf("%d\n", g_exitstatus);
     return (g_exitstatus);
 }

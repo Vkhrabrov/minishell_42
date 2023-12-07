@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/03 13:57:28 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/07 00:04:13 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	update_existing_var(t_env_lst **head, char *arg, \
 	}
 }
 
-static void	add_new_var(t_env_lst **head, char *arg, size_t equal_sign_position)
+void	add_new_var(t_env_lst **head, char *arg, size_t equal_sign_position)
 {
 	t_env_lst	*new_node;
 

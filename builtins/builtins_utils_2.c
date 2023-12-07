@@ -6,11 +6,24 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:38:44 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/03 12:51:02 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/05 00:20:23 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	free_args_list(token *args_lst)
+{
+    token *current;
+
+    while (args_lst != NULL)
+	{
+        current = args_lst;
+        free(current->content);
+		free(current);
+        args_lst = args_lst->next;
+    }	
+}
 
 long	ft_atol(const char *str)
 {
@@ -74,6 +87,39 @@ static char	*ft_long_min(void)
 
 	// LL suffix ensures number is interpreted 
 	// as a long integer literal.
+// char	*ft_ltoa(long n)
+// {
+// 	long	len;
+// 	char	*str;
+
+// 	len = ft_long_length(n);
+// 	if (n == -9223372036854775807LL - 1)
+// 		str = ft_long_min();
+// 	else
+// 	{
+// 		str = malloc(sizeof(char) * (len + 1));
+// 		if (!str)
+// 			return (NULL);
+// 		str[len] = '\0';
+// 		if (n == 0)
+// 			str[0] = '0';
+// 		if (n < 0)
+// 		{
+// 			str[0] = '-';
+// 			n = n * (-1);
+// 		}
+// 		while (n > 0)
+// 		{
+// 			str[--len] = (n % 10) + '0';
+// 			n = n / 10;
+// 		}
+// 	}
+// 	return (str);
+// }
+/*	End of ft_ltoa	*/
+
+
+
 char	*ft_ltoa(long n)
 {
 	long	len;
@@ -101,4 +147,3 @@ char	*ft_ltoa(long n)
 	}
 	return (str);
 }
-/*	End of ft_ltoa	*/
