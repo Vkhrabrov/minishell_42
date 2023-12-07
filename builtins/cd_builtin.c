@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/03 11:24:54 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/06 19:07:58 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
 	if (chdir(path) == 0)
 	{
 		oldpwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-		pwd_value = ft_strdup(get_curr_work_dir());
+		if (get_curr_work_dir() == NULL)
+			pwd_value = NULL;
+		else
+			pwd_value = ft_strdup(get_curr_work_dir());
 		if (oldpwd_value == NULL || pwd_value == NULL)
 			return (EXIT_FAILURE);
 		update_env_var_value(env_lst, "OLDPWD", oldpwd_value);
@@ -44,6 +47,28 @@ int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
 	else
 		return (handle_file_or_folder_errors(path));
 }
+
+// int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
+// {
+// 	char	*oldpwd_value;
+// 	char	*pwd_value;
+
+// 	if (chdir(path) == 0)
+// 	{
+// 		oldpwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
+// 		pwd_value = ft_strdup(get_curr_work_dir());
+// 		if (oldpwd_value == NULL || pwd_value == NULL)
+// 			return (EXIT_FAILURE);
+// 		update_env_var_value(env_lst, "OLDPWD", oldpwd_value);
+// 		update_env_var_value(env_lst, "PWD", pwd_value);
+// 		free(oldpwd_value);
+// 		free(pwd_value);
+// 		free(args_lst);
+// 		return (EXIT_SUCCESS);
+// 	}
+// 	else
+// 		return (handle_file_or_folder_errors(path));
+// }
 
 int	cd_builtin(t_env_lst *env_lst, token *args_lst)
 {

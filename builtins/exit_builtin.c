@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/04 00:41:50 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/07 20:20:43 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,21 @@ int	handle_single_argument(token *args_lst)
 		|| (*args_lst->content == ' ' && ft_isdigit(args_lst->content[1]))
 		|| (*args_lst->content == '-' && args_lst->content[1] == '0'))
 		args_lst->content++;
+	if (*args_lst->content == '-' && args_lst->content[1] == '-' && !args_lst->content[2])
+		return (0);
 	num = ft_atol(args_lst->content);
 	str = ft_ltoa(num);
 	if ((num == 0 && is_valid_numeric(args_lst->content) == false)
 		|| ft_strncmp(args_lst->content, str, 0xFFFFFF))
 	{
-		ft_putstr_fd("exit\n", 2);
+		// ft_putstr_fd("exit\n", 2);
 		build_error_msg("exit: ", args_lst->content, MS_NOTNUMARG, false);
 		exit_status = 255;
 	}
 	else
 		exit_status = calculate_exit_status(num);
+	ft_putstr_fd("exit\n", 2);
+	free(str);
 	return (exit_status);
 }
 
@@ -70,8 +74,6 @@ int	handle_multiple_arguments(token *args_lst)
 		}
 		i++;
 	}
-	if (exit_status != 255)
-		exit_status = build_error_msg("exit: ", NULL, MS_TOOMANYARG, false);
 	return (exit_status);
 }
 
@@ -83,7 +85,11 @@ int	exit_builtin(token *args_lst)
 	if (ft_list_size(args_lst) == 1)
 		exit_status = handle_single_argument(args_lst);
 	else
+	{
 		exit_status = handle_multiple_arguments(args_lst);
+		if (exit_status != 255)
+			return (build_error_msg("exit: ", NULL, MS_TOOMANYARG, false));
+	}
 	// free_args_list(args_lst);
-	return (exit_status);
+	exit (exit_status);
 }
