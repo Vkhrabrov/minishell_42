@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/03 20:27:28 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/03 21:52:05 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,12 @@ struct token
     token      *next;
 };
 
+typedef struct redirection {
+    token *type;        // The token for the redirection type ('>', '>>', or '<')
+    char *filename;     // The filename for the redirection
+    struct redirection *next;  // Pointer to the next redirection
+} redirection;
+
 int g_exitstatus;
 
 typedef struct command_node command_node;
@@ -79,6 +85,7 @@ struct command_node
 {
     token           *command;
     token           *args;
+    redirection     *redirects;
     token           *redirect_in;
     token           *redirect_out;
     token           *redirect_append;

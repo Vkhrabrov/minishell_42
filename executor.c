@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/03 20:27:31 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/06 20:26:02 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,37 +175,47 @@ void handle_here_doc(command_node *cmd_node)
 
 void handle_infile(command_node *cmd_node)
 {
-    if (!cmd_node->redirect_in_filename) 
-        return;
-
-    int infd = open(cmd_node->redirect_in_filename, O_RDONLY);
-    if (infd == -1) 
+    redirection *redir = cmd_node->redirects;
+    while (redir)
     {
-        perror("open");
-        exit(EXIT_FAILURE);
+        if (strcmp(redir->type->content, "<") == 0) // Check if it's an input redirection
+        {
+            int infd = open(redir->filename, O_RDONLY);
+            if (infd == -1) 
+            {
+                perror(redir->filename);
+                exit(EXIT_FAILURE);
+            }
+            dup2(infd, STDIN_FILENO);
+            close(infd);
+            break; // Assuming only one input redirection is handled
+        }
+        redir = redir->next;
     }
-    dup2(infd, STDIN_FILENO);
-    close(infd);
 }
 
-void handle_outfile(command_node *cmd_node) {
-    if (!cmd_node->redirect_out_filename) {
-        return;
-    }
+void handle_outfile(command_node *cmd_node) 
+{
+    redirection *redir = cmd_node->redirects;
+    while (redir)
+    {
+        if (strcmp(redir->type->content, ">") == 0 || strcmp(redir->type->content, ">>") == 0) // Check if it's an output redirection
+        {
+            int flags = (strcmp(redir->type->content, ">>") == 0) ? (O_APPEND | O_CREAT | O_RDWR) : (O_TRUNC | O_CREAT | O_RDWR);
+            
+            int outfd = open(redir->filename, flags, 0644);
 
-    int outfd;
-    outfd = 1;
-    if (cmd_node->redirect_out && !cmd_node->redirect_append)
-        outfd = open(cmd_node->redirect_out_filename, O_TRUNC | O_CREAT | O_RDWR, 0644);
-    else if (cmd_node->redirect_append)
-        outfd = open(cmd_node->redirect_out_filename, O_APPEND | O_CREAT | O_RDWR, 0644);
-
-    if (outfd == -1) {
-        build_error_msg(cmd_node->redirect_out_filename, NULL, ": Permission denied", false);
-        exit(EXIT_FAILURE); 
+            if (outfd == -1) 
+            {
+                perror(redir->filename);
+                exit(EXIT_FAILURE); 
+            }
+            dup2(outfd, STDOUT_FILENO);
+            close(outfd);
+            // Not breaking in case of multiple output redirections (optional based on your logic)
+        }
+        redir = redir->next;
     }
-    dup2(outfd, STDOUT_FILENO);
-    close(outfd);
 }
 
 int execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
@@ -227,12 +237,9 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
             build_error_msg(cmd_node->command->content, NULL, ": command not found", false);
             exit(127); // 127 is commonly used for command not found errors
         }
-        if (cmd_node->here_doc_content) 
-            handle_here_doc(cmd_node);
-        if (cmd_node->redirect_in_filename)
-            handle_infile(cmd_node);
+        handle_infile(cmd_node); // Handle input redirection
+        handle_outfile(cmd_node); // Handle output redirection
         execve(full_cmd_path, final_args, final_env);
-        // perror("execve");
         // cmd_node->exit_status = 1;
     } 
     else 
@@ -240,7 +247,7 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         int status;
         waitpid(pid, &status, 0);
         if (WIFEXITED(status)) 
-            return WEXITSTATUS(status);
+            g_exitstatus = WEXITSTATUS(status);
     }
     free(full_cmd_path);
     for (int i = 0; final_args[i]; i++)
@@ -286,18 +293,24 @@ void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int ou
 int builtin_process(command_node *cmd_node, t_env_lst *env_lst) {
     int original_stdout_fd = -1;
     int ex_status = 0;
-    if (cmd_node->redirect_out_filename) {
-                original_stdout_fd = dup(STDOUT_FILENO);
-                handle_outfile(cmd_node);
-            }
+
+    // Check if there are any output redirections
+    if (cmd_node->redirects) {
+        original_stdout_fd = dup(STDOUT_FILENO); // Backup the original stdout
+        handle_outfile(cmd_node); // Handle output redirection
+    }
+
     ex_status = execute_builtin(cmd_node->command->content, cmd_node, env_lst);
-    if (original_stdout_fd != -1) 
-            {
-                dup2(original_stdout_fd, STDOUT_FILENO);
-                close(original_stdout_fd);
-            }
-    return (ex_status);
+
+    // Restore original stdout if it was changed
+    if (original_stdout_fd != -1) {
+        dup2(original_stdout_fd, STDOUT_FILENO);
+        close(original_stdout_fd);
+    }
+
+    return ex_status;
 }
+
 
 // Handles the execution of a pipeline of commands
 int pipex(command_node *head, t_env_lst *env_lst) {

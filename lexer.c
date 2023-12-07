@@ -6,13 +6,11 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/23 21:54:11 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/07 00:06:34 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 void	handle_quoted_string(char c, char *input, tokenizer_state *state)
 {
@@ -23,10 +21,11 @@ void	handle_quoted_string(char c, char *input, tokenizer_state *state)
 	end_char = c;
 	arg = lex_quoted_string(input, &(state->i), end_char);
 	current_type = T_ARG;
-	if (state->prev_type == T_PIPE || state->prev_type == T_NONE
-		|| state->prev_type == T_REDIR_IN
-		|| state->prev_type == T_REDIR_OUT)
+	if (state->prev_type == T_PIPE || state->prev_type == T_NONE)
 		current_type = T_CMD;
+	else if (state->prev_type == T_REDIR_IN || state->prev_type == T_REDIR_OUT)
+
+		current_type = T_ARG;
 	else if (state->prev_type == T_VAR_EXP)
 		current_type = T_ENV_VAR;
 	add_to_list(&(state->tokens), creat_token(arg, current_type));

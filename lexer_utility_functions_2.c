@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/23 00:08:43 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/06 20:21:01 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 tokentype	c_a_part_2(tokenizer_state *state, tokentype current_type)
 {
-	if (state->expect_command)
+	if (state->expect_command && !state->expect_filename_after_redir)
 	{
 		current_type = T_CMD;
 		state->expect_command = 0;
@@ -25,7 +25,6 @@ tokentype	c_a_part_2(tokenizer_state *state, tokentype current_type)
 	{
 		current_type = T_ARG;
 		state->expect_filename_after_redir = 0;
-		state->expect_command = 0;
 	}
 	if (state->prev_type == T_VAR_EXP)
 		current_type = T_ENV_VAR;
