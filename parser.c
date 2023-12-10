@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/12/05 23:20:28 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/10 13:55:55 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ char    *read_heredoc_content(const char *delimiter)
     while (1) 
     {
         input_line = readline("> ");
-		/* CARLOS: heredoc exited if the strings passed contained the delimiter (e.g 'eofhola') */
         if (ft_strncmp(input_line, (char *)delimiter, find_max_len(input_line, (char *)delimiter)) == 0)
         {
             free(input_line);

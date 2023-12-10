@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/07 22:12:21 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/11 00:27:06 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,10 @@ int main(int argc, char **argv, char **envp)
         exit(EXIT_FAILURE);
     }
     close(random_fd);
-    // env_lst = malloc(sizeof(t_env_lst));
     
-    // t_env_init(env_lst);
     save_env_list(&env_lst, envp);
-// printf("SHLVL = %s\n", get_env_var_value(env_lst, "SHLVL"));
-
-	// if(get_env_var_value(env_lst, "SHLVL") == 0)
-	// 	printf("SHLVL is an empty string\n");
-	// if(ft_strncmp("SHLVL", get_env_var_value(env_lst, "SHLVL"), 5) == 0)
-	// 	printf("SHLVL has been unset\n");
 
 	int	shlvl = ft_atoi(get_env_var_value(env_lst, "SHLVL"));
-	// if (ft_strncmp("SHLVL", get_env_var_value(env_lst, "SHLVL"), 5) == 0)
-	// 	printf("1 ");
 	if (shlvl < 0)
 		shlvl = 0;
 	else if (shlvl != 0 && shlvl % 1000 == 0)
@@ -87,10 +77,9 @@ int main(int argc, char **argv, char **envp)
 		shlvl++;
 	update_env_var_value(env_lst, "SHLVL", ft_itoa(shlvl));
 
-
     // print_env_lst(&env_lst);
     disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
-    init_signals();
+    set_interactive_signals();
 
 	// enum shell_mode mode;
 	// if (isatty(STDIN_FILENO))
@@ -103,23 +92,32 @@ int main(int argc, char **argv, char **envp)
 	// 	mode = NON_INTERACTIVE;
 	// 	printf("out: NON INTERACTIVE MODE\n");
 	// }
-	
+
     while (1) 
     {
         char *input = readline("minishell> ");
         if (!input) 
 			break;
-		// if (mode == INTERACTIVE)
-		// 	printf("in: INTERACTIVE MODE\n");
-		// else
-		// 	printf("in: NON INTERACTIVE MODE\n");
         tokens = tokenization(input);
         head = parse_line(tokens);
         // print_command_node(head);
-        
-            expand_environment_variables(head, &env_lst);
+        expand_environment_variables(head, &env_lst);
         // print_command_node(head);
-            process_command_list(head, env_lst);
+		if (ft_list_size(tokens) == 1 )
+		{
+// printf("input with single token\n");
+			restore_terminal_settings();
+			set_noninteractive_signals();
+        	process_command_list(head, env_lst);
+    		disable_control_chars_echo();
+    		set_interactive_signals();
+		}
+		else
+		{
+// printf("input with several tokens\n");
+		    // set_interactive_signals();	
+        	process_command_list(head, env_lst);		
+		}
         // free_command_node(head);
         // reset_command_node(head);
         add_history(input);

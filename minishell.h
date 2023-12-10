@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/07 22:13:58 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/08 12:30:07 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,8 @@ int 			process_command_list(command_node *head, t_env_lst *env_lst);
 const char      *token_type_to_string(tokentype type);
 
 //	Signals
-void            init_signals(void);
+void            set_interactive_signals(void);
+void            set_noninteractive_signals(void);
 void            rl_replace_line (const char *text, int clear_undo);
 void            disable_control_chars_echo();
 void            restore_terminal_settings();

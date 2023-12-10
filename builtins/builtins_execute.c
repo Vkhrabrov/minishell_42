@@ -6,12 +6,16 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 20:36:56 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/05 00:11:44 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/08 11:17:27 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/* execute_builtin()
+ *
+ *	if the command name is not a builtin, the exit code returned must be 127
+ */
 int	execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst)
 {
 	char	*name;

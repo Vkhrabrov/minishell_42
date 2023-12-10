@@ -111,6 +111,7 @@ int	main(int argc, char **argv)
 	if (argc == 2)
 	{
 		nbr = ft_atol(argv[1]);
+		printf("%s converted to long is %ld\n", argv[1], nbr);
 		str = ft_ltoa(nbr);
 		if (strncmp(argv[1], str, find_max_len(argv[1], str)) != 0)
 			printf ("The number is not long type\n");
