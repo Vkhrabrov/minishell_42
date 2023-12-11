@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/11 00:27:06 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/11 19:34:28 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,18 +81,6 @@ int main(int argc, char **argv, char **envp)
     disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
     set_interactive_signals();
 
-	// enum shell_mode mode;
-	// if (isatty(STDIN_FILENO))
-	// {
-	// 	mode = INTERACTIVE;
-	// 	printf("out: INTERACTIVE MODE\n");
-	// }
-	// else
-	// {
-	// 	mode = NON_INTERACTIVE;
-	// 	printf("out: NON INTERACTIVE MODE\n");
-	// }
-
     while (1) 
     {
         char *input = readline("minishell> ");
@@ -105,7 +93,6 @@ int main(int argc, char **argv, char **envp)
         // print_command_node(head);
 		if (ft_list_size(tokens) == 1 )
 		{
-// printf("input with single token\n");
 			restore_terminal_settings();
 			set_noninteractive_signals();
         	process_command_list(head, env_lst);
@@ -113,11 +100,7 @@ int main(int argc, char **argv, char **envp)
     		set_interactive_signals();
 		}
 		else
-		{
-// printf("input with several tokens\n");
-		    // set_interactive_signals();	
         	process_command_list(head, env_lst);		
-		}
         // free_command_node(head);
         // reset_command_node(head);
         add_history(input);

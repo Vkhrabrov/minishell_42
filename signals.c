@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 21:49:58 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/11 19:31:36 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/11 23:05:08 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,28 +44,24 @@ void	set_interactive_signals(void)
 
 void	set_noninteractive_signals(void)
 {
-// write(1, "noninteractive signals set\n", 27);
 	struct sigaction	sigint_action;
 	struct sigaction	sigquit_action;
 	
-// restore_terminal_settings();
     // Setup the SIGINT ('ctrl + c') handler to quit
-	sigquit_action.sa_handler = &print_new_line;
+	sigint_action.sa_handler = &print_new_line;
 	sigemptyset(&sigquit_action.sa_mask);
 	sigquit_action.sa_flags = 0;
-	sigaction(SIGQUIT, &sigint_action, NULL);
+	sigaction(SIGINT, &sigint_action, NULL);
 	
     // Setup the SIGQUIT ('ctrl + \') handler to quit
     sigquit_action.sa_handler = &print_quit_msg;
     sigemptyset(&sigquit_action.sa_mask);
     sigquit_action.sa_flags = 0;
     sigaction(SIGQUIT, &sigquit_action, NULL);
-// disable_control_chars_echo();
 }
 
 void new_prompt_line(int signo)
 {
-	// (void)signo;
     printf("\n");
     rl_on_new_line();
     rl_replace_line("", 0);
@@ -75,14 +71,13 @@ void new_prompt_line(int signo)
 
 void	print_new_line(int signo)
 {
-	// (void)signo;
+	printf("\n");
 	rl_on_new_line();
 	g_exitstatus = 128 + signo;
 }
 
 void	print_quit_msg(int signo)
 {
-	// (void)signo;
 	printf("Quit: 3\n");
 	rl_on_new_line();
 	g_exitstatus = 128 + signo;
