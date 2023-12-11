@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/20 23:45:56 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/08 20:38:34 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,27 @@ void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
     while (current_command) {
         if (current_command->env_variable) {
             t_env_lst *current_env = *env_lst;
+            bool found = false; // Add a flag to track if the variable is found
+
             while (current_env) {
                 if (ft_strncmp(current_env->var_name, current_command->env_variable->content, ft_strlen(current_command->env_variable->content)) == 0) {
-                    replace_env_with_token(current_command, current_env->var_value);
-                    break;
+                    if (current_env->var_value && *current_env->var_value) { // Check if the variable has a value
+                        replace_env_with_token(current_command, current_env->var_value);
+                        found = true;
+                        break;
+                    } else {
+                        // Variable found but has no value
+                        g_exitstatus = 0;
+                        return;
+                    }
                 }
                 current_env = current_env->next;
+            }
+
+            if (!found) {
+                // Variable not found in the environment list
+                g_exitstatus = 0;
+                return;
             }
         }
 

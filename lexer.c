@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/07 00:06:34 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/11 22:48:11 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,26 @@ void	handle_quoted_string(char c, char *input, tokenizer_state *state)
 	end_char = c;
 	arg = lex_quoted_string(input, &(state->i), end_char);
 	current_type = T_ARG;
-	if (state->prev_type == T_PIPE || state->prev_type == T_NONE)
+	if (ft_strlen(arg) == 0 && state->prev_type == T_CMD)
+	{
+		current_type = T_ARG;
+	}
+	else if (ft_strlen(arg) == 0 && ft_strlen(input) == 2)
+	{
 		current_type = T_CMD;
-	else if (state->prev_type == T_REDIR_IN || state->prev_type == T_REDIR_OUT)
+	}
+	else if (ft_strlen(arg) == 0 && ft_strlen(input) > 2)
+		return ;
+	
+	if ((state->prev_type == T_PIPE || state->prev_type == T_NONE) && ft_strlen(arg) != 0)
+	{
+		current_type = T_CMD;
+		state->expect_command = 0;
+	}
+	else if ((state->prev_type == T_REDIR_IN || state->prev_type == T_REDIR_OUT) && ft_strlen(arg) != 0)
 
 		current_type = T_ARG;
-	else if (state->prev_type == T_VAR_EXP)
+	else if (state->prev_type == T_VAR_EXP && ft_strlen(arg) != 0)
 		current_type = T_ENV_VAR;
 	add_to_list(&(state->tokens), creat_token(arg, current_type));
 	free(arg);

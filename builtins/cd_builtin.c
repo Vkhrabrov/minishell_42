@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/06 19:07:58 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/11 21:17:56 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	handle_file_or_folder_errors(char *path)
 		build_error_msg("cd: ", path, MS_NOTDIR, false);
 	else if (errno == EACCES)
 		build_error_msg("cd: ", path, MS_ACCESFORB, false);
+	else if (*path == '\0')
+		return(EXIT_SUCCESS);
 	else
 		build_error_msg("cd: ", path, MS_NOFILEDIR, false);
 	return (EXIT_FAILURE);

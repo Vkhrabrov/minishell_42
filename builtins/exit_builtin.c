@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/07 20:20:43 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/07 22:27:06 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ int	handle_single_argument(token *args_lst)
 	if ((num == 0 && is_valid_numeric(args_lst->content) == false)
 		|| ft_strncmp(args_lst->content, str, 0xFFFFFF))
 	{
-		// ft_putstr_fd("exit\n", 2);
+		ft_putstr_fd("exit\n", 2);
 		build_error_msg("exit: ", args_lst->content, MS_NOTNUMARG, false);
 		exit_status = 255;
 	}
 	else
 		exit_status = calculate_exit_status(num);
-	ft_putstr_fd("exit\n", 2);
+	// ft_putstr_fd("exit\n", 2);
 	free(str);
 	return (exit_status);
 }

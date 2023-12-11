@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/12/05 23:20:28 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/11 23:13:01 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ void print_command_node(command_node* node)
 
 char    *append_line(char *existing_content, char *new_line) 
 {
-    char    *joined;
+    // char    *joined;
     char    *result;
     if (!existing_content) 
         return (ft_strdup(new_line));
-    joined = ft_strjoin(existing_content, "\n");
-    result = ft_strjoin(joined, new_line);
-    free(joined);
+    // joined = ft_strjoin(existing_content, "\n");
+    result = ft_strjoin(existing_content, new_line);
+    // free(joined);
     return (result);
 }
 
@@ -78,6 +78,7 @@ char    *read_heredoc_content(const char *delimiter)
             break;
         }
         temp_content = append_line(all_content, input_line);
+        temp_content = ft_strjoin(temp_content, "\n");
         free(all_content);
         all_content = temp_content;
         free(input_line);
@@ -165,8 +166,17 @@ command_node* parse_command(token **tokens)
         {
             cmd_node->env_variable = current;
         }
+        else if (current->type == T_HEREDOC) 
+        {
+            if (current->next && current->next->type == T_HEREDOC_DELIM) 
+            {
+                cmd_node->redirect_in = current;
+                char *delimiter = current->next->content;
+                cmd_node->here_doc_content = read_heredoc_content(delimiter);
+                current = current->next;
+            } 
         // Handle other token types as necessary
-
+        }
         current = current->next;
     }
     *last_arg = NULL;
@@ -186,8 +196,6 @@ command_node* parse_line(token *tokens)
     {
         command_node *current = parse_command(&tokens);
 
-        // Print current token's details
-
         if (!head) 
         {
             head = current;
@@ -199,10 +207,17 @@ command_node* parse_line(token *tokens)
             prev = current;
         }
 
-        // Move past the pipe token, if present
-        if (tokens && tokens->type == T_PIPE)
-            tokens = tokens->next;
+        // Check for invalid command before a pipe
+        if (tokens && tokens->type == T_PIPE) {
+            if (!current || (!current->command && !current->redirects)) {
+                ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+                g_exitstatus = 2;
+                break; // Example: stop parsing further
+            }
+            tokens = tokens->next; // Move past the pipe token
+        }
     }
     return head;
 }
+
 

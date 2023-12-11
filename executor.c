@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/07 22:12:52 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/11 21:31:59 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,10 +220,11 @@ void handle_outfile(command_node *cmd_node)
 
 int execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
 {
+
+   
     char **paths = get_paths_from_env(env_lst);
     char *full_cmd_path = find_command_path(cmd_node->command->content, paths);
     pid_t pid = fork();
-    
     
     char **final_args = convert_command_node_args_to_array(cmd_node);
     
@@ -232,13 +233,19 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
 
     if (pid == 0) 
     {  // This block will be executed by the child process
-        if (!full_cmd_path) 
+        if (!full_cmd_path || *full_cmd_path == '\0' || cmd_node->command->content[0] == '\0') 
         {
             build_error_msg(cmd_node->command->content, NULL, ": command not found", false);
             exit(127); // 127 is commonly used for command not found errors
         }
+        //  if (cmd_node->command->content[0] == '\0')
+        // {
+        //     build_error_msg("", NULL, ": command not found", false);
+        //     exit(127);
+        // }
         handle_infile(cmd_node); // Handle input redirection
         handle_outfile(cmd_node); // Handle output redirection
+        handle_here_doc(cmd_node);
         execve(full_cmd_path, final_args, final_env);
         // cmd_node->exit_status = 1;
     } 
@@ -274,11 +281,27 @@ int is_builtin(command_node *cmd_node) {
 
 void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd) 
 {
+    if ((!cmd_node->command || !cmd_node->command->content) &&
+        cmd_node->redirects)
+    {
+        int original_stdout = dup(STDOUT_FILENO);
+        int original_stdin = dup(STDIN_FILENO);
+
+        handle_outfile(cmd_node);
+        handle_infile(cmd_node);
+        dup2(original_stdout, STDOUT_FILENO);
+        dup2(original_stdin, STDIN_FILENO);
+
+        close(original_stdout);
+        close(original_stdin);
+
+        exit(0) ;
+    }
     if (in_fd != STDIN_FILENO) {
         dup2(in_fd, STDIN_FILENO);
         close(in_fd);
     }
-    handle_outfile(cmd_node);
+    
     if (out_fd != STDOUT_FILENO) {
         
         dup2(out_fd, STDOUT_FILENO);
@@ -358,14 +381,33 @@ int pipex(command_node *head, t_env_lst *env_lst) {
 int process_command_list(command_node *head, t_env_lst *env_lst) {
     if (!head) return 0;
 
-    if (!head->command || !head->command->content || head->command->content[0] == '\0')
-        exit (0);
     int node_count = 0;
     command_node *current = head;
     while (current) {
         node_count++;
         current = current->next;
     }
+
+    if ((!head->command || !head->command->content) &&
+        !head->redirects && !head->here_doc_content)
+        return(0);
+    else if ((!head->command || !head->command->content) &&
+        (head->redirects && node_count < 2))
+    {
+        int original_stdout = dup(STDOUT_FILENO);
+        int original_stdin = dup(STDIN_FILENO);
+
+        handle_outfile(head);
+        handle_infile(head);
+        dup2(original_stdout, STDOUT_FILENO);
+        dup2(original_stdin, STDIN_FILENO);
+
+        close(original_stdout);
+        close(original_stdin);
+
+        return(0);
+    }
+
     if (node_count > 1) {
         return pipex(head, env_lst);
     }
