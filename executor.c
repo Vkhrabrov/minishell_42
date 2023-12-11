@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/11 21:31:59 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/11 23:22:39 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,6 +255,9 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         waitpid(pid, &status, 0);
         if (WIFEXITED(status)) 
             g_exitstatus = WEXITSTATUS(status);
+		// CARLOS: condition added to return proper exit status if process is terminated by a signal
+		// if (WIFSIGNALED(status))
+		// 	g_exitstatus = 128 + WTERMSIG(status);
     }
     free(full_cmd_path);
     for (int i = 0; final_args[i]; i++)

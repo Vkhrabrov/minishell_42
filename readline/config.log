@@ -45,7 +45,6 @@ PATH: /sbin/
 PATH: /Applications/VMware Fusion.app/Contents/Public/
 PATH: /usr/local/go/bin/
 PATH: /usr/local/munki/
-PATH: /Users/vkhrabro/.brew/bin/
 
 
 ## ----------- ##

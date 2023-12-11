@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/11 22:48:11 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/11 23:22:48 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,6 @@ token	*tokenization(char *input)
 			handle_commands_and_args(input, &state);
 		state.i++;
 	}
-	// print_tokens(state.tokens);
+	// print_""tokens(state.tokens);
 	return (state.tokens);
 }
