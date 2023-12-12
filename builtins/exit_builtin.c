@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/11 23:24:18 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/12 22:41:24 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	handle_single_argument(token *args_lst)
 		args_lst->content++;
 	if (*args_lst->content == '-' && args_lst->content[1] == '-' && !args_lst->content[2])
 	{
-		ft_putstr_fd("exit\n", 2);
+		// ft_putstr_fd("exit\n", 2);
 		return (0);
 	}
 	num = ft_atol(args_lst->content);
@@ -55,7 +55,7 @@ int	handle_single_argument(token *args_lst)
 	else
 	{
 		exit_status = calculate_exit_status(num);
-		ft_putstr_fd("exit\n", 2); // this line plus previous -> bash OK, mpanic KO
+		// ft_putstr_fd("exit\n", 2); // this line plus previous -> bash OK, mpanic KO
 	}
 	free(str);
 	return (exit_status);

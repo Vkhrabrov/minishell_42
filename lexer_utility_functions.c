@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utility_functions.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:43:29 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/15 21:12:59 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/12 21:07:06 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ token	*creat_token(const char *content, tokentype type)
 	}
 	new_token->type = type;
 	new_token->next = NULL;
+	new_token->prev = NULL;
 	return (new_token);
 }
 
@@ -43,22 +44,19 @@ token	*get_last_token(token *head)
 	return (head);
 }
 
-void	add_to_list(token **head, token *new_token)
+void add_to_list(token **head, token *new_token) 
 {
-	token	*temp;
+    token *last_token;
 
-	if (!*head)
-	{
-		*head = new_token;
-		// print_token(new_token);
-		return ;
-	}
-	temp = *head;
-	while (temp->next)
-		temp = temp->next;
-	temp->next = new_token;
-	// print_token(new_token);
+    if (!*head) {
+        *head = new_token;
+    } else {
+        last_token = get_last_token(*head);
+        last_token->next = new_token;
+        new_token->prev = last_token; // Set the prev pointer of the new token
+    }
 }
+
 
 char	*substring(char *input_string, int start, int end)
 {

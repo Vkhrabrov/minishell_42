@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/11 23:22:53 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/12 22:58:03 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,24 +83,33 @@ int main(int argc, char **argv, char **envp)
 
     while (1) 
     {
+            set_interactive_signals();
         char *input = readline("minishell> ");
         if (!input) 
 			break;
         tokens = tokenization(input);
+        int num_tokens = ft_list_size(tokens);
         head = parse_line(tokens);
-        // print_command_node(head);
+        
         expand_environment_variables(head, &env_lst);
         // print_command_node(head);
-		if (ft_list_size(tokens) == 1 )
-		{
-			restore_terminal_settings();
-			set_noninteractive_signals();
-        	process_command_list(head, env_lst);
-    		disable_control_chars_echo();
-    		set_interactive_signals();
-		}
-		else
-        	process_command_list(head, env_lst);		
+        if(head)
+        {
+        
+        // print_command_node(head);
+            if (num_tokens == 1)
+            {
+                restore_terminal_settings();
+                set_noninteractive_signals();
+                process_command_list(head, env_lst);
+                disable_control_chars_echo();
+                set_interactive_signals();
+            }
+            else
+                process_command_list(head, env_lst);	
+        }
+        else
+            continue;	
         // free_command_node(head);
         // reset_command_node(head);
         add_history(input);

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/12/11 23:22:32 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/12 22:57:37 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,24 @@ command_node* parse_command(token **tokens)
             } 
             else 
             {
+                if ((current->prev && current->prev->type == T_PIPE) || (!current->next))
+                {
+                    ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
+                    g_exitstatus = 2;
+                    while (current)
+                        current = current->next;
+                    *tokens = current; 
+                    return NULL;
+                }
+                else if ((current->next && current->next->type == T_PIPE) || (current->next && (current->next->type == T_REDIR_IN || current->next->type == T_APP_REDIR || current->next->type == T_REDIR_OUT)))
+                {
+                    ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+                    g_exitstatus = 2;
+                    while (current)
+                        current = current->next;
+                    *tokens = current; 
+                    return NULL;
+                }
                 printf("Error: Expected filename after redirection symbol.\n");
                 while (current)
                     current = current->next;
@@ -194,6 +212,9 @@ command_node* parse_line(token *tokens)
     while (tokens) 
     {
         command_node *current = parse_command(&tokens);
+        if (!current)
+            return(NULL);
+
 
         if (!head) 
         {
@@ -207,12 +228,14 @@ command_node* parse_line(token *tokens)
         }
 
         // Check for invalid command before a pipe
-        if (tokens && tokens->type == T_PIPE) {
+        if (tokens && tokens->type == T_PIPE) 
+        {
             if (!current || (!current->command && !current->redirects)) {
                 ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
                 g_exitstatus = 2;
                 break; // Example: stop parsing further
             }
+            tokens->prev = tokens;
             tokens = tokens->next; // Move past the pipe token
         }
     }

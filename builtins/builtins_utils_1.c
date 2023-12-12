@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/07 12:38:34 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/11 23:40:47 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	ft_list_size(token *args_lst)
 	int	i;
 
 	i = 0;
-	while (args_lst)
+	while (args_lst != NULL)
 	{
 		i++;
 		args_lst = args_lst->next;
