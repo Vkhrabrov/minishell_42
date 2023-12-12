@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/11/20 23:45:56 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/12 20:10:36 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
             replace_env_with_token(current_command, exit_status_str);
             free(exit_status_str);
         }
-
         current_command = current_command->next;
     }
 }

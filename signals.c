@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 21:49:58 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/11 23:05:08 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/12 20:48:22 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,12 @@ void	set_noninteractive_signals(void)
 
 void new_prompt_line(int signo)
 {
+	(void)signo;
     printf("\n");
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
-	g_exitstatus = 128 + signo;
+	g_exitstatus = 1;
 }
 
 void	print_new_line(int signo)

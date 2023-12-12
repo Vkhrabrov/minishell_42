@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/11 19:34:28 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/12 20:48:37 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,11 @@ int main(int argc, char **argv, char **envp)
         if (!input) 
 			break;
         tokens = tokenization(input);
+		int num_tokens = ft_list_size(tokens);
         head = parse_line(tokens);
         // print_command_node(head);
         expand_environment_variables(head, &env_lst);
-        // print_command_node(head);
-		if (ft_list_size(tokens) == 1 )
+		if (num_tokens == 1)
 		{
 			restore_terminal_settings();
 			set_noninteractive_signals();

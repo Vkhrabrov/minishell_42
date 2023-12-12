@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/10 22:54:34 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/12 20:40:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,6 @@ token	*tokenization(char *input)
 			handle_commands_and_args(input, &state);
 		state.i++;
 	}
-	// print_""tokens(state.tokens);
+	// print_tokens(state.tokens);
 	return (state.tokens);
 }
