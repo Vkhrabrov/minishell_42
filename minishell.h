@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/12 20:54:53 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/13 20:48:43 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,9 @@ void            reset_command_node(command_node* cmd);
 token           *creat_token(const char* content, tokentype type);
 token           *get_last_token(token *head);
 void            add_to_list(token **head, token *new_token);
+// char            *substring(const char *input, int start, int end);
 char            *substring(char *input_string, int start, int end);
+// char            *lex_quoted_string(char *input_string, int *i);
 char            *lex_quoted_string(char *input_string, int *i, char end_char);
 void            print_token(token *t);
 token           *tokenization(char *input);
