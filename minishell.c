@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/12 20:48:37 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/13 20:57:12 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int main(int argc, char **argv, char **envp)
 		if (num_tokens == 1)
 		{
 			restore_terminal_settings();
+			// enable_control_chars_echo();
 			set_noninteractive_signals();
         	process_command_list(head, env_lst);
     		disable_control_chars_echo();
@@ -114,7 +115,7 @@ int main(int argc, char **argv, char **envp)
         ft_putstr_fd("\0\33[2K", 1);
         printf("%s", "minishell> exit\n");
     }
-
+	// enable_control_chars_echo();
     restore_terminal_settings();    //  Restore terminal settings before exiting
     // printf("%d\n", g_exitstatus);
     return (g_exitstatus);
