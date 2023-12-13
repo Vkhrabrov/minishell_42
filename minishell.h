@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/13 20:48:43 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/13 23:21:25 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ void            set_noninteractive_signals(void);
 void            rl_replace_line (const char *text, int clear_undo);
 void            disable_control_chars_echo();
 void            restore_terminal_settings();
+// void 			enable_control_chars_echo(void) ;
 
 //	Builtins
 int				execute_builtin(char *cmd_name, command_node *cmd_node, t_env_lst *env_lst);

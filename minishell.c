@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/13 23:04:12 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/13 23:21:17 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int main(int argc, char **argv, char **envp)
         ft_putstr_fd("\0\33[2K", 1);
         printf("%s", "minishell> exit\n");
     }
-
+	// enable_control_chars_echo();
     restore_terminal_settings();    //  Restore terminal settings before exiting
     // printf("%d\n", g_exitstatus);
     return (g_exitstatus);

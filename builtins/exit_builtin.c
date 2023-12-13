@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/12 22:41:24 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/13 23:19:30 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ int	handle_single_argument(token *args_lst)
 		args_lst->content++;
 	if (*args_lst->content == '-' && args_lst->content[1] == '-' && !args_lst->content[2])
 	{
-		// ft_putstr_fd("exit\n", 2);
+		write(0, "exit\n", 5);
+		// ft_putstr_fd("exit\n", 0);
+		// ft_putendl_fd("exit", 0);
 		return (0);
 	}
 	num = ft_atol(args_lst->content);
@@ -48,14 +50,18 @@ int	handle_single_argument(token *args_lst)
 	if ((num == 0 && is_valid_numeric(args_lst->content) == false)
 		|| ft_strncmp(args_lst->content, str, 0xFFFFFF))
 	{
-		ft_putstr_fd("exit\n", 2); // only this line -> mpanic OK, bash KO
+		write(0, "exit\n", 5);
+		// ft_putstr_fd("exit\n", 0); // only this line -> mpanic OK, bash KO
+		// ft_putendl_fd("exit", 0);
 		build_error_msg("exit: ", args_lst->content, MS_NOTNUMARG, false);
 		exit_status = 255;
 	}
 	else
 	{
 		exit_status = calculate_exit_status(num);
-		// ft_putstr_fd("exit\n", 2); // this line plus previous -> bash OK, mpanic KO
+		write(0, "exit\n", 5);
+		// ft_putstr_fd("exit\n", 0); // this line plus previous -> bash OK, mpanic KO
+		// ft_putendl_fd("exit", 0);
 	}
 	free(str);
 	return (exit_status);

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/08 20:38:34 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/13 23:20:25 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
             replace_env_with_token(current_command, exit_status_str);
             free(exit_status_str);
         }
-
         current_command = current_command->next;
     }
 }
