@@ -6,24 +6,26 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 21:01:39 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/05 23:50:46 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/15 00:41:58 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void	free_token(token *t)
-// {
-//     token *temp;
+void	free_env_list(t_env_lst *env_lst)
+{
+    t_env_lst *temp;
 
-//     while (t != NULL)
-//     {
-//         temp = t;
-//         t = t->next;
-//         free(temp->content);
-//         free(temp);
-//     }
-// }
+    while (env_lst != NULL)
+	{
+        temp = env_lst;
+        env_lst = env_lst->next;
+        free(temp->var_name);
+		if (temp->var_value != NULL)
+			free(temp->var_value);
+        free(temp);
+    }
+}
 
 void	free_token(token *t)
 {
