@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/13 23:21:25 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/15 00:43:10 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,12 +146,13 @@ tokenizer_state init_tokenizer_state(void);
 size_t          find_char_index(const char *str, char target);
 void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
 void            save_env_list(t_env_lst **env_lst, char **envp);
-void			free_env_list(t_env_lst *env_lst);
-void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
 int 			process_command_list(command_node *head, t_env_lst *env_lst); 
 const char      *token_type_to_string(tokentype type);
+
+//	Clean
+void			free_env_list(t_env_lst *env_lst);
 
 //	Signals
 void            set_interactive_signals(void);
