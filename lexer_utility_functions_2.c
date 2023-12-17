@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 22:00:39 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 22:20:27 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,33 @@ tokenizer_state	init_tokenizer_state(void)
 	state.expect_filename_after_redir = 0;
 	state.tokens = NULL;
 	return (state);
+}
+
+void	add_to_list(token **head, token *new_token)
+{
+	token	*last_token;
+
+	if (!*head)
+		*head = new_token;
+	else
+	{
+		last_token = get_last_token(*head);
+		last_token->next = new_token;
+		new_token->prev = last_token;
+	}
+}
+
+char	*substring(char *input_string, int start, int end)
+{
+	char	*substring;
+	int		k;
+	int		t;
+
+	k = end - start + 1;
+	t = 0;
+	substring = malloc(sizeof(char) * k + 1);
+	while (t < k)
+		substring[t++] = input_string[start++];
+	substring[t] = '\0';
+	return (substring);
 }

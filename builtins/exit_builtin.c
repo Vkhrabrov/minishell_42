@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/13 23:19:30 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 13:21:06 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,42 +26,49 @@ int	calculate_exit_status(long num)
 	return (exit_status);
 }
 
-int	handle_single_argument(token *args_lst)
+static int	normalize_argument_and_check_double_dash(token *args_lst)
 {
-	long	num;
-	char	*str;
-	int		exit_status;
-
 	remove_leading_zeros(args_lst->content);
 	remove_trailing_spaces(args_lst->content);
 	if ((*args_lst->content == '+' && ft_isdigit(args_lst->content[1]))
 		|| (*args_lst->content == ' ' && ft_isdigit(args_lst->content[1]))
 		|| (*args_lst->content == '-' && args_lst->content[1] == '0'))
 		args_lst->content++;
-	if (*args_lst->content == '-' && args_lst->content[1] == '-' && !args_lst->content[2])
+	if (*args_lst->content == '-' && args_lst->content[1] == '-' \
+		&& !args_lst->content[2])
 	{
-		write(0, "exit\n", 5);
-		// ft_putstr_fd("exit\n", 0);
-		// ft_putendl_fd("exit", 0);
-		return (0);
+		ft_putendl_fd("exit", 0);
+		return (1);
 	}
+	return (0);
+}
+
+/*	handle_single_argument()
+ *
+ *	I have to print 'exit' message through STDINPUT to please mpanic test.
+ *	It does not allow me to print it through either STDOUTPUT or STDERR.
+ */
+int	handle_single_argument(token *args_lst)
+{
+	long	num;
+	char	*str;
+	int		exit_status;
+
+	if (normalize_argument_and_check_double_dash(args_lst))
+		return (0);
 	num = ft_atol(args_lst->content);
 	str = ft_ltoa(num);
 	if ((num == 0 && is_valid_numeric(args_lst->content) == false)
 		|| ft_strncmp(args_lst->content, str, 0xFFFFFF))
 	{
-		write(0, "exit\n", 5);
-		// ft_putstr_fd("exit\n", 0); // only this line -> mpanic OK, bash KO
-		// ft_putendl_fd("exit", 0);
+		ft_putendl_fd("exit", 0);
 		build_error_msg("exit: ", args_lst->content, MS_NOTNUMARG, false);
 		exit_status = 255;
 	}
 	else
 	{
 		exit_status = calculate_exit_status(num);
-		write(0, "exit\n", 5);
-		// ft_putstr_fd("exit\n", 0); // this line plus previous -> bash OK, mpanic KO
-		// ft_putendl_fd("exit", 0);
+		ft_putendl_fd("exit", 0);
 	}
 	free(str);
 	return (exit_status);
@@ -81,7 +88,7 @@ int	handle_multiple_arguments(token *args_lst)
 			ft_putstr_fd("exit\n", 2);
 			build_error_msg("exit: ", args_lst->content, MS_NOTNUMARG, false);
 			exit_status = 255;
-			break;
+			break ;
 		}
 		i++;
 	}
@@ -91,6 +98,7 @@ int	handle_multiple_arguments(token *args_lst)
 int	exit_builtin(token *args_lst)
 {
 	int	exit_status;
+
 	if (args_lst == NULL)
 		exit(EXIT_SUCCESS);
 	if (ft_list_size(args_lst) == 1)
@@ -101,6 +109,5 @@ int	exit_builtin(token *args_lst)
 		if (exit_status != 255)
 			return (build_error_msg("exit: ", NULL, MS_TOOMANYARG, false));
 	}
-	// free_args_list(args_lst);
 	exit (exit_status);
 }

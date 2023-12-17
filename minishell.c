@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 21:22:29 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 22:05:33 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,6 @@ const char* token_type_to_string(tokentype type)
     }
 }
 
-void print_token(token *t) 
-{
-    printf("Token content: '%s', Token type: %s\n", t->content,
-        token_type_to_string(t->type));
-}
-
 int if_redir(char c)
 {
     if (c == '>' || c == '<')
@@ -45,6 +39,34 @@ int if_redir(char c)
         return (0); 
 }
 extern int rl_eof_found;
+
+void	update_shlvl(t_env_lst **env_lst)
+{
+	int	shlvl; 
+	
+	shlvl = ft_atoi(get_env_var_val(*env_lst, "SHLVL"));
+	if (shlvl < 0)
+		shlvl = 0;
+	else if (shlvl != 0 && shlvl % 1000 == 0)
+	{
+		build_error_msg("warning: shell level (", ft_itoa(shlvl + 1), ") too high, resetting to 1", false);
+		shlvl = 1;
+	}
+	else if (shlvl != 0)
+		shlvl++;
+	update_env_var_value(*env_lst, "SHLVL", ft_itoa(shlvl));
+}
+
+void	bash_exit_emulate(t_env_lst *env_lst)
+{
+	if (rl_eof_found)
+    {
+		free_env_list(env_lst);
+        ft_putstr_fd("\033[A", 1);
+        ft_putstr_fd("\0\33[2K", 1);
+        printf("%s", "minishell> exit\n");
+    }	
+}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -64,38 +86,22 @@ int main(int argc, char **argv, char **envp)
     close(random_fd);
     
     save_env_list(&env_lst, envp);
-
-	int	shlvl = ft_atoi(get_env_var_val(env_lst, "SHLVL"));
-	if (shlvl < 0)
-		shlvl = 0;
-	else if (shlvl != 0 && shlvl % 1000 == 0)
-	{
-		build_error_msg("warning: shell level (", ft_itoa(shlvl + 1), ") too high, resetting to 1", false);
-		shlvl = 1;
-	}
-	else if (shlvl != 0)
-		shlvl++;
-	update_env_var_value(env_lst, "SHLVL", ft_itoa(shlvl));
-
-    // print_env_lst(&env_lst);
-    disable_control_chars_echo();   //  Disable echoing of control characters (^C, ^\)
-    set_interactive_signals();
+	update_shlvl(&env_lst);
+    disable_control_chars_echo();
+	set_interactive_signals();
 
     while (1) 
     {
-            set_interactive_signals();
         char *input = readline("minishell> ");
         if (!input) 
 			break;
         tokens = tokenization(input);
         int num_tokens = ft_list_size(tokens);
         head = parse_line(tokens);
-        
         expand_environment_variables(head, &env_lst);
         // print_command_node(head);
         if(head)
         {
-        
         // print_command_node(head);
             if (num_tokens == 1)
             {
@@ -115,16 +121,7 @@ int main(int argc, char **argv, char **envp)
         add_history(input);
         free(input);
     }
-	// free_env_list(env_lst);
-	if (rl_eof_found)
-    {
-		free_env_list(env_lst);
-        ft_putstr_fd("\033[A", 1);
-        ft_putstr_fd("\0\33[2K", 1);
-        printf("%s", "minishell> exit\n");
-    }
-	// enable_control_chars_echo();
-    restore_terminal_settings();    //  Restore terminal settings before exiting
-
+	bash_exit_emulate(env_lst);
+    restore_terminal_settings();
     return (g_exitstatus);
 }

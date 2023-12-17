@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/12/17 21:14:21 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 22:14:09 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*	parse_command() 
+ *	
+ *	while a pipe is not found
+ *		- 'process_current_token()' processes if type is ARG or CMD
+ *	   	- 'handle redirections()' processes if type is a redirection
+ *			-- 'add_redirection()' processes the redirection
+ *			-- 'handle_redirection_error()' handles errors if happen
+ *		- 'process_other tokens()' processes rest of types: expandable vars,
+ *			exit status, environment variables, heredoc
+ */
+
 
 void	handle_redirection_error(token *current, token **tokens)
 {
@@ -31,7 +43,7 @@ void	handle_redirection_error(token *current, token **tokens)
 }
 
 token	*handle_redirections(command_node *cmd_node, token *current, \
-			token **last_arg, token **tokens)
+							token **last_arg, token **tokens)
 {
 	if (current->next && current->next->type == T_ARG)
 	{
@@ -47,7 +59,7 @@ token	*handle_redirections(command_node *cmd_node, token *current, \
 }
 
 int	process_current_token(token **current, command_node *cmd_node, \
-		token ***last_arg, token **tokens)
+							token ***last_arg, token **tokens)
 {
 	if ((*current)->type == T_CMD)
 	{
@@ -60,8 +72,8 @@ int	process_current_token(token **current, command_node *cmd_node, \
 		*last_arg = &(*current)->next;
 	}
 	else if ((*current)->type == T_REDIR_IN \
-			|| (*current)->type == T_APP_REDIR \
-			|| (*current)->type == T_REDIR_OUT)
+		|| (*current)->type == T_APP_REDIR \
+		|| (*current)->type == T_REDIR_OUT)
 	{
 		*current = handle_redirections(cmd_node, *current, *last_arg, tokens);
 		if (!(*current))
@@ -70,7 +82,7 @@ int	process_current_token(token **current, command_node *cmd_node, \
 	else
 		process_other_tokens(*current, cmd_node);
 	*current = (*current)->next;
-	return (0);
+	return(0);
 }
 
 command_node	*parse_command(token **tokens)
