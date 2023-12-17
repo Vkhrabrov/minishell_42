@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 21:33:59 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 22:00:39 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void add_to_list(token **head, token *new_token)
     } else {
         last_token = get_last_token(*head);
         last_token->next = new_token;
-        new_token->prev = last_token; // Set the prev pointer of the new token
+        new_token->prev = last_token;
     }
 }
 
