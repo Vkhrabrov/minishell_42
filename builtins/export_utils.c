@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 21:11:35 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/03 11:42:34 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 00:12:35 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_env_lst	*insert_sorted(t_env_lst **head, t_env_lst *new_node)
 	current = *head;
 	prev = NULL;
 	while (current != NULL && ft_strncmp(new_node->var_name, current->var_name,
-			strlen(current->var_name)) > 0)
+			find_max_len(new_node->var_name, current->var_name)) > 0)
 	{
 		prev = current;
 		current = current->next;
@@ -76,4 +76,26 @@ t_env_lst	*insert_sorted(t_env_lst **head, t_env_lst *new_node)
 		new_node->next = current;
 	}
 	return (*head);
+}
+
+bool	find_var_name(t_env_lst *env_lst, char *arg)
+{
+	while (env_lst)
+	{
+		if (ft_strncmp(env_lst->var_name, arg, find_max_len(env_lst->var_name, arg)) == 0)
+			return (true);
+		env_lst = env_lst->next;
+	}
+	return (false);
+}
+
+char	*return_var_value(t_env_lst *env_lst, char *arg)
+{
+	while (env_lst)
+	{
+		if (ft_strncmp(env_lst->var_name, arg, find_max_len(env_lst->var_name, arg)) == 0)
+			return (env_lst->var_value);
+		env_lst = env_lst->next;
+	}
+	return (NULL);
 }

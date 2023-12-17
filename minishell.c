@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 12:18:52 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 22:05:33 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ int main(int argc, char **argv, char **envp)
                 disable_control_chars_echo();
                 set_interactive_signals();
             }
-            else
-                process_command_list(head, env_lst);	
+            else 
+                    process_command_list(head, env_lst);	
         }
         else
             continue;	

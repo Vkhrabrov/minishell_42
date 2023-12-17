@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/13 23:20:25 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/15 23:35:29 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,28 @@ void replace_env_with_token(command_node *current_command, char *env_value) {
 
 void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
     command_node *current_command = cmds;
-    while (current_command) {
-        if (current_command->env_variable) {
-            t_env_lst *current_env = *env_lst;
-            bool found = false; // Add a flag to track if the variable is found
-
-            while (current_env) {
-                if (ft_strncmp(current_env->var_name, current_command->env_variable->content, ft_strlen(current_command->env_variable->content)) == 0) {
-                    if (current_env->var_value && *current_env->var_value) { // Check if the variable has a value
+    char *dollar = NULL;
+    char *start = NULL;
+    char *new_env_var = NULL;
+    t_env_lst *current_env = *env_lst;
+    bool found = false;
+    int i = 0;
+    while (current_command) 
+    {
+        if (current_command->env_variable) 
+        {
+            while (current_env) 
+            {
+                if (ft_strncmp(current_env->var_name, current_command->env_variable->content, ft_strlen(current_command->env_variable->content)) == 0) 
+                {
+                    if (current_env->var_value && *current_env->var_value) 
+                    { // Check if the variable has a value
                         replace_env_with_token(current_command, current_env->var_value);
                         found = true;
                         break;
-                    } else {
+                    } 
+                    else 
+                    {
                         // Variable found but has no value
                         g_exitstatus = 0;
                         return;
@@ -82,12 +92,46 @@ void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
                 current_env = current_env->next;
             }
 
-            if (!found) {
-                // Variable not found in the environment list
-                g_exitstatus = 0;
-                return;
-            }
+                if (!found) 
+                {
+                    // Variable not found in the environment list
+                    g_exitstatus = 0;
+                    return;
+                }
         }
+        
+        if (current_command->args && (dollar = ft_strchr(current_command->args->content, '$')) != NULL &&
+    ft_strchr(dollar, '|') != NULL)
+{
+    char *new_arg = ft_strdup(""); // Initialize with an empty string
+    start = dollar;
+    i = 0;
+    while (*dollar != '|' && *dollar != '\0') // Check for end of string
+    {
+        dollar++;
+        i++;
+    }
+    new_env_var = malloc(sizeof(char) * (i + 1));
+    ft_strlcpy(new_env_var, start + 1, i);
+    new_arg = ft_strjoin(new_arg, "|");
+
+    while (current_env) 
+    {
+        if (ft_strncmp(current_env->var_name, new_env_var, find_max_len(current_env->var_name, new_env_var)) == 0) 
+        {
+            if (current_env->var_value && *current_env->var_value) 
+                new_arg = ft_strjoin(new_arg, current_env->var_value);
+         
+            
+        }
+        current_env = current_env->next;
+    }
+    new_arg = ft_strjoin(new_arg, "|");
+    ft_strlcpy(current_command->args->content, new_arg, ft_strlen(new_arg) + 1);
+    free(new_env_var);
+    free(new_arg);
+}
+
 
         if (current_command->ex_status) {
             char *exit_status_str = ft_itoa(g_exitstatus);

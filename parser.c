@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/16 20:07:30 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 21:11:59 by ccarrace         ###   ########.fr       */
+/*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
+/*   Updated: 2023/12/17 22:14:09 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,37 +111,38 @@ command_node	*parse_command(token **tokens)
 
 command_node	*parse_line(token *tokens)
 {
-    command_node *head;
-    command_node *prev;
+	command_node	*head;
+	command_node	*prev;
+	command_node	*current;
 
 	head = NULL;
 	prev = NULL;
-    while (tokens) 
-    {
-        command_node *current = parse_command(&tokens);
-        if (!current)
-            return(NULL);
-        if (!head) 
-        {
-            head = current;
-            prev = head;
-        } 
-        else 
-        {
-            prev->next = current;
-            prev = current;
-        }
-        // Check for invalid command before a pipe
-        if (tokens && tokens->type == T_PIPE) 
-        {
-            if (!current || (!current->command && !current->redirects)) {
-                ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-                g_exitstatus = 2;
-                break; // Example: stop parsing further
-            }
-            tokens->prev = tokens;
-            tokens = tokens->next; // Move past the pipe token
-        }
-    }
-    return (head);
+	while (tokens)
+	{
+		current = parse_command(&tokens);
+		if (!current)
+			return (NULL);
+		if (!head)
+		{
+			head = current;
+			prev = head;
+		}
+		else
+		{
+			prev->next = current;
+			prev = current;
+		}
+		if (tokens && tokens->type == T_PIPE)
+		{
+			if (!current || (!current->command && !current->redirects))
+			{
+				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+				g_exitstatus = 2;
+				return (NULL);
+			}
+			tokens->prev = tokens;
+			tokens = tokens->next;
+		}
+	}
+	return (head);
 }

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 12:18:52 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 22:07:04 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,11 +148,13 @@ void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
 int 			process_command_list(command_node *head, t_env_lst *env_lst); 
 const char      *token_type_to_string(tokentype type);
+void            handle_outfile(command_node *cmd_node); 
 
 //	parser
 command_node	*parse_command(token **tokens);
 char			*read_heredoc_content(const char *delimiter);
 void			add_redirection(command_node *cmd_node, token *redir_token, char *filename);
+void            process_other_tokens(token *current, command_node *cmd_node);
 
 //	Debug
 void            print_tokens(const token *t);
