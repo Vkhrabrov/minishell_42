@@ -6,7 +6,7 @@ int main(int argc, char *argv[], char *envp[]) {
     char	*shlvl_str;
 	int		shlvl;
 
-	shlvl_str = get_env_var_value("SHLVL");
+	shlvl_str = get_env_var_val("SHLVL");
     if (shlvl_str != NULL) 
 		shlvl = atoi(shlvl_str);
 	else 

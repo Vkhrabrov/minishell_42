@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/11 23:23:27 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:18:52 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handle_file_or_folder_errors(char *path)
 		build_error_msg("cd: ", path, MS_ACCESFORB, false);
 	else if (*path == '\0')
 		return (EXIT_SUCCESS);
-	else 
+	else
 		build_error_msg("cd: ", path, MS_NOFILEDIR, false);
 	return (EXIT_FAILURE);
 }
@@ -32,7 +32,7 @@ int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
 
 	if (chdir(path) == 0)
 	{
-		oldpwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
+		oldpwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
 		if (get_curr_work_dir() == NULL)
 			pwd_value = NULL;
 		else
@@ -57,7 +57,7 @@ int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
 
 // 	if (chdir(path) == 0)
 // 	{
-// 		oldpwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
+// 		oldpwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
 // 		pwd_value = ft_strdup(get_curr_work_dir());
 // 		if (oldpwd_value == NULL || pwd_value == NULL)
 // 			return (EXIT_FAILURE);

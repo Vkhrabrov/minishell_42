@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/14 21:11:59 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:18:52 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	update_shlvl(t_env_lst **env_lst)
 {
 	int	shlvl; 
 	
-	shlvl = ft_atoi(get_env_var_value(*env_lst, "SHLVL"));
+	shlvl = ft_atoi(get_env_var_val(*env_lst, "SHLVL"));
 	if (shlvl < 0)
 		shlvl = 0;
 	else if (shlvl != 0 && shlvl % 1000 == 0)

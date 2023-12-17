@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/11 23:40:47 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:18:52 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,10 @@ int	ft_list_size(token *args_lst)
 	return (i);
 }
 
-/* get_env_var_value() called in
+/* get_env_var_val() called in
 	cd_builtin.c	echo_builtin.c		pwd_builtin.c
 */
-char	*get_env_var_value(t_env_lst *env_lst, char *str)
+char	*get_env_var_val(t_env_lst *env_lst, char *str)
 {
 	while (env_lst != NULL)
 	{

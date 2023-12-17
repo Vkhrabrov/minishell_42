@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 11:12:05 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/06 22:38:42 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:20:12 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	is_path_null(t_env_lst *env_lst, char *path)
 {
 	char	*oldpwd_value;
 
-	oldpwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-	path = get_env_var_value(env_lst, "HOME");
+	oldpwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
+	path = get_env_var_val(env_lst, "HOME");
 	if (path == NULL || path[0] == '\0')
 	{
 		free(oldpwd_value);
@@ -49,69 +49,47 @@ int	is_path_null(t_env_lst *env_lst, char *path)
  *	cd - (swaps PWD and OLDPWD)
  *	cd -- (sets HOME as PWD, updates OLDPWD)
  *	invalid cases: cd --- / cd --abc ...
-*/
-int	are_hyphens_valid(t_env_lst *env_lst, char *path)
+ */
+static int	handle_cd_command(t_env_lst *env_lst, char *path)
 {
 	char	*pwd_value;
 	char	*oldpwd_value;
 
+	pwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
+	if (get_env_var_val(env_lst, "OLDPWD") != NULL)
+		oldpwd_value = ft_strdup(get_env_var_val(env_lst, "OLDPWD"));
+	else
+		oldpwd_value = NULL;
+	if (!path[1])
+	{
+		if (oldpwd_value == NULL)
+		{
+			free(pwd_value);
+			return (build_error_msg("cd: ", "OLDPWD", MS_NOTSET, false));
+		}
+		update_env_var_value(env_lst, "PWD", oldpwd_value);
+	}
+	else if (path[1] == '-')
+		update_env_var_value(env_lst, "PWD", get_env_var_val(env_lst, "HOME"));
+	update_env_var_value(env_lst, "OLDPWD", pwd_value);
+	chdir(get_env_var_val(env_lst, "PWD"));
+	printf("%s\n", get_env_var_val(env_lst, "PWD"));
+	free(pwd_value);
+	free(oldpwd_value);
+	return (EXIT_SUCCESS);
+}
+
+int	are_hyphens_valid(t_env_lst *env_lst, char *path)
+{
 	if (!path[2])
 	{
-		pwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-		if (get_env_var_value(env_lst, "OLDPWD") == NULL)
-			oldpwd_value = NULL;
-		else
-			oldpwd_value = ft_strdup(get_env_var_value(env_lst, "OLDPWD"));
-		if (!path[1])
-		{
-			if (oldpwd_value == NULL)
-				return (build_error_msg("cd: ", "OLDPWD", MS_NOTSET, false));
-			update_env_var_value(env_lst, "PWD", oldpwd_value);
-		}
-		else if (path[1] == '-')
-			update_env_var_value(env_lst, "PWD", get_env_var_value(env_lst, "HOME"));
-		update_env_var_value(env_lst, "OLDPWD", pwd_value);
-		chdir(get_env_var_value(env_lst, "PWD"));
-		printf("%s\n", get_env_var_value(env_lst, "PWD"));
-		free(pwd_value);
-		free(oldpwd_value);
-		return (EXIT_SUCCESS);
+		if (path[1] == '-')
+			return (handle_cd_command(env_lst, path));
+		return (build_error_msg("cd: ", "--", MS_INVALDOPT, false));
 	}
 	else
 		return (build_error_msg("cd: ", "--", MS_INVALDOPT, false));
 }
-
-// /* are_hyphens_valid():
-//  *
-//  *	Cases: 
-//  *	cd - (swaps PWD and OLDPWD)
-//  *	cd -- (sets HOME as PWD, updates OLDPWD)
-//  *	invalid cases: cd --- / cd --abc ...
-// */
-// int	are_hyphens_valid(t_env_lst *env_lst, char *path)
-// {
-// 	char	*pwd_value;
-// 	char	*oldpwd_value;
-
-// 	if (!path[2])
-// 	{
-// 		pwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-// 		oldpwd_value = ft_strdup(get_env_var_value(env_lst, "OLDPWD"));
-// 		chdir(oldpwd_value);
-// 		if (!path[1])
-// 			update_env_var_value(env_lst, "PWD", oldpwd_value);
-// 		else if (path[1] == '-')
-// 			update_env_var_value(env_lst, "PWD", \
-// 					get_env_var_value(env_lst, "HOME"));
-// 		update_env_var_value(env_lst, "OLDPWD", pwd_value);
-// 		printf("%s\n", get_env_var_value(env_lst, "PWD"));
-// 		free(pwd_value);
-// 		free(oldpwd_value);
-// 		return (EXIT_SUCCESS);
-// 	}
-// 	else
-// 		return (build_error_msg("cd: ", "--", MS_INVALDOPT, false));
-// }
 
 /*	is_arg_valid()
  *	
@@ -153,39 +131,24 @@ bool	is_arg_properly_quoted(char *arg)
 	return (false);
 }
 
-// char	*get_curr_work_dir(void)
-// {
-// 	char	buffer[PATH_MAX];cd 
-// 	char	*curr_work_dir;
-// 	char	*err_msg;
-
-// 	err_msg = "cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n";
-// 	curr_work_dir = getcwd(buffer, sizeof(buffer));
-// 	if (!curr_work_dir || access(curr_work_dir, F_OK) == -1)
-// 	{
-// 		write(2, err_msg, 108);
-// 		return (NULL);
-// 	}
-// 	return (curr_work_dir);
-// }
-
 char	*get_curr_work_dir(void)
 {
 	char	buffer[PATH_MAX];
 	char	*curr_work_dir;
 	char	*err_msg;
 
-	err_msg = "cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n";
+	err_msg = "cd: error retrieving current directory: \
+		getcwd: cannot access parent directories: No such file or directory\n";
 	curr_work_dir = getcwd(buffer, sizeof(buffer));
 	if (!curr_work_dir || access(curr_work_dir, F_OK) == -1)
 	{
-		if (errno == ENOENT) {
-			printf(".\n");  // Print '.' for the removed directory scenario
-			return NULL;
+		if (errno == ENOENT)
+		{
+			printf(".\n");
+			return (NULL);
 		}
-		write(2, err_msg, 108);
+		ft_putstr_fd(err_msg, STDERR_FILENO);
 		return (NULL);
 	}
 	return (curr_work_dir);
 }
-
