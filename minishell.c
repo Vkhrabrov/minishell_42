@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/13 23:21:17 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 21:22:29 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int main(int argc, char **argv, char **envp)
     
     save_env_list(&env_lst, envp);
 
-	int	shlvl = ft_atoi(get_env_var_value(env_lst, "SHLVL"));
+	int	shlvl = ft_atoi(get_env_var_val(env_lst, "SHLVL"));
 	if (shlvl < 0)
 		shlvl = 0;
 	else if (shlvl != 0 && shlvl % 1000 == 0)
@@ -105,8 +105,8 @@ int main(int argc, char **argv, char **envp)
                 disable_control_chars_echo();
                 set_interactive_signals();
             }
-            else
-                process_command_list(head, env_lst);	
+            else 
+                    process_command_list(head, env_lst);	
         }
         else
             continue;	
@@ -125,6 +125,6 @@ int main(int argc, char **argv, char **envp)
     }
 	// enable_control_chars_echo();
     restore_terminal_settings();    //  Restore terminal settings before exiting
-    // printf("%d\n", g_exitstatus);
+
     return (g_exitstatus);
 }

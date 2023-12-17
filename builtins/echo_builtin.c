@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 22:11:13 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/29 20:57:07 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 21:22:29 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	print_arguments(t_env_lst *env_lst, token *args_lst, \
 	{
 		if (args_lst->content[0] == '~' && !args_lst->content[1])
 		{
-			printf("%s\n", get_env_var_value(env_lst, "HOME"));
+			printf("%s\n", get_env_var_val(env_lst, "HOME"));
 			is_valid_option = true;
 		}
 		else

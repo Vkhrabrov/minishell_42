@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 11:12:05 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/06 22:38:42 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/17 21:22:29 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	is_path_null(t_env_lst *env_lst, char *path)
 {
 	char	*oldpwd_value;
 
-	oldpwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-	path = get_env_var_value(env_lst, "HOME");
+	oldpwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
+	path = get_env_var_val(env_lst, "HOME");
 	if (path == NULL || path[0] == '\0')
 	{
 		free(oldpwd_value);
@@ -57,11 +57,11 @@ int	are_hyphens_valid(t_env_lst *env_lst, char *path)
 
 	if (!path[2])
 	{
-		pwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-		if (get_env_var_value(env_lst, "OLDPWD") == NULL)
+		pwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
+		if (get_env_var_val(env_lst, "OLDPWD") == NULL)
 			oldpwd_value = NULL;
 		else
-			oldpwd_value = ft_strdup(get_env_var_value(env_lst, "OLDPWD"));
+			oldpwd_value = ft_strdup(get_env_var_val(env_lst, "OLDPWD"));
 		if (!path[1])
 		{
 			if (oldpwd_value == NULL)
@@ -69,10 +69,10 @@ int	are_hyphens_valid(t_env_lst *env_lst, char *path)
 			update_env_var_value(env_lst, "PWD", oldpwd_value);
 		}
 		else if (path[1] == '-')
-			update_env_var_value(env_lst, "PWD", get_env_var_value(env_lst, "HOME"));
+			update_env_var_value(env_lst, "PWD", get_env_var_val(env_lst, "HOME"));
 		update_env_var_value(env_lst, "OLDPWD", pwd_value);
-		chdir(get_env_var_value(env_lst, "PWD"));
-		printf("%s\n", get_env_var_value(env_lst, "PWD"));
+		chdir(get_env_var_val(env_lst, "PWD"));
+		printf("%s\n", get_env_var_val(env_lst, "PWD"));
 		free(pwd_value);
 		free(oldpwd_value);
 		return (EXIT_SUCCESS);
@@ -95,16 +95,16 @@ int	are_hyphens_valid(t_env_lst *env_lst, char *path)
 
 // 	if (!path[2])
 // 	{
-// 		pwd_value = ft_strdup(get_env_var_value(env_lst, "PWD"));
-// 		oldpwd_value = ft_strdup(get_env_var_value(env_lst, "OLDPWD"));
+// 		pwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
+// 		oldpwd_value = ft_strdup(get_env_var_val(env_lst, "OLDPWD"));
 // 		chdir(oldpwd_value);
 // 		if (!path[1])
 // 			update_env_var_value(env_lst, "PWD", oldpwd_value);
 // 		else if (path[1] == '-')
 // 			update_env_var_value(env_lst, "PWD", \
-// 					get_env_var_value(env_lst, "HOME"));
+// 					get_env_var_val(env_lst, "HOME"));
 // 		update_env_var_value(env_lst, "OLDPWD", pwd_value);
-// 		printf("%s\n", get_env_var_value(env_lst, "PWD"));
+// 		printf("%s\n", get_env_var_val(env_lst, "PWD"));
 // 		free(pwd_value);
 // 		free(oldpwd_value);
 // 		return (EXIT_SUCCESS);

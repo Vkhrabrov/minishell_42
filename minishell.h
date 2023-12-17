@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/13 23:21:25 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 21:27:05 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ t_env_lst;
 
 //	Vadim's intrincate stuff
 command_node*   parse_line(token *tokens);
-void            print_command_node(command_node* head);
 void            free_command_node(command_node* node); 
 void            reset_command_node(command_node* cmd);
 token           *creat_token(const char* content, tokentype type);
@@ -133,7 +132,6 @@ void            add_to_list(token **head, token *new_token);
 char            *substring(char *input_string, int start, int end);
 // char            *lex_quoted_string(char *input_string, int *i);
 char            *lex_quoted_string(char *input_string, int *i, char end_char);
-void            print_token(token *t);
 token           *tokenization(char *input);
 void            handle_commands_and_args(char *input, tokenizer_state *state);
 void            handle_special_tokens(char c, char *input, tokenizer_state *state);
@@ -146,12 +144,24 @@ tokenizer_state init_tokenizer_state(void);
 size_t          find_char_index(const char *str, char target);
 void            add_env_var_to_list(t_env_lst **head, const char *envp_line);
 void            save_env_list(t_env_lst **env_lst, char **envp);
-void			free_env_list(t_env_lst *env_lst);
-void            print_env_list(t_env_lst **env_lst);
 void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
 int 			process_command_list(command_node *head, t_env_lst *env_lst); 
 const char      *token_type_to_string(tokentype type);
+void            handle_outfile(command_node *cmd_node); 
+
+//	parser
+command_node	*parse_command(token **tokens);
+char			*read_heredoc_content(const char *delimiter);
+void			add_redirection(command_node *cmd_node, token *redir_token, char *filename);
+void            process_other_tokens(token *current, command_node *cmd_node);
+
+//	Debug
+void            print_tokens(const token *t);
+void            print_command_node(command_node* head);
+
+//	Clean
+void			free_env_list(t_env_lst *env_lst);
 
 //	Signals
 void            set_interactive_signals(void);
@@ -194,7 +204,7 @@ int				find_max_len(char *str1, char *str2);
 long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
-char			*get_env_var_value(t_env_lst *env_lst, char *str);
+char			*get_env_var_val(t_env_lst *env_lst, char *str);
 int				update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
 
 //	Builtins errors

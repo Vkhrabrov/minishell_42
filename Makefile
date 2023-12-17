@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
+#    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/12/13 22:48:00 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/12/17 20:28:56 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ HEADER = minishell.h
 LIBFT = libft/
 READLINE = readline/
 
-SRC_F:= minishell  parser lexer_utility_functions lexer_utility_functions_2 \
-		lexer env_list_creation expander executor signals signals_utils clean \
+SRC_F:= minishell parser parser2 lexer_utility_functions lexer_utility_functions_2 \
+		lexer lexer2 env_list_creation expander executor signals signals_utils clean \
 		builtins/cd_builtin builtins/cd_utils builtins/echo_builtin \
 		builtins/exit_builtin builtins/exit_utils builtins/env_builtin \
 		builtins/export_builtin builtins/export_utils builtins/pwd_builtin \

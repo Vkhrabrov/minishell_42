@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/11 23:22:39 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/17 18:27:14 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,38 @@ char *concatenate_paths_libft(const char *path, const char *cmd) {
     }
     free(temp1);
     return result;
+}
+
+int is_builtin(command_node *cmd_node) 
+{
+    char *builtins[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
+    for (int i = 0; builtins[i]; i++) {
+        if (ft_strncmp(cmd_node->command->content, builtins[i], find_max_len(cmd_node->command->content, builtins[i])) == 0) {
+            return 1;
+        }
+    }
+    return 0; 
+}
+
+int builtin_process(command_node *cmd_node, t_env_lst *env_lst) {
+    int original_stdout_fd = -1;
+    int ex_status = 0;
+
+    // Check if there are any output redirections
+    if (cmd_node->redirects) {
+        original_stdout_fd = dup(STDOUT_FILENO); // Backup the original stdout
+        handle_outfile(cmd_node); // Handle output redirection
+    }
+
+    ex_status = execute_builtin(cmd_node->command->content, cmd_node, env_lst);
+
+    // Restore original stdout if it was changed
+    if (original_stdout_fd != -1) {
+        dup2(original_stdout_fd, STDOUT_FILENO);
+        close(original_stdout_fd);
+    }
+
+    return ex_status;
 }
 
 char **convert_command_node_args_to_array(command_node *cmd_node) {
@@ -52,7 +84,7 @@ char **convert_command_node_args_to_array(command_node *cmd_node) {
         perror("strdup");
         exit(EXIT_FAILURE);
     }
-
+    
     // Fill the args_array with the arguments
     int i = 1;
     arg_temp = cmd_node->args;
@@ -220,23 +252,32 @@ void handle_outfile(command_node *cmd_node)
 
 int execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
 {
-
-   
-    char **paths = get_paths_from_env(env_lst);
-    char *full_cmd_path = find_command_path(cmd_node->command->content, paths);
-    pid_t pid = fork();
-    
-    char **final_args = convert_command_node_args_to_array(cmd_node);
-    
-    char **final_env = convert_env_list_to_array(env_lst);
+        char **paths = get_paths_from_env(env_lst);
+        char *full_cmd_path = find_command_path(cmd_node->command->content, paths);
+        pid_t pid = fork();
+        
+        char **final_args = convert_command_node_args_to_array(cmd_node);
+        
+        char **final_env = convert_env_list_to_array(env_lst);
     
 
     if (pid == 0) 
     {  // This block will be executed by the child process
-        if (!full_cmd_path || *full_cmd_path == '\0' || cmd_node->command->content[0] == '\0') 
+        if (!is_builtin(cmd_node))
         {
-            build_error_msg(cmd_node->command->content, NULL, ": command not found", false);
-            exit(127); // 127 is commonly used for command not found errors
+            if (!full_cmd_path || *full_cmd_path == '\0' || cmd_node->command->content[0] == '\0') 
+            {
+                build_error_msg(cmd_node->command->content, NULL, ": command not found", false);
+                g_exitstatus = 127;
+                exit(127); // 127 is commonly used for command not found errors
+            }
+            // if (find_var_name(env_lst, final_args[1]) && (return_var_value(env_lst, final_args[1]) == NULL))
+            // {
+            //         g_exitstatus = 1;
+            //         exit (1);
+            //     // printf("%s exists\n", final_args[1]);
+            //     // exit(1);
+            // }            
         }
         //  if (cmd_node->command->content[0] == '\0')
         // {
@@ -246,7 +287,10 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         handle_infile(cmd_node); // Handle input redirection
         handle_outfile(cmd_node); // Handle output redirection
         handle_here_doc(cmd_node);
-        execve(full_cmd_path, final_args, final_env);
+        if (is_builtin(cmd_node))
+            execute_builtin(cmd_node->command->content, cmd_node, env_lst);
+        else
+            execve(full_cmd_path, final_args, final_env);
         // cmd_node->exit_status = 1;
     } 
     else 
@@ -255,6 +299,7 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
         waitpid(pid, &status, 0);
         if (WIFEXITED(status)) 
             g_exitstatus = WEXITSTATUS(status);
+        // printf("%d\n", g_exitstatus);
 		// CARLOS: condition added to return proper exit status if process is terminated by a signal
 		// if (WIFSIGNALED(status))
 		// 	g_exitstatus = 128 + WTERMSIG(status);
@@ -269,17 +314,7 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
     }
     free(final_env);
     // printf("i'm here");
-    return (0);
-}
-
-int is_builtin(command_node *cmd_node) {
-    char *builtins[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
-    for (int i = 0; builtins[i]; i++) {
-        if (ft_strncmp(cmd_node->command->content, builtins[i], find_max_len(cmd_node->command->content, builtins[i])) == 0) {
-            return 1;
-        }
-    }
-    return 0; 
+    return (g_exitstatus);
 }
 
 void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd) 
@@ -298,7 +333,7 @@ void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int ou
         close(original_stdout);
         close(original_stdin);
 
-        exit(0) ;
+        exit(g_exitstatus);
     }
     if (in_fd != STDIN_FILENO) {
         dup2(in_fd, STDIN_FILENO);
@@ -310,33 +345,9 @@ void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int ou
         dup2(out_fd, STDOUT_FILENO);
         close(out_fd);
     }
-    if (execute_command_node(cmd_node, env_lst) != 0)
-        exit(EXIT_FAILURE);
-    else
-        exit(EXIT_SUCCESS);
+    execute_command_node(cmd_node, env_lst);
+    exit(g_exitstatus);
 }
-
-int builtin_process(command_node *cmd_node, t_env_lst *env_lst) {
-    int original_stdout_fd = -1;
-    int ex_status = 0;
-
-    // Check if there are any output redirections
-    if (cmd_node->redirects) {
-        original_stdout_fd = dup(STDOUT_FILENO); // Backup the original stdout
-        handle_outfile(cmd_node); // Handle output redirection
-    }
-
-    ex_status = execute_builtin(cmd_node->command->content, cmd_node, env_lst);
-
-    // Restore original stdout if it was changed
-    if (original_stdout_fd != -1) {
-        dup2(original_stdout_fd, STDOUT_FILENO);
-        close(original_stdout_fd);
-    }
-
-    return ex_status;
-}
-
 
 // Handles the execution of a pipeline of commands
 int pipex(command_node *head, t_env_lst *env_lst) {
@@ -360,7 +371,12 @@ int pipex(command_node *head, t_env_lst *env_lst) {
                 close(end[0]);
             }
             child_process(current, env_lst, in_fd, current->next ? end[1] : STDOUT_FILENO);
-        } else { // Parent process
+            // printf("exit status after child process is finished: %d\n", g_exitstatus);
+        } else { 
+            int status;
+            waitpid(pid, &status, 0);
+            if (WIFEXITED(status)) 
+                g_exitstatus = WEXITSTATUS(status);// Parent process
             if (in_fd != STDIN_FILENO) {
                 close(in_fd);
             }
@@ -378,7 +394,8 @@ int pipex(command_node *head, t_env_lst *env_lst) {
             break;
         }
     }
-    return 0;
+    // printf("exit status in the end of pipex: %d\n", g_exitstatus);
+    return (g_exitstatus);
 }
 
 int process_command_list(command_node *head, t_env_lst *env_lst) {
@@ -393,34 +410,36 @@ int process_command_list(command_node *head, t_env_lst *env_lst) {
 
     if ((!head->command || !head->command->content) &&
         !head->redirects && !head->here_doc_content)
-        return(0);
+        return(g_exitstatus);
     else if ((!head->command || !head->command->content) &&
         (head->redirects && node_count < 2))
     {
         int original_stdout = dup(STDOUT_FILENO);
         int original_stdin = dup(STDIN_FILENO);
-
         handle_outfile(head);
         handle_infile(head);
         dup2(original_stdout, STDOUT_FILENO);
         dup2(original_stdin, STDIN_FILENO);
-
         close(original_stdout);
         close(original_stdin);
-
-        return(0);
+        return(g_exitstatus);
     }
 
     if (node_count > 1) {
         return pipex(head, env_lst);
+        // printf("exit status: %d\n", g_exitstatus);
+        // return(g_exitstatus);
     }
     else
     {
         if (is_builtin(head)) 
         {
             return builtin_process(head, env_lst);
+            // return(g_exitstatus);
         } 
-        else 
+        else {
             return execute_command_node(head, env_lst);
+            // return(g_exitstatus);
+        }
     }
 }
