@@ -6,12 +6,19 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 21:15:47 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/14 21:16:06 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/18 18:41:41 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	if_redir(char c)
+{
+	if (c == '>' || c == '<')
+		return (1);
+	else
+		return (0);
+}
 int	is_prev_pipe_or_none(tokenizer_state *state, char *arg)
 {
 	return ((state->prev_type == T_PIPE || state->prev_type == T_NONE)

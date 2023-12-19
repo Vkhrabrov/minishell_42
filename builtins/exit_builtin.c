@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 13:21:06 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/18 00:17:31 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,11 @@ int	exit_builtin(token *args_lst)
 	int	exit_status;
 
 	if (args_lst == NULL)
+	{
+		ft_putstr_fd("exit\n", 0);
 		exit(EXIT_SUCCESS);
-	if (ft_list_size(args_lst) == 1)
+	}
+	else if (ft_list_size(args_lst) == 1)
 		exit_status = handle_single_argument(args_lst);
 	else
 	{
@@ -111,3 +114,20 @@ int	exit_builtin(token *args_lst)
 	}
 	exit (exit_status);
 }
+
+// int	exit_builtin(token *args_lst)
+// {
+// 	int	exit_status;
+
+// 	if (args_lst == NULL)
+// 		exit(EXIT_SUCCESS);
+// 	if (ft_list_size(args_lst) == 1)
+// 		exit_status = handle_single_argument(args_lst);
+// 	else
+// 	{
+// 		exit_status = handle_multiple_arguments(args_lst);
+// 		if (exit_status != 255)
+// 			return (build_error_msg("exit: ", NULL, MS_TOOMANYARG, false));
+// 	}
+// 	exit (exit_status);
+// }

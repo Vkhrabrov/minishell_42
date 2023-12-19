@@ -6,61 +6,55 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 22:07:04 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/18 20:02:45 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
-#include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
-#include <limits.h>     // PATH_SIZE
-#include <unistd.h>
-#include "libft/libft.h" 
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include <errno.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
+# include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
+# include <limits.h>     // PATH_SIZE
+# include <unistd.h>
+# include "libft/libft.h" 
+# include <unistd.h>
+# include <string.h>
+# include <fcntl.h>
+# include <stdbool.h>
+# include <errno.h>
 
 // Error messages definition
-#define MS_TOOMANYARG	"too many arguments"
-#define MS_NOTSET 		" not set"
-#define MS_NOTNUMARG	": numeric argument required"
-#define MS_INVALDOPT	": invalid option"
-#define MS_NOFILEDIR	": No such file or directory"
-#define MS_NOTDIR		": Not a directory"
-#define MS_ACCESFORB	": Permission denied"
-#define MS_LONGNAME		": File name too long"
-#define MS_BADID	": not a valid identifier"
+# define MS_TOOMANYARG	"too many arguments"
+# define MS_NOTSET 		" not set"
+# define MS_NOTNUMARG	": numeric argument required"
+# define MS_INVALDOPT	": invalid option"
+# define MS_NOFILEDIR	": No such file or directory"
+# define MS_NOTDIR		": Not a directory"
+# define MS_ACCESFORB	": Permission denied"
+# define MS_LONGNAME		": File name too long"
+# define MS_BADID	": not a valid identifier"
 
-enum shell_mode
+typedef enum
 {
-    INTERACTIVE,
-    NON_INTERACTIVE
-};
-
-typedef enum 
-{
-    T_CMD,
-    T_ARG,
-    T_PIPE,
-    T_NONE,
-    T_REDIR_IN,
-    T_REDIR_OUT,
-    T_HEREDOC,
-    T_APP_REDIR,
-    T_VAR_EXP,
-    T_BACKGROUND_EXEC,
-    T_EXIT_STATUS,
-    T_HEREDOC_DELIM,
-    T_ENV_VAR,
-}             tokentype;
+	T_CMD,
+	T_ARG,
+	T_PIPE,
+	T_NONE,
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	T_HEREDOC,
+	T_APP_REDIR,
+	T_VAR_EXP,
+	T_BACKGROUND_EXEC,
+	T_EXIT_STATUS,
+	T_HEREDOC_DELIM,
+	T_ENV_VAR,
+}	tokentype;
 
 typedef struct token token;
 

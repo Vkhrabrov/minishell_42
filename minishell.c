@@ -6,50 +6,23 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 22:05:33 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/19 00:53:57 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-const char* token_type_to_string(tokentype type) 
-{
-    switch (type) 
-    {
-        case T_CMD: return "COMMAND";
-        case T_ARG: return "ARGUMENT";
-        case T_PIPE: return "PIPE";
-        case T_REDIR_IN: return "REDIRECT_IN";
-        case T_REDIR_OUT: return "REDIRECT_OUT";
-        case T_HEREDOC: return "HERE_DOC";
-        case T_APP_REDIR: return "APPEND_REDIRECTION";
-        case T_VAR_EXP: return "VARIABLE_EXPANSION";
-        case T_EXIT_STATUS: return "EXIT_STATUS";
-        case T_HEREDOC_DELIM: return "HEREDOC_DELIM";
-        case T_ENV_VAR: return "ENV_VARIABLE";
-        default: return "UNKNOWN";
-    }
-}
-
-int if_redir(char c)
-{
-    if (c == '>' || c == '<')
-        return (1);
-    else
-        return (0); 
-}
-extern int rl_eof_found;
-
 void	update_shlvl(t_env_lst **env_lst)
 {
-	int	shlvl; 
-	
+	int	shlvl;
+
 	shlvl = ft_atoi(get_env_var_val(*env_lst, "SHLVL"));
 	if (shlvl < 0)
 		shlvl = 0;
 	else if (shlvl != 0 && shlvl % 1000 == 0)
 	{
-		build_error_msg("warning: shell level (", ft_itoa(shlvl + 1), ") too high, resetting to 1", false);
+		build_error_msg("warning: shell level (", ft_itoa(shlvl + 1), \
+			") too high, resetting to 1", false);
 		shlvl = 1;
 	}
 	else if (shlvl != 0)
@@ -59,69 +32,74 @@ void	update_shlvl(t_env_lst **env_lst)
 
 void	bash_exit_emulate(t_env_lst *env_lst)
 {
-	if (rl_eof_found)
-    {
-		free_env_list(env_lst);
-        ft_putstr_fd("\033[A", 1);
-        ft_putstr_fd("\0\33[2K", 1);
-        printf("%s", "minishell> exit\n");
-    }	
+	free_env_list(env_lst);
+	ft_putstr_fd("\033[A", 1);
+	ft_putstr_fd("\0\33[2K", 1);
+	printf("%s", "minishell> exit\n");
 }
 
-int main(int argc, char **argv, char **envp)
+void	handle_command_without_args(command_node *head, t_env_lst *env_lst)
 {
-    int random_fd;
-    token *tokens = NULL;
-    command_node *head = NULL;
-    t_env_lst  *env_lst = NULL;
-    (void)argc;
-    (void)argv;
-    g_exitstatus = 0;
-    random_fd = open("fd_test", O_TRUNC | O_CREAT | O_RDWR, 0644);
-    if (random_fd == -1)
-    {
-        perror("");
-        exit(EXIT_FAILURE);
-    }
-    close(random_fd);
-    
-    save_env_list(&env_lst, envp);
-	update_shlvl(&env_lst);
-    disable_control_chars_echo();
+	restore_terminal_settings();
+	set_noninteractive_signals();
+	process_command_list(head, env_lst);
+	disable_control_chars_echo();
 	set_interactive_signals();
+}
 
-    while (1) 
-    {
-        char *input = readline("minishell> ");
-        if (!input) 
-			break;
-        tokens = tokenization(input);
-        int num_tokens = ft_list_size(tokens);
-        head = parse_line(tokens);
-        expand_environment_variables(head, &env_lst);
-        // print_command_node(head);
-        if(head)
-        {
-        // print_command_node(head);
-            if (num_tokens == 1)
-            {
-                restore_terminal_settings();
-                set_noninteractive_signals();
-                process_command_list(head, env_lst);
-                disable_control_chars_echo();
-                set_interactive_signals();
-            }
-            else 
-                    process_command_list(head, env_lst);	
-        }
-        else
-            continue;	
-        // free_command_node(head);
-        // reset_command_node(head);
-        add_history(input);
-        free(input);
-    }
+void	run_minishell_loop(t_env_lst *env_lst, command_node *head)
+{
+	char	*input;
+	token	*tokens;
+	int		num_tokens;
+
+	while (1)
+	{
+		input = readline("minishell> ");
+		if (!input)
+			break ;
+		tokens = tokenization(input);
+		num_tokens = ft_list_size(tokens);
+		head = parse_line(tokens);
+		expand_environment_variables(head, &env_lst);
+		if (head)
+		{
+			if (num_tokens == 1)
+				handle_command_without_args(head, env_lst);
+			else
+				process_command_list(head, env_lst);
+		}
+		else
+			continue ;
+		add_history(input);
+		free(input);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	command_node	*head;
+	t_env_lst		*env_lst;
+	int				random_fd;
+
+	(void)argc;
+	(void)argv;
+	head = NULL;
+	env_lst = NULL;
+	g_exitstatus = 0;
+	random_fd = open("fd_test", O_TRUNC | O_CREAT | O_RDWR, 0644);
+	if (random_fd == -1)
+	{
+		perror("");
+		exit(EXIT_FAILURE);
+	}
+	close(random_fd);
+	save_env_list(&env_lst, envp);
+	update_shlvl(&env_lst);
+	disable_control_chars_echo();
+	set_interactive_signals();
+	run_minishell_loop(env_lst, head);
 	bash_exit_emulate(env_lst);
-    restore_terminal_settings();
-    return (g_exitstatus);
+	restore_terminal_settings();
+	return (g_exitstatus);
 }

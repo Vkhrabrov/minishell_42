@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 21:49:58 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/13 23:01:07 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/18 18:59:56 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static void		new_prompt_line(int signo);
 static void		print_new_line(int signo);
 static void		print_quit_msg(int signo);
-void			disable_control_chars_echo(void);
 
 /*	set_interactive_signals()
  *

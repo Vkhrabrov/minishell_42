@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 22:31:52 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/13 22:48:39 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/18 19:41:40 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
     is not violating the subject rules, since it is not related to indicating a 
     received signal at all.
 */
-static struct termios	g_original_termios;
+// static struct termios	g_original_termios;
 
 /*	disable_control_chars_echo()
  *   
@@ -33,8 +33,7 @@ void	disable_control_chars_echo(void)
 {
 	struct termios	new_termios;
 
-	tcgetattr(0, &g_original_termios);
-	new_termios = g_original_termios;
+	tcgetattr(0, &new_termios);
 	new_termios.c_lflag &= ~ECHOCTL;
 	tcsetattr(0, TCSANOW, &new_termios);
 }
@@ -45,5 +44,9 @@ void	disable_control_chars_echo(void)
  */
 void	restore_terminal_settings(void)
 {
-	tcsetattr(0, TCSANOW, &g_original_termios);
+	struct termios	new_termios;
+	
+	tcgetattr(0, &new_termios);
+	new_termios.c_lflag |= ECHOCTL;
+	tcsetattr(0, TCSANOW, &new_termios);
 }

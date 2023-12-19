@@ -6,16 +6,35 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 21:11:32 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/15 21:16:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/18 18:36:44 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_token(token *t)
+// void	print_token(token *t)
+// {
+// 	printf("Token content: '%s', Token type: %s\n", t->content, \
+// 		token_type_to_string(t->type));
+// }
+
+const char* token_type_to_string(tokentype type) 
 {
-	printf("Token content: '%s', Token type: %s\n", t->content, \
-		token_type_to_string(t->type));
+    switch (type) 
+    {
+        case T_CMD: return "COMMAND";
+        case T_ARG: return "ARGUMENT";
+        case T_PIPE: return "PIPE";
+        case T_REDIR_IN: return "REDIRECT_IN";
+        case T_REDIR_OUT: return "REDIRECT_OUT";
+        case T_HEREDOC: return "HERE_DOC";
+        case T_APP_REDIR: return "APPEND_REDIRECTION";
+        case T_VAR_EXP: return "VARIABLE_EXPANSION";
+        case T_EXIT_STATUS: return "EXIT_STATUS";
+        case T_HEREDOC_DELIM: return "HEREDOC_DELIM";
+        case T_ENV_VAR: return "ENV_VARIABLE";
+        default: return "UNKNOWN";
+    }
 }
 
 void	print_tokens(const token *tokens)
