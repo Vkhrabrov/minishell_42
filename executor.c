@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 18:27:14 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 18:39:57 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char *concatenate_paths_libft(const char *path, const char *cmd) {
     return result;
 }
 
-int is_builtin(command_node *cmd_node) 
+int is_builtin(struct command_node *cmd_node) 
 {
     char *builtins[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
     for (int i = 0; builtins[i]; i++) {
@@ -40,7 +40,7 @@ int is_builtin(command_node *cmd_node)
     return 0; 
 }
 
-int builtin_process(command_node *cmd_node, t_env_lst *env_lst) {
+int builtin_process(struct command_node *cmd_node, t_env_lst *env_lst) {
     int original_stdout_fd = -1;
     int ex_status = 0;
 
@@ -61,9 +61,9 @@ int builtin_process(command_node *cmd_node, t_env_lst *env_lst) {
     return ex_status;
 }
 
-char **convert_command_node_args_to_array(command_node *cmd_node) {
+char **convert_command_node_args_to_array(struct command_node *cmd_node) {
     int count = 0;
-    token *arg_temp = cmd_node->args;
+    struct token *arg_temp = cmd_node->args;
 
     // Count the number of arguments in the linked list
     while (arg_temp) {
@@ -186,7 +186,7 @@ char *find_command_path(const char *cmd, char **paths) {
     return full_cmd_path;
 }
 
-void handle_here_doc(command_node *cmd_node) 
+void handle_here_doc(struct command_node *cmd_node) 
 {
     if (!cmd_node->here_doc_content) 
         return;
@@ -205,9 +205,11 @@ void handle_here_doc(command_node *cmd_node)
     close(pipefd[0]);
 }
 
-void handle_infile(command_node *cmd_node)
+void handle_infile(struct command_node *cmd_node)
 {
-    redirection *redir = cmd_node->redirects;
+    struct redirection	*redir;
+	
+	redir = cmd_node->redirects;
     while (redir)
     {
         if (strcmp(redir->type->content, "<") == 0) // Check if it's an input redirection
@@ -226,9 +228,11 @@ void handle_infile(command_node *cmd_node)
     }
 }
 
-void handle_outfile(command_node *cmd_node) 
+void handle_outfile(struct command_node *cmd_node) 
 {
-    redirection *redir = cmd_node->redirects;
+	struct redirection	*redir;
+	
+	redir = cmd_node->redirects;
     while (redir)
     {
         if (strcmp(redir->type->content, ">") == 0 || strcmp(redir->type->content, ">>") == 0) // Check if it's an output redirection
@@ -250,7 +254,7 @@ void handle_outfile(command_node *cmd_node)
     }
 }
 
-int execute_command_node(command_node *cmd_node, t_env_lst *env_lst) 
+int execute_command_node(struct command_node *cmd_node, t_env_lst *env_lst) 
 {
         char **paths = get_paths_from_env(env_lst);
         char *full_cmd_path = find_command_path(cmd_node->command->content, paths);
@@ -317,7 +321,7 @@ int execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
     return (g_exitstatus);
 }
 
-void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd) 
+void child_process(struct command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd) 
 {
     if ((!cmd_node->command || !cmd_node->command->content) &&
         cmd_node->redirects)
@@ -350,10 +354,10 @@ void child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int ou
 }
 
 // Handles the execution of a pipeline of commands
-int pipex(command_node *head, t_env_lst *env_lst) {
+int pipex(struct command_node *head, t_env_lst *env_lst) {
     int end[2], in_fd = STDIN_FILENO;
     pid_t pid;
-    command_node *current = head;
+    struct command_node *current = head;
 
     while (current) {
         // Create pipe if there's a next command
@@ -398,11 +402,11 @@ int pipex(command_node *head, t_env_lst *env_lst) {
     return (g_exitstatus);
 }
 
-int process_command_list(command_node *head, t_env_lst *env_lst) {
+int process_command_list(struct command_node *head, t_env_lst *env_lst) {
     if (!head) return 0;
 
     int node_count = 0;
-    command_node *current = head;
+    struct command_node *current = head;
     while (current) {
         node_count++;
         current = current->next;

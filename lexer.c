@@ -6,13 +6,14 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 01:16:24 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 19:35:21 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_single_redirection(char *redir, char c, tokenizer_state *state)
+void	handle_single_redirection(char *redir, char c, \
+		struct tokenizer_state *state)
 {
 	ft_strlcpy(redir, (char []){c, '\0', '\0'}, sizeof(redir));
 	if (c == '>')
@@ -21,7 +22,7 @@ void	handle_single_redirection(char *redir, char c, tokenizer_state *state)
 		add_to_list(&(state->tokens), creat_token(redir, T_REDIR_IN));
 }
 
-void	handle_redirection_end(char c, tokenizer_state *state)
+void	handle_redirection_end(char c, struct tokenizer_state *state)
 {
 	if (c == '>')
 		state->prev_type = T_REDIR_OUT;
@@ -30,7 +31,7 @@ void	handle_redirection_end(char c, tokenizer_state *state)
 	state->expect_filename_after_redir = 1;
 }
 
-void	handle_redirection(char c, char *input, tokenizer_state *state)
+void	handle_redirection(char c, char *input, struct tokenizer_state *state)
 {
 	char	next_char;
 	char	redir[3];
@@ -57,7 +58,8 @@ void	handle_redirection(char c, char *input, tokenizer_state *state)
 	handle_redirection_end(c, state);
 }
 
-void	handle_special_tokens(char c, char *input, tokenizer_state *state)
+void	handle_special_tokens(char c, char *input, \
+		struct tokenizer_state *state)
 {
 	char	next_char;
 	char	redir[3];
@@ -92,10 +94,10 @@ void	handle_special_tokens(char c, char *input, tokenizer_state *state)
  *		print_tokens(state.tokens)
  *	at the end of the function
 */
-token	*tokenization(char *input)
+struct token	*tokenization(char *input)
 {
-	tokenizer_state	state;
-	char			c;
+	struct tokenizer_state	state;
+	char					c;
 
 	state = init_tokenizer_state();
 	while (state.i < (int)ft_strlen(input))

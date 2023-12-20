@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 21:15:47 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/18 18:41:41 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 19:36:02 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,24 @@ int	if_redir(char c)
 	else
 		return (0);
 }
-int	is_prev_pipe_or_none(tokenizer_state *state, char *arg)
+
+int	is_prev_pipe_or_none(struct tokenizer_state *state, char *arg)
 {
 	return ((state->prev_type == T_PIPE || state->prev_type == T_NONE)
 		&& ft_strlen(arg) != 0);
 }
 
-int	is_prev_redir(tokenizer_state *state, char *arg)
+int	is_prev_redir(struct tokenizer_state *state, char *arg)
 {
 	return ((state->prev_type == T_REDIR_IN || state->prev_type == T_REDIR_OUT)
 		&& ft_strlen(arg) != 0);
 }
 
-void	handle_quoted_string(char c, char *input, tokenizer_state *state)
+void	handle_quoted_string(char c, char *input, struct tokenizer_state *state)
 {
-	char		end_char;
-	char		*arg;
-	tokentype	current_type;
+	char			end_char;
+	char			*arg;
+	enum tokentype	current_type;
 
 	end_char = c;
 	arg = lex_quoted_string(input, &(state->i), end_char);

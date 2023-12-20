@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/15 23:35:29 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 18:38:27 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-token *create_new_token(char *content, tokentype type) {
-    token *new_token = (token *)malloc(sizeof(token));
+struct token *create_new_token(char *content, enum tokentype type) {
+    struct token *new_token = (struct token *)malloc(sizeof(struct token));
     if (!new_token) {
         // Handle malloc failure
         return NULL;
@@ -31,9 +31,9 @@ token *create_new_token(char *content, tokentype type) {
     return new_token;
 }
 
-void replace_env_with_token(command_node *current_command, char *env_value) {
-    tokentype type = current_command->command ? T_ARG : T_CMD;
-    token *new_token = create_new_token(env_value, type);
+void replace_env_with_token(struct command_node *current_command, char *env_value) {
+    enum tokentype type = current_command->command ? T_ARG : T_CMD;
+    struct token *new_token = create_new_token(env_value, type);
     if (!new_token) {
         // Handle create_new_token failure
         return;
@@ -60,8 +60,8 @@ void replace_env_with_token(command_node *current_command, char *env_value) {
     }
 }
 
-void expand_environment_variables(command_node *cmds, t_env_lst **env_lst) {
-    command_node *current_command = cmds;
+void expand_environment_variables(struct command_node *cmds, t_env_lst **env_lst) {
+    struct command_node *current_command = cmds;
     char *dollar = NULL;
     char *start = NULL;
     char *new_env_var = NULL;

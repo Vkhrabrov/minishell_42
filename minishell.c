@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/19 00:53:57 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 22:09:34 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	bash_exit_emulate(t_env_lst *env_lst)
 	printf("%s", "minishell> exit\n");
 }
 
-void	handle_command_without_args(command_node *head, t_env_lst *env_lst)
+void	handle_command_without_args(struct command_node *head, \
+		t_env_lst *env_lst)
 {
 	restore_terminal_settings();
 	set_noninteractive_signals();
@@ -47,11 +48,11 @@ void	handle_command_without_args(command_node *head, t_env_lst *env_lst)
 	set_interactive_signals();
 }
 
-void	run_minishell_loop(t_env_lst *env_lst, command_node *head)
+void	run_minishell_loop(t_env_lst *env_lst, struct command_node *head)
 {
-	char	*input;
-	token	*tokens;
-	int		num_tokens;
+	char			*input;
+	struct token	*tokens;
+	int				num_tokens;
 
 	while (1)
 	{
@@ -64,7 +65,7 @@ void	run_minishell_loop(t_env_lst *env_lst, command_node *head)
 		expand_environment_variables(head, &env_lst);
 		if (head)
 		{
-			if (num_tokens == 1)
+			if (arg_alone_or_first_is_cat_or_wc(head, num_tokens) == 1)
 				handle_command_without_args(head, env_lst);
 			else
 				process_command_list(head, env_lst);
@@ -78,9 +79,9 @@ void	run_minishell_loop(t_env_lst *env_lst, command_node *head)
 
 int	main(int argc, char **argv, char **envp)
 {
-	command_node	*head;
-	t_env_lst		*env_lst;
-	int				random_fd;
+	struct command_node	*head;
+	t_env_lst			*env_lst;
+	int					random_fd;
 
 	(void)argc;
 	(void)argv;

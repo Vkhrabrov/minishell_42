@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 22:31:52 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/18 19:41:40 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 20:54:58 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	disable_control_chars_echo(void)
  */
 void	restore_terminal_settings(void)
 {
-	struct termios	new_termios;
-	
+	struct termios	new_termios;	
+
 	tcgetattr(0, &new_termios);
 	new_termios.c_lflag |= ECHOCTL;
 	tcsetattr(0, TCSANOW, &new_termios);

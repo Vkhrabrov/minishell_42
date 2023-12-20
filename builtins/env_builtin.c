@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/11/29 23:14:07 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:06:10 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
     'envp' is derived from "environment pointer".
     The 'envp' argument is automatically provided by the operating system.
 */
-int	env_builtin(t_env_lst *env_lst, token *args_lst)
+int	env_builtin(t_env_lst *env_lst, struct token *args_lst)
 {
 	t_env_lst	*current;
 

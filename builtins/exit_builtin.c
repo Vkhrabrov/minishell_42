@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 13:40:46 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/18 00:17:31 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:05:55 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	calculate_exit_status(long num)
 	return (exit_status);
 }
 
-static int	normalize_argument_and_check_double_dash(token *args_lst)
+static int	normalize_argument_and_check_double_dash(struct token *args_lst)
 {
 	remove_leading_zeros(args_lst->content);
 	remove_trailing_spaces(args_lst->content);
@@ -48,7 +48,7 @@ static int	normalize_argument_and_check_double_dash(token *args_lst)
  *	I have to print 'exit' message through STDINPUT to please mpanic test.
  *	It does not allow me to print it through either STDOUTPUT or STDERR.
  */
-int	handle_single_argument(token *args_lst)
+int	handle_single_argument(struct token *args_lst)
 {
 	long	num;
 	char	*str;
@@ -74,7 +74,7 @@ int	handle_single_argument(token *args_lst)
 	return (exit_status);
 }
 
-int	handle_multiple_arguments(token *args_lst)
+int	handle_multiple_arguments(struct token *args_lst)
 {
 	size_t	i;
 	int		exit_status;
@@ -95,7 +95,7 @@ int	handle_multiple_arguments(token *args_lst)
 	return (exit_status);
 }
 
-int	exit_builtin(token *args_lst)
+int	exit_builtin(struct token *args_lst)
 {
 	int	exit_status;
 

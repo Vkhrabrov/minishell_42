@@ -6,16 +6,16 @@
 #    By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/12/17 22:07:37 by ccarrace         ###   ########.fr        #
+#    Updated: 2023/12/20 22:08:10 by ccarrace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 HEADER = minishell.h
 LIBFT = libft/
-READLINE = readline/
+READLINE = /Users/ccarrace/.brew/opt/readline
 
-SRC_F:= minishell lexer lexer2 lexer_utility_functions lexer_utility_functions_2 \
+SRC_F:= minishell minishell1 lexer lexer2 lexer_utility_functions lexer_utility_functions_2 \
 		parser parser2 env_list_creation expander executor signals signals_utils clean \
 		builtins/cd_builtin builtins/cd_utils builtins/echo_builtin \
 		builtins/exit_builtin builtins/exit_utils builtins/env_builtin \
@@ -24,7 +24,7 @@ SRC_F:= minishell lexer lexer2 lexer_utility_functions lexer_utility_functions_2
 		builtins/builtins_utils_1 builtins/builtins_utils_2 \
 		debug
 
-FLAGS = -Wall -Wextra -Werror -g -MMD -I$(READLINE)/include 
+FLAGS = -Wall -Wextra -Werror -g -MMD -I$(READLINE)/include
 RM = rm -f
 SRC = $(addsuffix .c, $(SRC_F))
 OBJS = $(SRC:.c=.o)
@@ -38,33 +38,35 @@ CC = gcc
 all: make_libs $(NAME)
 	@echo "\033[1;32mThe project has been compiled successfully\033[0m"
 
-configure_readline:
-	cd $(READLINE) && ./configure
+#configure_readline:
+#	cd $(READLINE) && ./configure
 
 make_libs:
-	@if [ ! -f "$(READLINE)/libreadline.a" ]; then \
-		echo "Configuring and building Readline..."; \
-		$(MAKE) configure_readline; \
-		$(MAKE) -C $(READLINE); \
-	else \
-		echo "Readline is already up to date."; \
-	fi
+#	@if [ ! -f "$(READLINE)/libreadline.a" ]; then \
+#		echo "Configuring and building Readline..."; \
+#		$(MAKE) configure_readline; \
+#		$(MAKE) -C $(READLINE); \
+#	else \
+#		echo "Readline is already up to date."; \
+#	fi
 	$(MAKE) -C $(LIBFT)
 	@echo "\033[1;32mLibraries have been compiled successfully\033[0m"
 
+#$(NAME): $(OBJS) $(HEADER) Makefile
+#	@$(CC) $(FLAGS) $(OBJS) -L$(LIBFT) -lft -L$(READLINE)/lib -lhistory -lreadline -ltermcap -o $@
 
 $(NAME): $(OBJS) $(HEADER) Makefile
-	@$(CC) $(FLAGS) $(OBJS) -L$(LIBFT) -lft -L$(READLINE) -lhistory -lreadline -ltermcap -o $@
+	@$(CC) $(FLAGS) $(OBJS) -L$(READLINE)/lib -lreadline -lhistory -L$(LIBFT) -lft -ltermcap -o $@
 
 clean:
 	$(RM) $(OBJS) $(DEPS)
 	$(MAKE) -C $(LIBFT) clean
-	$(MAKE) -C $(READLINE) clean
+#	$(MAKE) -C $(READLINE) clean
 
 fclean: clean
 	$(RM) $(NAME)
 	$(MAKE) -C $(LIBFT) fclean
-	$(MAKE) -C $(READLINE) clean
+#	$(MAKE) -C $(READLINE) clean
 
 re: fclean all
 

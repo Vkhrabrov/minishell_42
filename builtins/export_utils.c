@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 21:11:35 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 00:12:35 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 20:58:20 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ bool	find_var_name(t_env_lst *env_lst, char *arg)
 {
 	while (env_lst)
 	{
-		if (ft_strncmp(env_lst->var_name, arg, find_max_len(env_lst->var_name, arg)) == 0)
+		if (ft_strncmp(env_lst->var_name, arg, \
+			find_max_len(env_lst->var_name, arg)) == 0)
 			return (true);
 		env_lst = env_lst->next;
 	}
@@ -93,7 +94,8 @@ char	*return_var_value(t_env_lst *env_lst, char *arg)
 {
 	while (env_lst)
 	{
-		if (ft_strncmp(env_lst->var_name, arg, find_max_len(env_lst->var_name, arg)) == 0)
+		if (ft_strncmp(env_lst->var_name, arg, \
+			find_max_len(env_lst->var_name, arg)) == 0)
 			return (env_lst->var_value);
 		env_lst = env_lst->next;
 	}

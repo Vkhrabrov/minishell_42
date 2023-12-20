@@ -6,38 +6,41 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 21:11:32 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/18 18:36:44 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 19:54:06 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void	print_token(token *t)
-// {
-// 	printf("Token content: '%s', Token type: %s\n", t->content, \
-// 		token_type_to_string(t->type));
-// }
-
-const char* token_type_to_string(tokentype type) 
+const char	*token_type_to_string(enum tokentype type)
 {
-    switch (type) 
-    {
-        case T_CMD: return "COMMAND";
-        case T_ARG: return "ARGUMENT";
-        case T_PIPE: return "PIPE";
-        case T_REDIR_IN: return "REDIRECT_IN";
-        case T_REDIR_OUT: return "REDIRECT_OUT";
-        case T_HEREDOC: return "HERE_DOC";
-        case T_APP_REDIR: return "APPEND_REDIRECTION";
-        case T_VAR_EXP: return "VARIABLE_EXPANSION";
-        case T_EXIT_STATUS: return "EXIT_STATUS";
-        case T_HEREDOC_DELIM: return "HEREDOC_DELIM";
-        case T_ENV_VAR: return "ENV_VARIABLE";
-        default: return "UNKNOWN";
-    }
+	if (type == T_CMD)
+		return ("COMMAND");
+	else if (type == T_ARG)
+		return ("ARGUMENT");
+	else if (type == T_PIPE)
+		return ("PIPE");
+	else if (type == T_REDIR_IN)
+		return ("REDIRECT_IN");
+	else if (type == T_REDIR_OUT)
+		return ("REDIRECT_OUT");
+	else if (type == T_HEREDOC)
+		return ("HERE_DOC");
+	else if (type == T_APP_REDIR)
+		return ("APPEND_REDIRECTION");
+	else if (type == T_VAR_EXP)
+		return ("VARIABLE_EXPANSION");
+	else if (type == T_EXIT_STATUS)
+		return ("EXIT_STATUS");
+	else if (type == T_HEREDOC_DELIM)
+		return ("HEREDOC_DELIM");
+	else if (type == T_ENV_VAR)
+		return ("ENV_VARIABLE");
+	else
+		return ("UNKNOWN");
 }
 
-void	print_tokens(const token *tokens)
+void	print_tokens(const struct token *tokens)
 {
 	while (tokens != NULL)
 	{
@@ -47,9 +50,9 @@ void	print_tokens(const token *tokens)
 	}
 }
 
-void	print_redirections(command_node *node)
+void	print_redirections(struct command_node *node)
 {
-	redirection	*redir;
+	struct redirection	*redir;
 
 	redir = node->redirects;
 	while (redir)
@@ -63,9 +66,9 @@ void	print_redirections(command_node *node)
 	printf("--------------------------\n");
 }
 
-void	print_command_node(command_node *node)
+void	print_command_node(struct command_node *node)
 {
-	token	*arg;
+	struct token	*arg;
 
 	while (node)
 	{
