@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 22:07:41 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:16:22 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,8 +148,7 @@ const char				*token_type_to_string(enum tokentype type);
 void					handle_outfile(struct command_node *cmd_node);
 
 //	minishell1
-int 					arg_alone_or_first_is_cat_or_wc \
-						(struct command_node *head, int num_tokens);
+int 					arg_alone(struct command_node *head, int num_tokens);
 
 //	parser
 struct command_node		*parse_command(struct token **tokens);
