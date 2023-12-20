@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 22:39:22 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:43:08 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,38 +90,17 @@ typedef struct command_node
 	char					*here_doc_content;
 	int						exit_status;
 	struct command_node		*next;
-}	t_command_node;
-typedef struct command_node command_node;
+}	t_command_node;	
 
 typedef struct s_exec_context
 {
-    char **paths;
-    char *full_cmd_path;
-    pid_t pid;
-    char **final_args;
-    char **final_env;
-    int status;
-} t_exec_context;
-
-struct command_node 
-{
-    token           *command;
-    token           *args;
-    redirection     *redirects;
-    token           *redirect_in;
-    token           *redirect_out;
-    token           *redirect_append;
-    token           *redirections;
-    token           *var_expansion;
-    token           *env_variable;
-    token           *ex_status;
-    char            *redirect_in_filename;
-    char            *redirect_out_filename;
-    char            *here_doc_content;
-    int             exit_status;
-
-    command_node    *next;
-};
+	char	**paths;
+	char	*full_cmd_path;
+	pid_t	pid;
+	char	**final_args;
+	char	**final_env;
+	int		status;
+}	t_exec_context;
 
 typedef struct tokenizer_state
 {
@@ -177,10 +156,48 @@ int						process_command_list(struct command_node *head, \
 						t_env_lst *env_lst);
 const char				*token_type_to_string(enum tokentype type);
 void					handle_outfile(struct command_node *cmd_node);
+char					**get_paths_from_env(t_env_lst *env_lst);
+char					**cnv_cmd_nd_arg_to_arr(struct command_node *cmd_node);
+char					**convert_env_list_to_array(t_env_lst *env_lst);
+int						execute_command_node(struct command_node *cmd_node,
+							t_env_lst *env_lst);
+char					*check_command_accessibility(const char *cmd);
+char					*search_command_in_paths(const char *cmd,
+							char **paths);
+// handling redirections (executor 5)
+void					handle_here_doc(struct command_node *cmd_node);
+void					handle_infile(struct command_node *cmd_node);
+void					handle_outfile(struct command_node *cmd_node);
+void					execution_checks(struct command_node *cmd_node,
+							t_exec_context *exec_ctx);
+char					*find_command_path(const char *cmd, char **paths);
+// related to pipex processes  (executor 4 and 6)
+void					child_process(struct command_node *cmd_node,
+							t_env_lst *env_lst, int in_fd, int out_fd);
+void					handle_child_process(struct command_node *current,
+							t_env_lst *env_lst, int in_fd, int end[]);
+void					fd_pipex_change(int *in_fd, int *end,
+							struct command_node **current);
+int						setup_and_pipe_loop(struct command_node *head,
+							struct command_node **current, int *in_fd,
+							t_env_lst *env_lst);
+int						pipex(struct command_node *head, t_env_lst *env_lst);
+void					parent_process_actions(int *status, pid_t pid);
+int						final_cleanup_and_exit_status(void);
+void					child_process_fd_handler(int original_stdout,
+							int original_stdin, struct command_node *cmd_node);
+// expander related
+struct token			*create_new_token(char *content, enum tokentype type);
+void					insert_new_token(struct command_node *current_command,
+							char *env_value);
+void					cleanup_old_data(struct command_node *current_command);
+void					rpl_env_with_tkn(struct command_node *current_command,
+							char *env_value);
+void					handle_env_var(struct command_node *current_command,
+							t_env_lst **env_lst);
 
 //	minishell1
-int 					arg_alone_or_first_is_cat_or_wc \
-						(struct command_node *head, int num_tokens);
+int						arg_alone(struct command_node *head, int num_tokens);
 
 //	parser
 struct command_node		*parse_command(struct token **tokens);
@@ -220,7 +237,6 @@ int						unset_builtin(t_env_lst **env_lst, \
 						struct token *args_lst);
 int						exit_builtin(struct token *args_lst);
 void					free_args_list(struct token *args_lst);
-
 //	Cd specific utilities
 int						is_path_null(t_env_lst *env_lst, char *path);
 int						are_hyphens_valid(t_env_lst *env_lst, char *path);
@@ -247,6 +263,9 @@ int						ft_list_size(struct token *args_lst);
 char					*get_env_var_val(t_env_lst *env_lst, char *str);
 int						update_env_var_value(t_env_lst *env_lst, \
 						char *sought_name, char *new_value);
+int						is_builtin(struct command_node *cmd_node);
+int						builtin_process(struct command_node *cmd_node,
+							t_env_lst *env_lst);
 
 //	Builtins errors
 int						build_error_msg(char *command_name, char *arg, \

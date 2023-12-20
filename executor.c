@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 22:36:40 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:44:33 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	free_execution_resources(t_exec_context *exec_ctx)
 	}
 }
 
-int	execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
+int	execute_command_node(struct command_node *cmd_node, t_env_lst *env_lst)
 {
 	t_exec_context	exec_ctx;
 
 	exec_ctx.paths = get_paths_from_env(env_lst);
 	exec_ctx.full_cmd_path = find_command_path(cmd_node->command->content,
 			exec_ctx.paths);
-	exec_ctx.final_args = convert_command_node_args_to_array(cmd_node);
+	exec_ctx.final_args = cnv_cmd_nd_arg_to_arr(cmd_node);
 	exec_ctx.final_env = convert_env_list_to_array(env_lst);
 	exec_ctx.pid = fork();
 	if (exec_ctx.pid == 0)
@@ -81,11 +81,11 @@ int	execute_command_node(command_node *cmd_node, t_env_lst *env_lst)
 	return (g_exitstatus);
 }
 
-int	setup_and_count_nodes(command_node *head,
+int	setup_and_count_nodes(struct command_node *head,
 		int *original_stdout, int *original_stdin)
 {
-	command_node	*current;
-	int				node_count;
+	struct command_node	*current;
+	int					node_count;
 
 	*original_stdout = dup(STDOUT_FILENO);
 	*original_stdin = dup(STDIN_FILENO);
@@ -99,7 +99,7 @@ int	setup_and_count_nodes(command_node *head,
 	return (node_count);
 }
 
-int	process_command_list(command_node *head, t_env_lst *env_lst)
+int	process_command_list(struct command_node *head, t_env_lst *env_lst)
 {
 	int	original_stdout;
 	int	original_stdin;

@@ -6,13 +6,13 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:24:52 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 20:11:49 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:32:26 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	child_process(command_node *cmd_node, t_env_lst *env_lst,
+void	child_process(struct command_node *cmd_node, t_env_lst *env_lst,
 			int in_fd, int out_fd)
 {
 	int	original_stdout;
@@ -37,7 +37,7 @@ void	child_process(command_node *cmd_node, t_env_lst *env_lst,
 	exit(g_exitstatus);
 }
 
-void	handle_child_process(command_node *current, t_env_lst *env_lst,
+void	handle_child_process(struct command_node *current, t_env_lst *env_lst,
 			int in_fd, int end[])
 {
 	int	out_fd;
@@ -52,7 +52,7 @@ void	handle_child_process(command_node *current, t_env_lst *env_lst,
 	child_process(current, env_lst, in_fd, out_fd);
 }
 
-void	fd_pipex_change(int *in_fd, int *end, command_node **current)
+void	fd_pipex_change(int *in_fd, int *end, struct command_node **current)
 {
 	if (*in_fd != STDIN_FILENO)
 		close(*in_fd);
@@ -65,8 +65,8 @@ void	fd_pipex_change(int *in_fd, int *end, command_node **current)
 		*in_fd = *in_fd;
 }
 
-int	setup_and_pipe_loop(command_node *head, command_node **current,
-		int *in_fd, t_env_lst *env_lst)
+int	setup_and_pipe_loop(struct command_node *head,
+	struct command_node **current, int *in_fd, t_env_lst *env_lst)
 {
 	int		end[2];
 	pid_t	pid;
@@ -94,11 +94,11 @@ int	setup_and_pipe_loop(command_node *head, command_node **current,
 	return (status);
 }
 
-int	pipex(command_node *head, t_env_lst *env_lst)
+int	pipex(struct command_node *head, t_env_lst *env_lst)
 {
-	command_node	*current;
-	int				in_fd;
-	int				status;
+	struct command_node	*current;
+	int					in_fd;
+	int					status;
 
 	status = setup_and_pipe_loop(head, &current, &in_fd, env_lst);
 	return (final_cleanup_and_exit_status());

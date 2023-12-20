@@ -6,13 +6,13 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:32:19 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 20:19:52 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:02:09 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_here_doc(command_node *cmd_node)
+void	handle_here_doc(struct command_node *cmd_node)
 {
 	int	pipefd[2];
 
@@ -30,10 +30,10 @@ void	handle_here_doc(command_node *cmd_node)
 	close(pipefd[0]);
 }
 
-void	handle_infile(command_node *cmd_node)
+void	handle_infile(struct command_node *cmd_node)
 {
-	redirection	*redir;
-	int			infd;
+	struct redirection	*redir;
+	int					infd;
 
 	redir = cmd_node->redirects;
 	while (redir)
@@ -54,11 +54,11 @@ void	handle_infile(command_node *cmd_node)
 	}
 }
 
-void	handle_outfile(command_node *cmd_node)
+void	handle_outfile(struct command_node *cmd_node)
 {
-	redirection	*redir;
-	int			outfd;
-	int			flags;
+	struct redirection	*redir;
+	int					outfd;
+	int					flags;
 
 	redir = cmd_node->redirects;
 	while (redir)
@@ -83,7 +83,8 @@ void	handle_outfile(command_node *cmd_node)
 	}
 }
 
-void	execution_checks(command_node *cmd_node, t_exec_context *exec_ctx)
+void	execution_checks(struct command_node *cmd_node,
+			t_exec_context *exec_ctx)
 {
 	if (!is_builtin(cmd_node))
 	{

@@ -6,17 +6,17 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 20:55:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 21:18:30 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:42:33 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-token	*create_new_token(char *content, tokentype type)
+struct token	*create_new_token(char *content, enum tokentype type)
 {
-	token	*new_token;
+	struct token	*new_token;
 
-	new_token = (token *)malloc(sizeof(token));
+	new_token = (struct token *)malloc(sizeof(struct token));
 	if (!new_token)
 		return (NULL);
 	new_token->content = ft_strdup(content);
@@ -30,10 +30,10 @@ token	*create_new_token(char *content, tokentype type)
 	return (new_token);
 }
 
-void	insert_new_token(command_node *current_command, char *env_value)
+void	insert_new_token(struct command_node *current_command, char *env_value)
 {
-	tokentype	type;
-	token		*new_token;
+	enum tokentype		type;
+	struct token		*new_token;
 
 	if (current_command->command)
 		type = T_ARG;
@@ -54,7 +54,7 @@ void	insert_new_token(command_node *current_command, char *env_value)
 	}
 }
 
-void	cleanup_old_data(command_node *current_command)
+void	cleanup_old_data(struct command_node *current_command)
 {
 	if (current_command->var_expansion)
 	{
@@ -70,13 +70,14 @@ void	cleanup_old_data(command_node *current_command)
 	}
 }
 
-void	replace_env_with_token(command_node *current_command, char *env_value)
+void	rpl_env_with_tkn(struct command_node *current_command,
+		char *env_value)
 {
 	insert_new_token(current_command, env_value);
 	cleanup_old_data(current_command);
 }
 
-void	handle_environment_variable(command_node *current_command,
+void	handle_env_var(struct command_node *current_command,
 			t_env_lst **env_lst)
 {
 	t_env_lst	*current_env;
@@ -92,7 +93,7 @@ void	handle_environment_variable(command_node *current_command,
 		{
 			if (current_env->var_value && *current_env->var_value)
 			{
-				replace_env_with_token(current_command, current_env->var_value);
+				rpl_env_with_tkn(current_command, current_env->var_value);
 				found = true;
 				break ;
 			}

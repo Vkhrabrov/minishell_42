@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 22:37:00 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:18:18 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	run_minishell_loop(t_env_lst *env_lst, struct command_node *head)
 		expand_environment_variables(head, &env_lst);
 		if (head)
 		{
-			if (arg_alone_or_first_is_cat_or_wc(head, num_tokens) == 1)
+			if (arg_alone(head, num_tokens) == 1)
 				handle_command_without_args(head, env_lst);
 			else
 				process_command_list(head, env_lst);

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:20:12 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 20:05:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:27:04 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*concatenate_paths_libft(const char *path, const char *cmd)
 	return (result);
 }
 
-int	is_builtin(command_node *cmd_node)
+int	is_builtin(struct command_node *cmd_node)
 {
 	char	*builtins[8];
 	int		i;
@@ -76,7 +76,7 @@ char	*check_command_accessibility(const char *cmd)
 	return (NULL);
 }
 
-int	builtin_process(command_node *cmd_node, t_env_lst *env_lst)
+int	builtin_process(struct command_node *cmd_node, t_env_lst *env_lst)
 {
 	int	original_stdout_fd;
 	int	ex_status;

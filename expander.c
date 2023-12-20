@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 22:37:11 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 23:42:33 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*extract_env_var_name(char *arg_content)
 	return (env_var_name);
 }
 
-void	replace_arg_with_env_value(command_node *current_command,
+void	replace_arg_with_env_value(struct command_node *current_command,
 			t_env_lst **env_lst, char *env_var_name)
 {
 	t_env_lst	*current_env;
@@ -62,7 +62,7 @@ void	replace_arg_with_env_value(command_node *current_command,
 	free(new_arg);
 }
 
-void	process_command_arguments(command_node *current_command,
+void	process_command_arguments(struct command_node *current_command,
 			t_env_lst **env_lst)
 {
 	char	*env_var_name;
@@ -71,7 +71,7 @@ void	process_command_arguments(command_node *current_command,
 	replace_arg_with_env_value(current_command, env_lst, env_var_name);
 }
 
-void	handle_exit_status(command_node *current_command)
+void	handle_exit_status(struct command_node *current_command)
 {
 	char	*exit_status_str;
 
@@ -80,20 +80,21 @@ void	handle_exit_status(command_node *current_command)
 		exit_status_str = ft_itoa(g_exitstatus);
 		if (!exit_status_str)
 			return ;
-		replace_env_with_token(current_command, exit_status_str);
+		rpl_env_with_tkn(current_command, exit_status_str);
 		free(exit_status_str);
 	}
 }
 
-void	expand_environment_variables(command_node *cmds, t_env_lst **env_lst)
+void	expand_environment_variables(struct command_node *cmds,
+	t_env_lst **env_lst)
 {
-	command_node	*current_command;
+	struct command_node	*current_command;
 
 	current_command = cmds;
 	while (current_command)
 	{
 		if (current_command->env_variable)
-			handle_environment_variable(current_command, env_lst);
+			handle_env_var(current_command, env_lst);
 		if (current_command->args)
 			process_command_arguments(current_command, env_lst);
 		handle_exit_status(current_command);
