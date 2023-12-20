@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 22:11:13 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 22:15:22 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:05:24 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
  *
  *	Checks if option '-n' passed is valid or not
  */
-bool	process_options(token **args_lst)
+bool	process_options(struct token **args_lst)
 {
 	bool	is_valid_option;
 
@@ -39,7 +39,7 @@ bool	process_options(token **args_lst)
  *	- no valid '-n' option, print a space after every arg except the last one 
  *	- no options, newline after the last argument has been printed
  */
-void	print_arguments(t_env_lst *env_lst, token *args_lst, \
+void	print_arguments(t_env_lst *env_lst, struct token *args_lst, \
 						bool is_valid_option)
 {
 	while (args_lst != NULL)
@@ -61,7 +61,7 @@ void	print_arguments(t_env_lst *env_lst, token *args_lst, \
 		printf("\n");
 }
 
-int	echo_builtin(t_env_lst *env_lst, token *args_lst)
+int	echo_builtin(t_env_lst *env_lst, struct token *args_lst)
 {
 	bool	is_valid_option;
 

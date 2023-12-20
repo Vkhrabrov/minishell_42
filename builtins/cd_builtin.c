@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 22:14:25 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 20:57:04 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	handle_file_or_folder_errors(char *path)
 	return (EXIT_FAILURE);
 }
 
-int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
+int	update_pwd_and_oldpwd(t_env_lst *env_lst, struct token *args_lst, \
+	char *path)
 {
 	char	*oldpwd_value;
 	char	*pwd_value;
@@ -50,29 +51,7 @@ int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
 		return (handle_file_or_folder_errors(path));
 }
 
-// int	update_pwd_and_oldpwd(t_env_lst *env_lst, token *args_lst, char *path)
-// {
-// 	char	*oldpwd_value;
-// 	char	*pwd_value;
-
-// 	if (chdir(path) == 0)
-// 	{
-// 		oldpwd_value = ft_strdup(get_env_var_val(env_lst, "PWD"));
-// 		pwd_value = ft_strdup(get_curr_work_dir());
-// 		if (oldpwd_value == NULL || pwd_value == NULL)
-// 			return (EXIT_FAILURE);
-// 		update_env_var_value(env_lst, "OLDPWD", oldpwd_value);
-// 		update_env_var_value(env_lst, "PWD", pwd_value);
-// 		free(oldpwd_value);
-// 		free(pwd_value);
-// 		free(args_lst);
-// 		return (EXIT_SUCCESS);
-// 	}
-// 	else
-// 		return (handle_file_or_folder_errors(path));
-// }
-
-int	cd_builtin(t_env_lst *env_lst, token *args_lst)
+int	cd_builtin(t_env_lst *env_lst, struct token *args_lst)
 {
 	char	*path;
 

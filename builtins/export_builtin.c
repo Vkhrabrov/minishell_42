@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/16 23:29:27 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:06:37 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	create_sorted_env_list(t_env_lst *env_lst)
  *	- If 'export' is executed without arguments, we create a new linked 
  *		list to store the environment variables SORTED ALPHABETICALLY.
  */
-int	export_builtin(t_env_lst *env_lst, token *args_lst)
+int	export_builtin(t_env_lst *env_lst, struct token *args_lst)
 {
 	if (args_lst && ft_list_size(args_lst) > 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/12/17 21:12:02 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 21:06:06 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ char	*read_heredoc_content(const char *delimiter)
 	return (all_content);
 }
 
-void	add_redirection(command_node *cmd_node, token *redir_token, \
-	char *filename)
+void	add_redirection(struct command_node *cmd_node, \
+		struct token *redir_token, char *filename)
 {
-	redirection	*new_redir;
-	redirection	*last;
+	struct redirection	*new_redir;
+	struct redirection	*last;
 
-	new_redir = malloc(sizeof(redirection));
+	new_redir = malloc(sizeof(struct redirection));
 	if (!new_redir)
 	{
 		perror("Failed to allocate memory for redirection");
@@ -73,7 +73,8 @@ void	add_redirection(command_node *cmd_node, token *redir_token, \
 	}
 }
 
-void	process_other_tokens(token *current, command_node *cmd_node)
+void	process_other_tokens(struct token *current, \
+		struct command_node *cmd_node)
 {
 	char	*delimiter;
 
@@ -93,4 +94,22 @@ void	process_other_tokens(token *current, command_node *cmd_node)
 			current = current->next;
 		}
 	}
+}
+
+int	handle_pipe_tokens(struct token **tokens, struct command_node **current)
+{
+	if (*tokens && (*tokens)->type == T_PIPE)
+	{
+		if (!(*current) || (!(*current)->command && !(*current)->redirects))
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token `|'"
+				"\n", 2);
+			g_exitstatus = 2;
+			return (0);
+		}
+		(*tokens)->prev = *tokens;
+		*tokens = (*tokens)->next;
+		return (1);
+	}
+	return (1);
 }

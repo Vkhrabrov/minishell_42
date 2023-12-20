@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 20:29:41 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/03 14:01:28 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:06:53 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	remove_node(t_env_lst **env_lst, t_env_lst *current, t_env_lst *prev)
  * If we just pass a pointer to the list (t_env_lst *env_lst), we won't 
  * be able to update the head of the list in case we remove the first node. 
 */
-int	unset_builtin(t_env_lst **env_lst, token *args_lst)
+int	unset_builtin(t_env_lst **env_lst, struct token *args_lst)
 {
 	t_env_lst	*current;
 	t_env_lst	*previous;

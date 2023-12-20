@@ -6,17 +6,17 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:43:29 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/15 18:58:20 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:01:11 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-token	*creat_token(const char *content, tokentype type)
+struct token	*creat_token(const char *content, enum tokentype type)
 {
-	token	*new_token;
+	struct token	*new_token;
 
-	new_token = (token *)malloc(sizeof(token));
+	new_token = (struct token *)malloc(sizeof(struct token));
 	if (!new_token)
 	{
 		perror("Failed to allocate memory for token");
@@ -35,7 +35,7 @@ token	*creat_token(const char *content, tokentype type)
 	return (new_token);
 }
 
-token	*get_last_token(token *head)
+struct token	*get_last_token(struct token *head)
 {
 	if (!head)
 		return (NULL);

@@ -3,44 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utility_functions_2.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 22:22:01 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/12/20 22:25:21 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void add_to_list(token **head, token *new_token) 
-{
-    token *last_token;
-
-    if (!*head) {
-        *head = new_token;
-    } else {
-        last_token = get_last_token(*head);
-        last_token->next = new_token;
-        new_token->prev = last_token;
-    }
-}
-
-char	*substring(char *input_string, int start, int end)
-{
-	char	*substring;
-	int		k;
-	int		t;
-
-	k = end - start + 1;
-	t = 0;
-	substring = malloc(sizeof(char) * k + 1);
-	while (t < k)
-		substring[t++] = input_string[start++];
-	substring[t] = '\0';
-	return (substring);
-}
-
-tokentype	c_a_part_2(tokenizer_state *state, tokentype current_type)
+enum tokentype	c_a_part_2(struct tokenizer_state *state, \
+	enum tokentype current_type)
 {
 	if (state->expect_command && !state->expect_filename_after_redir)
 	{
@@ -64,11 +37,11 @@ tokentype	c_a_part_2(tokenizer_state *state, tokentype current_type)
 	return (current_type);
 }
 
-void	handle_commands_and_args(char *input, tokenizer_state *state)
+void	handle_commands_and_args(char *input, struct tokenizer_state *state)
 {
-	int			start;
-	tokentype	current_type;
-	char		*command_or_arg;
+	int				start;
+	enum tokentype	current_type;
+	char			*command_or_arg;
 
 	start = state->i;
 	current_type = T_CMD;
@@ -83,9 +56,9 @@ void	handle_commands_and_args(char *input, tokenizer_state *state)
 	state->i--;
 }
 
-tokenizer_state	init_tokenizer_state(void)
+struct tokenizer_state	init_tokenizer_state(void)
 {
-	tokenizer_state	state;
+	struct tokenizer_state	state;
 
 	state.i = 0;
 	state.prev_type = T_NONE;
@@ -93,4 +66,33 @@ tokenizer_state	init_tokenizer_state(void)
 	state.expect_filename_after_redir = 0;
 	state.tokens = NULL;
 	return (state);
+}
+
+void	add_to_list(struct token **head, struct token *new_token)
+{
+	struct token	*last_token;
+
+	if (!*head)
+		*head = new_token;
+	else
+	{
+		last_token = get_last_token(*head);
+		last_token->next = new_token;
+		new_token->prev = last_token;
+	}
+}
+
+char	*substring(char *input_string, int start, int end)
+{
+	char	*substring;
+	int		k;
+	int		t;
+
+	k = end - start + 1;
+	t = 0;
+	substring = malloc(sizeof(char) * k + 1);
+	while (t < k)
+		substring[t++] = input_string[start++];
+	substring[t] = '\0';
+	return (substring);
 }

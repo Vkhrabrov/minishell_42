@@ -6,15 +6,15 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:38:44 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 11:41:00 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:07:25 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_args_list(token *args_lst)
+void	free_args_list(struct token *args_lst)
 {
-	token	*current;
+	struct token	*current;
 
 	while (args_lst != NULL)
 	{

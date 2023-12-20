@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 11:36:02 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/17 22:14:32 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:07:11 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	find_max_len(char *str1, char *str2)
 /* ft_list_size() called in
 	env_builtin()	exit_builtini()		export_builtin()
 */
-int	ft_list_size(token *args_lst)
+int	ft_list_size(struct token *args_lst)
 {
 	int	i;
 
