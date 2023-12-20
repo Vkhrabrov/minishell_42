@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 22:05:33 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/19 23:29:56 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,12 +99,16 @@ int main(int argc, char **argv, char **envp)
         int num_tokens = ft_list_size(tokens);
         head = parse_line(tokens);
         expand_environment_variables(head, &env_lst);
+        // exit(1);
         // print_command_node(head);
         if(head)
         {
         // print_command_node(head);
-            if (num_tokens == 1)
-            {
+if (num_tokens == 1 || 
+    (head && head->command && head->command->content && 
+        ((ft_strncmp(head->command->content, "cat", 3) == 0 && ft_strlen(head->command->content) == 3) || 
+         (ft_strncmp(head->command->content, "wc", 2) == 0 && ft_strlen(head->command->content) == 2))))           
+         {
                 restore_terminal_settings();
                 set_noninteractive_signals();
                 process_command_list(head, env_lst);

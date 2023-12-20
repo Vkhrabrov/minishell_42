@@ -3,41 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 22:58:44 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/17 22:07:04 by ccarrace         ###   ########.fr       */
+/*   Updated: 2023/12/20 20:59:12 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
-#include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
-#include <limits.h>     // PATH_SIZE
-#include <unistd.h>
-#include "libft/libft.h" 
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include <errno.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
+# include <termios.h>    // Contains 'tcsetattr()' and 'tcgetattr()'
+# include <limits.h>     // PATH_SIZE
+# include <unistd.h>
+# include "libft/libft.h" 
+# include <unistd.h>
+# include <string.h>
+# include <fcntl.h>
+# include <stdbool.h>
+# include <errno.h>
 
 // Error messages definition
-#define MS_TOOMANYARG	"too many arguments"
-#define MS_NOTSET 		" not set"
-#define MS_NOTNUMARG	": numeric argument required"
-#define MS_INVALDOPT	": invalid option"
-#define MS_NOFILEDIR	": No such file or directory"
-#define MS_NOTDIR		": Not a directory"
-#define MS_ACCESFORB	": Permission denied"
-#define MS_LONGNAME		": File name too long"
-#define MS_BADID	": not a valid identifier"
+# define MS_TOOMANYARG	"too many arguments"
+# define MS_NOTSET 		" not set"
+# define MS_NOTNUMARG	": numeric argument required"
+# define MS_INVALDOPT	": invalid option"
+# define MS_NOFILEDIR	": No such file or directory"
+# define MS_NOTDIR		": Not a directory"
+# define MS_ACCESFORB	": Permission denied"
+# define MS_LONGNAME		": File name too long"
+# define MS_BADID	": not a valid identifier"
 
 enum shell_mode
 {
@@ -81,6 +81,16 @@ typedef struct redirection {
 int g_exitstatus;
 
 typedef struct command_node command_node;
+
+typedef struct s_exec_context
+{
+    char **paths;
+    char *full_cmd_path;
+    pid_t pid;
+    char **final_args;
+    char **final_env;
+    int status;
+} t_exec_context;
 
 struct command_node 
 {
@@ -148,7 +158,37 @@ void            t_env_init(t_env_lst  *env_lst);
 void            expand_environment_variables(command_node *command, t_env_lst **env_lst); 
 int 			process_command_list(command_node *head, t_env_lst *env_lst); 
 const char      *token_type_to_string(tokentype type);
-void            handle_outfile(command_node *cmd_node); 
+void            handle_outfile(command_node *cmd_node);
+char            **convert_command_node_args_to_array(command_node *cmd_node);
+int             count_env_list_elements(t_env_lst *env_lst);
+char            **convert_env_list_to_array(t_env_lst *env_lst);
+char            *get_env_value(t_env_lst *env_lst, const char *key);
+char            **get_paths_from_env(t_env_lst *env_lst);
+char            *concatenate_paths_libft(const char *path, const char *cmd);
+char            *search_command_in_paths(const char *cmd, char **paths);
+char            *check_command_accessibility(const char *cmd);
+int             execute_command_node(command_node *cmd_node, t_env_lst *env_lst);
+// handling redirections (executor 5)
+void            handle_here_doc(command_node *cmd_node);
+void            handle_infile(command_node *cmd_node);
+void            handle_outfile(command_node *cmd_node);
+void            execution_checks(command_node *cmd_node, t_exec_context *exec_ctx);
+char            *find_command_path(const char *cmd, char **paths);
+// related to pipex processes  (executor 4 and 6)
+void            child_process(command_node *cmd_node, t_env_lst *env_lst, int in_fd, int out_fd);
+void            handle_child_process(command_node *current, t_env_lst *env_lst, int in_fd, int end[]);
+void            fd_pipex_change(int *in_fd, int *end, command_node **current);
+int             setup_and_pipe_loop(command_node *head, command_node **current, int *in_fd, t_env_lst *env_lst);
+int             pipex(command_node *head, t_env_lst *env_lst);
+void            parent_process_actions(int *status, pid_t pid);
+int             final_cleanup_and_exit_status();
+void            child_process_fd_handler(int original_stdout, int original_stdin, command_node *cmd_node);
+// expander related
+token           *create_new_token(char *content, tokentype type);
+void            insert_new_token(command_node *current_command, char *env_value);
+void            cleanup_old_data(command_node *current_command);
+void            replace_env_with_token(command_node *current_command, char *env_value);
+void            handle_environment_variable(command_node *current_command, t_env_lst **env_lst);
 
 //	parser
 command_node	*parse_command(token **tokens);
@@ -166,7 +206,7 @@ void			free_env_list(t_env_lst *env_lst);
 //	Signals
 void            set_interactive_signals(void);
 void            set_noninteractive_signals(void);
-void            rl_replace_line (const char *text, int clear_undo);
+// void            rl_replace_line (const char *text, int clear_undo);
 void            disable_control_chars_echo();
 void            restore_terminal_settings();
 // void 			enable_control_chars_echo(void) ;
@@ -205,7 +245,9 @@ long			ft_atol(const char *str);
 char			*ft_ltoa(long n);
 int				ft_list_size(token *args_lst);
 char			*get_env_var_val(t_env_lst *env_lst, char *str);
-int				update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value); 
+int				update_env_var_value(t_env_lst *env_lst, char *sought_name, char *new_value);
+int             is_builtin(command_node *cmd_node);
+int             builtin_process(command_node *cmd_node, t_env_lst *env_lst);
 
 //	Builtins errors
 int				build_error_msg(char *command_name, char *arg, char *err_description, bool quoted);
