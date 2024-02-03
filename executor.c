@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 23:30:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:44:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/01/31 23:20:31 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,12 @@ void	free_execution_resources(t_exec_context *exec_ctx)
 	}
 }
 
-int	execute_command_node(struct command_node *cmd_node, t_env_lst *env_lst)
+int	execute_command_node(struct command_node *cmd_node, t_env_lst *env_lst, \
+	struct token *tokens)
 {
 	t_exec_context	exec_ctx;
 
+	(void)tokens;
 	exec_ctx.paths = get_paths_from_env(env_lst);
 	exec_ctx.full_cmd_path = find_command_path(cmd_node->command->content,
 			exec_ctx.paths);
@@ -72,11 +74,7 @@ int	execute_command_node(struct command_node *cmd_node, t_env_lst *env_lst)
 				exec_ctx.final_env);
 	}
 	else
-	{
-		waitpid(exec_ctx.pid, &exec_ctx.status, 0);
-		if (WIFEXITED(exec_ctx.status))
-			g_exitstatus = WEXITSTATUS(exec_ctx.status);
-	}
+		parent_process_handler(&exec_ctx);
 	free_execution_resources(&exec_ctx);
 	return (g_exitstatus);
 }
@@ -99,7 +97,8 @@ int	setup_and_count_nodes(struct command_node *head,
 	return (node_count);
 }
 
-int	process_command_list(struct command_node *head, t_env_lst *env_lst)
+int	process_command_list(struct command_node *head, t_env_lst *env_lst, \
+	struct token *tokens)
 {
 	int	original_stdout;
 	int	original_stdin;
@@ -119,11 +118,7 @@ int	process_command_list(struct command_node *head, t_env_lst *env_lst)
 	else if (node_count > 1)
 		return_status = pipex(head, env_lst);
 	else
-	{
-		if (is_builtin(head))
-			return_status = builtin_process(head, env_lst);
-		else
-			return_status = execute_command_node(head, env_lst);
-	}
+		return_status = execute_or_builtin(head, env_lst, tokens);
+	free_command(head, tokens);
 	return (return_status);
 }

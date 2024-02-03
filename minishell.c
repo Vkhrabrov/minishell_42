@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:55:56 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:18:18 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/02/01 00:03:23 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	update_shlvl(t_env_lst **env_lst)
 {
-	int	shlvl;
+	int		shlvl;
+	char	*shlvl_str;
 
 	shlvl = ft_atoi(get_env_var_val(*env_lst, "SHLVL"));
 	if (shlvl < 0)
@@ -27,30 +28,34 @@ void	update_shlvl(t_env_lst **env_lst)
 	}
 	else if (shlvl != 0)
 		shlvl++;
-	update_env_var_value(*env_lst, "SHLVL", ft_itoa(shlvl));
-}
-
-void	bash_exit_emulate(t_env_lst *env_lst)
-{
-	free_env_list(env_lst);
-	ft_putstr_fd("\033[A", 1);
-	ft_putstr_fd("\0\33[2K", 1);
-	printf("%s", "minishell> exit\n");
+	shlvl_str = ft_itoa(shlvl);
+	update_env_var_value(*env_lst, "SHLVL", shlvl_str);
+	free (shlvl_str);
 }
 
 void	handle_command_without_args(struct command_node *head, \
-		t_env_lst *env_lst)
+		t_env_lst *env_lst, struct token *tokens)
 {
 	restore_terminal_settings();
 	set_noninteractive_signals();
-	process_command_list(head, env_lst);
+	process_command_list(head, env_lst, tokens);
 	disable_control_chars_echo();
 	set_interactive_signals();
+}
+
+void	execute_command(struct command_node *head, t_env_lst *env_lst, \
+	struct token *tokens, int num_tokens)
+{
+	if (arg_alone(head, num_tokens) == 1)
+		handle_command_without_args(head, env_lst, tokens);
+	else
+		process_command_list(head, env_lst, tokens);
 }
 
 void	run_minishell_loop(t_env_lst *env_lst, struct command_node *head)
 {
 	char			*input;
+	char			*input_copy;
 	struct token	*tokens;
 	int				num_tokens;
 
@@ -59,21 +64,19 @@ void	run_minishell_loop(t_env_lst *env_lst, struct command_node *head)
 		input = readline("minishell> ");
 		if (!input)
 			break ;
+		input_copy = ft_strdup(input);
 		tokens = tokenization(input);
 		num_tokens = ft_list_size(tokens);
 		head = parse_line(tokens);
-		expand_environment_variables(head, &env_lst);
+		expand_environment_variables(head, &env_lst, input_copy);
 		if (head)
-		{
-			if (arg_alone(head, num_tokens) == 1)
-				handle_command_without_args(head, env_lst);
-			else
-				process_command_list(head, env_lst);
-		}
+			execute_command(head, env_lst, tokens, num_tokens);
 		else
 			continue ;
 		add_history(input);
 		free(input);
+		if (input_copy)
+			free(input_copy);
 	}
 }
 

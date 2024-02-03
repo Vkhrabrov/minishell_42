@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor6.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:37:22 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:29:41 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/01/31 23:23:22 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@ void	parent_process_actions(int *status, pid_t pid)
 	waitpid(pid, status, 0);
 	if (WIFEXITED(*status))
 		g_exitstatus = WEXITSTATUS(*status);
+}
+
+void	parent_process_handler(t_exec_context *exec_ctx)
+{
+	waitpid(exec_ctx->pid, &exec_ctx->status, 0);
+	if (WIFEXITED(exec_ctx->status))
+		g_exitstatus = WEXITSTATUS(exec_ctx->status);
+}
+
+int	execute_or_builtin(struct command_node *head, t_env_lst *env_lst, \
+	struct token *tokens)
+{
+	int	return_status;
+
+	if (is_builtin(head))
+		return_status = builtin_process(head, env_lst, tokens);
+	else
+		return_status = execute_command_node(head, env_lst, tokens);
+	return (return_status);
 }
 
 int	final_cleanup_and_exit_status(void)

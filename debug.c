@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 21:11:32 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/20 19:54:06 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/19 23:52:41 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ const char	*token_type_to_string(enum tokentype type)
 		return ("APPEND_REDIRECTION");
 	else if (type == T_VAR_EXP)
 		return ("VARIABLE_EXPANSION");
-	else if (type == T_EXIT_STATUS)
+	else if (type == T_EX_ST)
 		return ("EXIT_STATUS");
 	else if (type == T_HEREDOC_DELIM)
 		return ("HEREDOC_DELIM");

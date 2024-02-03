@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 23:34:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 22:25:21 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/31 15:57:35 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,18 @@ void	handle_commands_and_args(char *input, struct tokenizer_state *state)
 	int				start;
 	enum tokentype	current_type;
 	char			*command_or_arg;
+	struct token	*new_token;
 
 	start = state->i;
 	current_type = T_CMD;
-	while (state->i < (int)ft_strlen(input) && !if_redir(input[state->i])
-		&& input[state->i] != ' ' && input[state->i] != '|')
+	while (state->i < (int)ft_strlen(input) && !if_redir(input[state->i]) \
+		&& input[state->i] != ' ' && input[state->i] != '|' \
+		&& input[state->i] != '$')
 		state->i++;
 	command_or_arg = substring(input, start, state->i - 1);
 	current_type = c_a_part_2(state, current_type);
-	add_to_list(&(state->tokens), creat_token(command_or_arg, current_type));
+	new_token = creat_token(command_or_arg, current_type);
+	add_to_list(&(state->tokens), new_token);
 	free(command_or_arg);
 	state->prev_type = current_type;
 	state->i--;
@@ -65,6 +68,7 @@ struct tokenizer_state	init_tokenizer_state(void)
 	state.expect_command = 1;
 	state.expect_filename_after_redir = 0;
 	state.tokens = NULL;
+	state.s_quote = 0;
 	return (state);
 }
 

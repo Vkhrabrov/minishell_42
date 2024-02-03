@@ -3,24 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:51:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 19:35:21 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/30 20:35:54 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	handle_single_redirection(char *redir, char c, \
-		struct tokenizer_state *state)
-{
-	ft_strlcpy(redir, (char []){c, '\0', '\0'}, sizeof(redir));
-	if (c == '>')
-		add_to_list(&(state->tokens), creat_token(redir, T_REDIR_OUT));
-	else
-		add_to_list(&(state->tokens), creat_token(redir, T_REDIR_IN));
-}
 
 void	handle_redirection_end(char c, struct tokenizer_state *state)
 {
@@ -76,7 +66,7 @@ void	handle_special_tokens(char c, char *input, \
 		redir[0] = c;
 		redir[1] = next_char;
 		redir[2] = '\0';
-		add_to_list(&(state->tokens), creat_token(redir, T_EXIT_STATUS));
+		add_to_list(&(state->tokens), creat_token(redir, T_EX_ST));
 		state->i++;
 	}
 	else if (c == '$')
@@ -88,33 +78,42 @@ void	handle_special_tokens(char c, char *input, \
 		handle_redirection(c, input, state);
 }
 
-/*	tokenization()
- *
- *	to print tokens for debugging, add
- *		print_tokens(state.tokens)
- *	at the end of the function
-*/
-struct token	*tokenization(char *input)
+void	process_input(char *input, struct tokenizer_state *state, char c)
 {
-	struct tokenizer_state	state;
-	char					c;
-
-	state = init_tokenizer_state();
-	while (state.i < (int)ft_strlen(input))
+	while (state->i < (int)ft_strlen(input))
 	{
-		c = input[state.i];
+		c = input[state->i];
 		if (c == ' ' || c == '\t')
 		{
-			state.i++;
+			state->i++;
 			continue ;
 		}
 		if (c == '"' || c == '\'')
-			handle_quoted_string(c, input, &state);
+			handle_q_str(c, &input, state);
 		else if (c == '|' || c == '$' || if_redir(c))
-			handle_special_tokens(c, input, &state);
+		{
+			if ((input[state->i + 1] == '"' || input[state->i + 1] == '\'')
+				&& !if_redir(c))
+			{
+				state->i++;
+				continue ;
+			}
+			else
+				handle_special_tokens(c, input, state);
+		}
 		else
-			handle_commands_and_args(input, &state);
-		state.i++;
+			handle_commands_and_args(input, state);
+		state->i++;
 	}
+}
+
+struct token	*tokenization(char *input)
+{
+	char					c;
+	struct tokenizer_state	state;
+
+	c = '\0';
+	state = init_tokenizer_state();
+	process_input(input, &state, c);
 	return (state.tokens);
 }

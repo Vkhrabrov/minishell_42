@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utility_functions.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 21:43:29 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 14:01:11 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/25 21:27:43 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*extract_quoted_segment(char *input_string, char *line, int *i, \
 	if (!input_string[*i])
 	{
 		free(line);
-		return (NULL);
+		exit (1);
 	}
 	temp = substring(input_string, start, *i - 1);
 	if (temp)

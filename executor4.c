@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor4.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:24:52 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:32:26 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/01/31 23:04:15 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 void	child_process(struct command_node *cmd_node, t_env_lst *env_lst,
 			int in_fd, int out_fd)
 {
-	int	original_stdout;
-	int	original_stdin;
+	int				original_stdout;
+	int				original_stdin;
+	struct token	*tokens;
 
 	original_stdout = dup(STDOUT_FILENO);
 	original_stdin = dup(STDIN_FILENO);
+	tokens = NULL;
 	if ((!cmd_node->command || !cmd_node->command->content)
 		&& cmd_node->redirects)
 		child_process_fd_handler(original_stdout, original_stdin, cmd_node);
@@ -33,15 +35,17 @@ void	child_process(struct command_node *cmd_node, t_env_lst *env_lst,
 		dup2(out_fd, STDOUT_FILENO);
 		close(out_fd);
 	}
-	execute_command_node(cmd_node, env_lst);
+	execute_command_node(cmd_node, env_lst, tokens);
 	exit(g_exitstatus);
 }
 
 void	handle_child_process(struct command_node *current, t_env_lst *env_lst,
 			int in_fd, int end[])
 {
-	int	out_fd;
+	int				out_fd;
+	struct token	*tokens;
 
+	tokens = NULL;
 	if (current->next)
 	{
 		close(end[0]);
@@ -65,7 +69,7 @@ void	fd_pipex_change(int *in_fd, int *end, struct command_node **current)
 		*in_fd = *in_fd;
 }
 
-int	setup_and_pipe_loop(struct command_node *head,
+int	setup_and_pipe_loop(struct command_node *head, \
 	struct command_node **current, int *in_fd, t_env_lst *env_lst)
 {
 	int		end[2];

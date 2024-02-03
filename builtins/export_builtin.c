@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 21:00:11 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/20 14:06:37 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/31 11:47:42 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ int	create_sorted_env_list(t_env_lst *env_lst)
 		env_lst = env_lst->next;
 	}
 	print_export_list(&sorted_list);
+	free_env_list(sorted_list);
 	return (EXIT_SUCCESS);
 }
 
@@ -114,15 +115,15 @@ int	create_sorted_env_list(t_env_lst *env_lst)
  *	- If 'export' is executed without arguments, we create a new linked 
  *		list to store the environment variables SORTED ALPHABETICALLY.
  */
-int	export_builtin(t_env_lst *env_lst, struct token *args_lst)
+int	export_builtin(t_env_lst *env_lst, struct command_node *cmd_node)
 {
-	if (args_lst && ft_list_size(args_lst) > 0)
+	if (cmd_node->args && ft_list_size(cmd_node->args) > 0)
 	{
-		while (args_lst != NULL)
+		while (cmd_node->args != NULL)
 		{
-			if (set_new_var(&env_lst, args_lst->content) == 1)
+			if (set_new_var(&env_lst, cmd_node->args->content) == 1)
 				return (EXIT_FAILURE);
-			args_lst = args_lst->next;
+			cmd_node->args = cmd_node->args->next;
 		}
 	}
 	else

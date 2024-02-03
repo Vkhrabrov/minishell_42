@@ -6,51 +6,63 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 20:55:03 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:42:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/02/01 20:54:15 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-struct token	*create_new_token(char *content, enum tokentype type)
+void	process_token_conditions(struct command_node *cmd,
+	struct token **current, struct token **prev, char *env_value)
 {
-	struct token	*new_token;
-
-	new_token = (struct token *)malloc(sizeof(struct token));
-	if (!new_token)
-		return (NULL);
-	new_token->content = ft_strdup(content);
-	if (!new_token->content)
-	{
-		free(new_token);
-		return (NULL);
-	}
-	new_token->type = type;
-	new_token->next = NULL;
-	return (new_token);
+	if (!cmd->new_token && (*current)->type != T_EX_ST)
+		cmd->new_token = create_new_tokens(prev, *current, env_value, cmd);
+	if ((*current)->type != T_ENV_VAR && (*current)->type != T_VAR_EXP)
+		cmd->new_token = create_new_tokens(prev, *current, env_value, cmd);
+	if (*prev)
+		(*prev)->next = cmd->new_token;
+	else
+		cmd->command = cmd->new_token;
+	cmd->new_token->next = (*current)->next;
+	if ((*current)->next)
+		(*current)->next->prev = cmd->new_token;
+	free_token(*current);
+	cmd->i--;
+	*prev = cmd->new_token;
+	if ((*current)->type == T_EX_ST)
+		token_insert(cmd, cmd->new_token);
+	if (cmd->new_token != NULL)
+		*current = cmd->new_token->next;
+	else
+		*current = NULL;
 }
 
-void	insert_new_token(struct command_node *current_command, char *env_value)
+void	insert_new_token(struct command_node *command, char *env_value)
 {
-	enum tokentype		type;
-	struct token		*new_token;
+	struct token	*current;
+	struct token	*prev;
 
-	if (current_command->command)
-		type = T_ARG;
-	else
-		type = T_CMD;
-	new_token = create_new_token(env_value, type);
-	if (!new_token)
-		return ;
-	if (type == T_ARG)
+	current = command->command;
+	prev = NULL;
+	command->i = 2;
+	command->new_token = NULL;
+	while (current)
 	{
-		new_token->next = current_command->args;
-		current_command->args = new_token;
-	}
-	else
-	{
-		new_token->next = current_command->command;
-		current_command->command = new_token;
+		if (current->type == T_ENV_VAR
+			|| current->type == T_VAR_EXP || current->type == T_EX_ST)
+		{
+			process_token_conditions(command, &current, &prev, env_value);
+			if (command->i == 0)
+			{
+				token_insert(command, prev);
+				break ;
+			}
+		}
+		else
+		{
+			prev = current;
+			current = current->next;
+		}
 	}
 }
 
@@ -70,39 +82,40 @@ void	cleanup_old_data(struct command_node *current_command)
 	}
 }
 
-void	rpl_env_with_tkn(struct command_node *current_command,
-		char *env_value)
-{
-	insert_new_token(current_command, env_value);
-	cleanup_old_data(current_command);
-}
-
-void	handle_env_var(struct command_node *current_command,
-			t_env_lst **env_lst)
+void	process_env_var_token(struct token *token,
+			t_env_lst **env_lst, struct command_node *current_command)
 {
 	t_env_lst	*current_env;
-	bool		found;
 
 	current_env = *env_lst;
-	found = false;
-	while (current_env)
+	while (current_env != NULL)
 	{
-		if (ft_strncmp(current_env->var_name,
-				current_command->env_variable->content,
-				ft_strlen(current_command->env_variable->content)) == 0)
+		if (ft_strncmp(current_env->var_name, token->content,
+				ft_strlen(token->content)) == 0)
 		{
 			if (current_env->var_value && *current_env->var_value)
-			{
-				rpl_env_with_tkn(current_command, current_env->var_value);
-				found = true;
-				break ;
-			}
+				insert_new_token(current_command, current_env->var_value);
 			else
 			{
 				g_exitstatus = 0;
 				return ;
 			}
+			break ;
 		}
 		current_env = current_env->next;
+	}
+}
+
+void	handle_env_var(struct command_node *current_command,
+			t_env_lst **env_lst)
+{
+	struct token	*token;
+
+	token = current_command->command;
+	while (token)
+	{
+		if (token->type == T_ENV_VAR)
+			process_env_var_token(token, env_lst, current_command);
+		token = token->next;
 	}
 }

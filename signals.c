@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 21:49:58 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/20 22:33:58 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/01/31 00:22:48 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void		new_prompt_line(int signo);
-static void		print_new_line(int signo);
-static void		print_quit_msg(int signo);
 
 /*	set_interactive_signals()
  *
@@ -23,17 +19,17 @@ static void		print_quit_msg(int signo);
  */
 void	set_interactive_signals(void)
 {
-	struct sigaction	sigint_action;
-	struct sigaction	sigquit_action;
+	struct sigaction	new_sigint_action;
+	struct sigaction	new_sigquit_action;
 
-	sigint_action.sa_handler = &new_prompt_line;
-	sigemptyset(&sigint_action.sa_mask);
-	sigint_action.sa_flags = 0;
-	sigaction(SIGINT, &sigint_action, NULL);
-	sigquit_action.sa_handler = SIG_IGN;
-	sigemptyset(&sigquit_action.sa_mask);
-	sigquit_action.sa_flags = 0;
-	sigaction(SIGQUIT, &sigquit_action, NULL);
+	new_sigint_action.sa_handler = &new_prompt_line;
+	sigemptyset(&new_sigint_action.sa_mask);
+	new_sigint_action.sa_flags = 0;
+	sigaction(SIGINT, &new_sigint_action, NULL);
+	new_sigquit_action.sa_handler = SIG_IGN;
+	sigemptyset(&new_sigquit_action.sa_mask);
+	new_sigquit_action.sa_flags = 0;
+	sigaction(SIGQUIT, &new_sigquit_action, NULL);
 }
 
 /*	set_noninteractive_signals()
@@ -43,39 +39,30 @@ void	set_interactive_signals(void)
  */
 void	set_noninteractive_signals(void)
 {
-	struct sigaction	sigint_action;
-	struct sigaction	sigquit_action;
+	struct sigaction	new_sigint_action;
+	struct sigaction	new_sigquit_action;
 
-	sigint_action.sa_handler = &print_new_line;
-	sigemptyset(&sigquit_action.sa_mask);
-	sigquit_action.sa_flags = 0;
-	sigaction(SIGINT, &sigint_action, NULL);
-	sigquit_action.sa_handler = &print_quit_msg;
-	sigemptyset(&sigquit_action.sa_mask);
-	sigquit_action.sa_flags = 0;
-	sigaction(SIGQUIT, &sigquit_action, NULL);
+	new_sigint_action.sa_handler = &print_new_line;
+	sigemptyset(&new_sigint_action.sa_mask);
+	new_sigint_action.sa_flags = 0;
+	sigaction(SIGINT, &new_sigint_action, NULL);
+	new_sigquit_action.sa_handler = &print_quit_msg;
+	sigemptyset(&new_sigquit_action.sa_mask);
+	new_sigquit_action.sa_flags = 0;
+	sigaction(SIGQUIT, &new_sigquit_action, NULL);
 }
 
-void	new_prompt_line(int signo)
+void	set_heredoc_signals(void)
 {
-	(void)signo;
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_exitstatus = 1;
-}
+	struct sigaction	new_sigint_action;
+	struct sigaction	new_sigquit_action;
 
-void	print_new_line(int signo)
-{
-	printf("\n");
-	rl_on_new_line();
-	g_exitstatus = 128 + signo;
-}
-
-void	print_quit_msg(int signo)
-{
-	printf("Quit: 3\n");
-	rl_on_new_line();
-	g_exitstatus = 128 + signo;
+	new_sigint_action.sa_handler = SIG_IGN;
+	sigemptyset(&new_sigint_action.sa_mask);
+	new_sigint_action.sa_flags = 0;
+	sigaction(SIGINT, &new_sigint_action, NULL);
+	new_sigquit_action.sa_handler = SIG_IGN;
+	sigemptyset(&new_sigquit_action.sa_mask);
+	new_sigquit_action.sa_flags = 0;
+	sigaction(SIGQUIT, &new_sigquit_action, NULL);
 }

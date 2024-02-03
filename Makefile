@@ -6,7 +6,7 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/05 19:26:19 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/12/20 22:35:31 by vkhrabro         ###   ########.fr        #
+#    Updated: 2024/02/01 22:52:25 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,10 @@ NAME = minishell
 HEADER = minishell.h
 LIBFT = libft/
 READLINE = /Users/vkhrabro/.brew/opt/readline
+#READLINE = /usr/local/Cellar/readline/8.2.7
 
-SRC_F:= minishell minishell1 lexer lexer2 lexer_utility_functions lexer_utility_functions_2 \
-		parser parser2 env_list_creation expander expander2 executor executor2 executor3 \
+SRC_F:= minishell minishell1 lexer lexer2 lexer3 lexer_utility_functions lexer_utility_functions_2 \
+		parser parser2 parser3 env_list_creation expander expander2 expander3 executor executor2 executor3 \
 		executor4 executor5 executor6 signals signals_utils clean \
 		builtins/cd_builtin builtins/cd_utils builtins/echo_builtin \
 		builtins/exit_builtin builtins/exit_utils builtins/env_builtin \

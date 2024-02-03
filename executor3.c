@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 19:20:12 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:27:04 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/01/31 12:14:27 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,13 @@ char	*check_command_accessibility(const char *cmd)
 	return (NULL);
 }
 
-int	builtin_process(struct command_node *cmd_node, t_env_lst *env_lst)
+int	builtin_process(struct command_node *cmd_node, t_env_lst *env_lst, \
+	struct token *tokens)
 {
 	int	original_stdout_fd;
 	int	ex_status;
 
+	(void)tokens;
 	original_stdout_fd = -1;
 	ex_status = 0;
 	if (cmd_node->redirects)
@@ -88,7 +90,8 @@ int	builtin_process(struct command_node *cmd_node, t_env_lst *env_lst)
 		original_stdout_fd = dup(STDOUT_FILENO);
 		handle_outfile(cmd_node);
 	}
-	ex_status = execute_builtin(cmd_node->command->content, cmd_node, env_lst);
+	ex_status = execute_builtin(cmd_node->command->content, cmd_node, \
+		env_lst);
 	if (original_stdout_fd != -1)
 	{
 		dup2(original_stdout_fd, STDOUT_FILENO);

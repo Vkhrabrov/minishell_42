@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 20:19:10 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/20 20:57:04 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/31 11:47:12 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ int	handle_file_or_folder_errors(char *path)
 	return (EXIT_FAILURE);
 }
 
-int	update_pwd_and_oldpwd(t_env_lst *env_lst, struct token *args_lst, \
-	char *path)
+int	update_pwd_and_oldpwd(t_env_lst *env_lst, char *path)
 {
 	char	*oldpwd_value;
 	char	*pwd_value;
@@ -44,28 +43,27 @@ int	update_pwd_and_oldpwd(t_env_lst *env_lst, struct token *args_lst, \
 		update_env_var_value(env_lst, "PWD", pwd_value);
 		free(oldpwd_value);
 		free(pwd_value);
-		free(args_lst);
 		return (EXIT_SUCCESS);
 	}
 	else
 		return (handle_file_or_folder_errors(path));
 }
 
-int	cd_builtin(t_env_lst *env_lst, struct token *args_lst)
+int	cd_builtin(t_env_lst *env_lst, struct command_node *cmd_node)
 {
 	char	*path;
 
 	path = NULL;
-	if (args_lst != NULL && args_lst->content != NULL)
-		path = args_lst->content;
+	if (cmd_node->args != NULL && cmd_node->args->content != NULL)
+		path = cmd_node->args->content;
 	if (path == NULL || *path == '~')
 		return (is_path_null(env_lst, path));
 	else if ((path[0] == '-' && !path[1])
 		|| (path[0] == '-' && path[1] == '-'))
 		return (are_hyphens_valid(env_lst, path));
-	else if (ft_strlen(args_lst->content) > 255)
+	else if (ft_strlen(cmd_node->args->content) > 255)
 		return (build_error_msg("cd: ", path, MS_LONGNAME, false));
 	else if (is_arg_properly_quoted(path) == false)
 		return (build_error_msg("cd :", path, MS_NOFILEDIR, false));
-	return (update_pwd_and_oldpwd(env_lst, args_lst, path));
+	return (update_pwd_and_oldpwd(env_lst, path));
 }

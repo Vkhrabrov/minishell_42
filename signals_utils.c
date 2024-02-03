@@ -6,7 +6,7 @@
 /*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 22:31:52 by ccarrace          #+#    #+#             */
-/*   Updated: 2023/12/20 20:54:58 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/31 00:23:14 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,30 @@
     received signal at all.
 */
 // static struct termios	g_original_termios;
+
+void	new_prompt_line(int signo)
+{
+	(void)signo;
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	g_exitstatus = 1;
+}
+
+void	print_new_line(int signo)
+{
+	printf("\n");
+	rl_on_new_line();
+	g_exitstatus = 128 + signo;
+}
+
+void	print_quit_msg(int signo)
+{
+	printf("Quit: 3\n");
+	rl_on_new_line();
+	g_exitstatus = 128 + signo;
+}
 
 /*	disable_control_chars_echo()
  *   

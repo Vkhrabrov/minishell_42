@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 17:44:14 by vadimhrabro       #+#    #+#             */
-/*   Updated: 2023/12/20 21:06:09 by ccarrace         ###   ########.fr       */
+/*   Updated: 2024/01/28 00:43:18 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*	parse_command() 
- *	
- *	while a pipe is not found
- *		- 'process_current_token()' processes if type is ARG or CMD
- *	   	- 'handle redirections()' processes if type is a redirection
- *			-- 'add_redirection()' processes the redirection
- *			-- 'handle_redirection_error()' handles errors if happen
- *		- 'process_other tokens()' processes rest of types: expandable vars,
- *			exit status, environment variables, heredoc
- */
-void	handle_redirection_error(struct token *current, struct token **tokens)
-{
-	if ((current->prev && current->prev->type == T_PIPE) \
-		|| (!current->next))
-		ft_putstr_fd("minishell: syntax error near unexpected token `newline'", \
-			2);
-	else if ((current->next && current->next->type == T_PIPE) \
-		|| (current->next && (current->next->type == T_REDIR_IN \
-		|| current->next->type == T_APP_REDIR \
-		|| current->next->type == T_REDIR_OUT)))
-		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-	else
-		printf("Error: Expected filename after redirection symbol.\n");
-	while (current && current->next)
-		current = current->next;
-	*tokens = current;
-	g_exitstatus = 2;
-}
 
 struct token	*handle_redirections(struct command_node *cmd_node, \
 		struct token *current, struct token **last_arg, struct token **tokens)
@@ -55,6 +26,23 @@ struct token	*handle_redirections(struct command_node *cmd_node, \
 		handle_redirection_error(current, tokens);
 		return (NULL);
 	}
+}
+
+t_token	*duplicate_token(const t_token *original)
+{
+	t_token	*duplicate;
+
+	duplicate = malloc(sizeof(t_token));
+	if (!duplicate)
+	{
+		perror("Memory allocation failed for token duplication");
+		exit(EXIT_FAILURE);
+	}
+	duplicate->content = ft_strdup(original->content);
+	duplicate->type = original->type;
+	duplicate->next = duplicate->prev;
+	duplicate->prev = NULL;
+	return (duplicate);
 }
 
 int	process_current_token(struct token **current, \
@@ -80,7 +68,7 @@ int	process_current_token(struct token **current, \
 			return (1);
 	}
 	else
-		process_other_tokens(*current, cmd_node);
+		process_other_tokens(*current, cmd_node, last_arg);
 	*current = (*current)->next;
 	return (0);
 }
@@ -91,6 +79,8 @@ struct command_node	*parse_command(struct token **tokens)
 	struct token		*current;
 	struct token		**last_arg;
 
+	last_arg = NULL;
+	cmd_node = NULL;
 	if (!tokens || !(*tokens))
 		return (NULL);
 	cmd_node = ft_calloc(1, sizeof(struct command_node));
@@ -137,42 +127,3 @@ struct command_node	*parse_line(struct token *tokens)
 	}
 	return (head);
 }
-
-// struct command_node	*parse_line(struct token *tokens)
-// {
-// 	struct command_node	*head;
-// 	struct command_node	*prev;
-// 	struct command_node	*current;
-
-// 	head = NULL;
-// 	prev = NULL;
-// 	while (tokens)
-// 	{
-// 		current = parse_command(&tokens);
-// 		if (!current)
-// 			return (NULL);
-// 		if (!head)
-// 		{
-// 			head = current;
-// 			prev = head;
-// 		}
-// 		else
-// 		{
-// 			prev->next = current;
-// 			prev = current;
-// 		}
-// 		if (tokens && tokens->type == T_PIPE)
-// 		{
-// 			if (!current || (!current->command && !current->redirects))
-// 			{
-// 				ft_putstr_fd("minishell: syntax error near unexpected token `|'"
-// 					"\n", 2);
-// 				g_exitstatus = 2;
-// 				return (NULL);
-// 			}
-// 			tokens->prev = tokens;
-// 			tokens = tokens->next;
-// 		}
-// 	}
-// 	return (head);
-// }

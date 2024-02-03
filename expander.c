@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ccarrace <ccarrace@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 21:35:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/12/20 23:42:33 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2024/01/31 22:52:36 by ccarrace         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,16 @@ void	handle_exit_status(struct command_node *current_command)
 }
 
 void	expand_environment_variables(struct command_node *cmds,
-	t_env_lst **env_lst)
+	t_env_lst **env_lst, char *input)
 {
 	struct command_node	*current_command;
 
+	if (ft_strchr(input, '\'') != NULL && ft_strchr(input, '|') != NULL && \
+		ft_strchr(input, '\\') == NULL)
+	{
+		free(input);
+		return ;
+	}
 	current_command = cmds;
 	while (current_command)
 	{
